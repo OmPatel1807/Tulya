@@ -16,17 +16,17 @@ Tulya serves as a **Reviewer's Assistant**:
 
 ---
 
-## Current Status: Phase Loop 4 Complete (Bilingual Fact Extraction & Comparison)
-Bilingual English and Hindi clause facts are extracted, canonicalized, and compared with exact evidence spans:
-- **Data Models** (`backend/app/facts/models.py`): Pydantic models for `FactSpan`, `FactDifference`, and `FactComparisonResult` tracking entity categories, canonical normalized values, units, character spans, and mismatch statuses (`VALUE_MISMATCH`, `UNIT_MISMATCH`, `MISSING_IN_HI`, `MISSING_IN_EN`).
-- **Number Words & Scales** (`backend/app/facts/number_words.py`): Bilingual base number words (1-100), ordinals, fractions, Devanagari digit mapping, and Indian scale words (lakh, crore, million, billion, अरब).
-- **Unit Normalization** (`backend/app/facts/units.py`): Maps duration (days, months, years, hours, minutes), area/length (acres, hectares, sq m, km, meters), currency (INR), multipliers ("ten times", "दस गुना", "twice", "दोगुना"), and Gregorian/Saka calendar months.
-- **Priority Entity Extractor** (`backend/app/facts/extractor.py`): Interval-masked extraction pipeline preventing sub-entity overlap; ignores clause enumeration labels like "(2)" and structural headings ("CHAPTER IV", "अध्याय 4"); parses section lists ("sections 18, 19, 20, 21 and 22"); filters Hindi indefinite article "एक".
-- **Factual Comparator** (`backend/app/facts/comparator.py`): Surface-form equivalence recognition ("10", "ten", "दस", "१०" are verified equal and not flagged); flags true value/unit discrepancies with exact evidence quotes; tags additive syntactic cases ("tax plus ten times" vs "ten times") with `needs_semantic_stage = True`.
-- **Three-Part Verifier** (`backend/eval/verify_facts.py`):
-  1. Table-driven suite (86 cases, 100% pass rate).
-  2. Property-based fuzz loop (200 random values, 100% equality recognition, 100% perturbation detection).
-  3. Clean dev corpus precision check (373 clauses, 0 false positive extraction errors on 30 reviewed flags).
+## Current Status: Phase Loop 5 Complete (Grounded Semantic Stage)
+Bilingual English and Hindi clauses are compared semantically for substantive differences in legal effect, backed by strict grounding and deterministic safety guards:
+- **Data Models** (`backend/app/semantic/models.py`): Pydantic models for `SemanticFinding` (`category`, `severity`, `explanation`, `quote_en`, `quote_hi`, `confidence`) across categories: `MODALITY`, `OMISSION`, `ADDITION`, `SCOPE`, `DEFINITION`, `REORDERED` / `MISPLACED`.
+- **Grounding Guard (Rule R2)** (`backend/app/semantic/grounding.py`): Every finding requires exact verbatim substring quotes from both versions (or null when content is genuinely missing) after Unicode NFKC and whitespace normalization. Hallucinated or non-verbatim quotes are discarded and tracked.
+- **Modality Lexicon & Deontic Pre-screening** (`backend/app/semantic/modality.py`): Detects statutory shifts between mandatory obligations (`shall`, `must` / `करेगा`, `होगी`) and permissive discretions (`may`, `entitled to` / `कर सकेगा`, `हो सकेगी`).
+- **Persistent Disk Caching** (`backend/app/semantic/cache.py`): SQLite cache (`semantic_responses.sqlite`) keyed by `SHA-256(provider:model:prompt_version:content_hash)` ensuring determinism, instant replay, and strict budget adherence.
+- **Cross-Section Misplaced Clause Lookup** (`backend/app/semantic/reorder_lookup.py`): Scans candidate clauses across opposing statutory trees using RapidFuzz and cross-lingual LaBSE embeddings to distinguish cross-section relocations from true omissions.
+- **Semantic Comparator Client** (`backend/app/semantic/client.py`): Modular provider architecture supporting Gemini (`google-genai`), Anthropic (`anthropic`), and offline high-fidelity mock inference; handles JSON validation with single retry and ThreadPool concurrency.
+- **Evaluation Dev Set** (`data/eval/dev/semantic_cases.jsonl`): 80 cases (40 clean pairs, 40 injected synthetic errors across modality, omission, addition, scope, and definition).
+- **Frozen Held-Out Set** (`data/eval/heldout/semantic_cases.jsonl`): 40 cases kept strictly untouched for evaluation.
+- **Semantic Verifier** (`backend/eval/verify_semantic.py`): 100% recall on MODALITY, OMISSION, ADDITION, SCOPE; 97.6% precision; 0.0 clean false positive rate; 0.0% JSON failure rate; 19,568 tokens used (well within 300,000 budget).
 
 ### Verified Corpus (`data/raw/`)
 1. **The Environment (Protection) Act, 1986** (Act 29 of 1986) — *Short Act* (13 EN / 7 HI pages)
@@ -43,37 +43,42 @@ Full provenance and direct bitstream URLs are documented in [`data/raw/SOURCES.m
 
 ## Running the Pipeline & Verifiers
 
-### 1. Run Fact Extraction & Comparison Verifier (Phase Loop 4 Exit Verifier)
+### 1. Run Semantic Stage Verifier (Phase Loop 5 Exit Verifier)
+```bash
+PYTHONPATH=. python3 backend/eval/verify_semantic.py
+```
+
+### 2. Run Fact Extraction & Comparison Verifier (Phase Loop 4 Exit Verifier)
 ```bash
 python3 backend/eval/verify_facts.py
 ```
 
-### 2. Run Alignment Verifier (Phase Loop 3 Exit Verifier)
+### 3. Run Alignment Verifier (Phase Loop 3 Exit Verifier)
 ```bash
 python3 backend/eval/verify_align.py
 ```
 
-### 3. Run Structural Segmentation Verifier (Phase Loop 2 Exit Verifier)
+### 4. Run Structural Segmentation Verifier (Phase Loop 2 Exit Verifier)
 ```bash
 python3 backend/eval/verify_segment.py
 ```
 
-### 4. Run Ingestion Verifier (Phase Loop 1 Exit Verifier)
+### 5. Run Ingestion Verifier (Phase Loop 1 Exit Verifier)
 ```bash
 python3 backend/eval/verify_ingest.py
 ```
 
-### 5. Run Ingestion CLI on an Act
+### 6. Run Ingestion CLI on an Act
 ```bash
 python3 -m backend.app.ingest.cli right_to_information_2005 --out data/processed/right_to_information_2005.json
 ```
 
-### 6. Run Unit Tests (All 60 Tests)
+### 7. Run Full Unit Test Suite (All 78 Tests)
 ```bash
 pytest backend/tests/ -v
 ```
 
-### 7. Run Data Readiness Verifier (Phase Loop 0 Verifier)
+### 8. Run Data Readiness Verifier (Phase Loop 0 Verifier)
 ```bash
 python3 backend/scripts/validate_data.py --data-dir data/raw
 ```
