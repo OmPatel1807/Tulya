@@ -172,3 +172,92 @@ Convert each clean language stream into a hierarchical clause tree with stable p
   - Regression: Full pipeline (`validate_data.py`, `verify_ingest.py`, `verify_segment.py`, `pytest`) passing cleanly.
 - **DECIDE**: Complete Phase Loop 2. All exit criteria satisfied.
 
+---
+
+## Phase Loop 3: Alignment
+
+### Context & Goal
+Align English and Hindi clauses across statutory trees:
+1. **Structural Anchoring First**: match identical normalized paths (`1`, `1.1`, `2.a`, `proviso_1`) as high-confidence anchors.
+2. **Within-Section Monotonic Dynamic Programming**: use cross-lingual `sentence-transformers/LaBSE` embeddings and monotonic DP supporting 1-to-1 alignments, 1-to-2 merges, 2-to-1 merges, and gap/omission handling.
+3. **Record Metrics & Flags**: record similarity score, match type (`STRUCTURAL`, `SEMANTIC_1_1`, `MERGE_1_2`, `MERGE_2_1`, `REORDERED`, `OMISSION`), and `low_similarity` flag (< 0.65). Leave weak units unaligned instead of forcing spurious matches.
+
+### Exit Criteria
+- `pair_accuracy >= 0.92` on dev gold set
+- `structural_precision >= 0.98` on dev gold set
+- `false_alignment_rate <= 0.04` on dev gold set
+- `omission_recall >= 0.85` on dev gold set
+- Unit tests pass with complete regression guard
+- Hard cap: `MAX_ITER = 10`
+- Guardrails: Never tune on held-out; cache embeddings.
+
+### Datasets
+- **Dev Gold Set (`data/eval/dev/gold_alignment.jsonl`)**: 60 hand-verified pairs sampled across dev documents (`domestic_violence_2005`, `right_to_information_2005`, `environment_protection_1986`), including:
+  - Reordered clauses (e.g. DV Section 3 `3.d.iv` economic abuse mapped to `3.f` in Hindi)
+  - Merged Hindi sentences (e.g. RTI Section 2 clause 2.i printed continuously with definition (झ) `2.i.i`)
+  - Genuinely missing clauses (EPA 14A, 14B, 15A, 15B in English omitted in Hindi; EPA 17 in Hindi omitted in English)
+  - Standard structural anchors across definitions, headings, and provisions.
+- **Frozen Held-Out Set (`data/eval/heldout/gold_alignment.jsonl`)**: 40 pairs on the 2 held-out documents (`contract_act_1872`, `insolvency_bankruptcy_2016`), kept completely untouched for tuning.
+
+### Iteration 1 - Embedding Engine, Caching & Dynamic Programming
+- **PLAN**:
+  - Implement SQLite-backed persistent embedding cache in `backend/app/align/encoder.py` (`EmbeddingCache`, `LaBSEEncoder`).
+  - Implement sequence alignment in `backend/app/align/dp_align.py` (`monotonic_dp_align`) with 1-to-1, 1-to-2, 2-to-1, and gap transitions.
+  - Implement top-level tree aligner in `backend/app/align/aligner.py` (`align_document_trees`).
+  - Implement verifier in `backend/eval/verify_align.py`.
+- **ACT**:
+  - Installed `sentence-transformers` (6.2.0) and `torch` (2.15.0).
+  - Built persistent SQLite vector cache at `data/processed/embeddings_cache/labse_embeddings.sqlite`.
+  - Ran initial alignment against dev documents.
+- **VERIFY**:
+  - Initial run yielded `pair_accuracy = 0.9833` (59/60 exact matches).
+  - All 5 gold omissions recovered (`omission_recall = 1.0000`).
+  - Runtime: 0.31s with cached embeddings.
+
+### Iteration 2 - Anomaly Diagnostics & Proviso Normalization
+- **DIAGNOSE**:
+  - Diagnostic inspection revealed unmatched pair #22:
+    `DV Section 2 Proviso`: English path was `2.proviso_1`, while Hindi path was `2.1.proviso_1`.
+  - Cause: In Hindi gazette, Section 2 header opened with `2. परिभाषाएं—(1) इस अधिनियम में...`, activating subsection `2.1`. Proviso parsing attached `p_node` to `current_subsec` (`2.1`) rather than section root, whereas definition clauses (`2.a`, `2.b`...) attached to `root_node`.
+- **DECIDE**:
+  - In `backend/app/segment/segmenter.py`, normalized definition provisos/explanations in Section 2 to attach to `root_node` if `current_subsec` is the formulaic intro `2.1`.
+- **VERIFY**:
+  - DV Section 2 proviso aligned structurally with path `2.proviso_1` in both languages.
+
+### Iteration 3 - Merge Recovery & Threshold Sweep
+- **PLAN**:
+  - Tune similarity thresholds on dev set and implement adjacent omission absorption for continuous-text merges.
+- **PARAMETER SWEEP (Dev Set Only)**:
+  - `match_threshold`: tested [0.40, 0.45, 0.50, 0.55, 0.60] -> 0.50 selected (best balance: permits true semantic matches while barring hallucinated links).
+  - `merge_penalty`: tested [0.08, 0.10, 0.12, 0.15] -> 0.12 selected (prevents arbitrary 2-to-1 concatenation unless combined semantic match significantly exceeds single clause score).
+  - `low_sim_threshold`: 0.65 (accurately flags divergent translations or noisy KrutiDev OCR characters).
+- **ACT**:
+  - Added Stage 3 in `backend/app/align/aligner.py`: adjacent unaligned omissions are tested for absorption into neighboring pairs if merged cosine similarity improves by $\ge 0.08$ and reaches $\ge 0.70$.
+  - Added 7 unit tests in `backend/tests/test_align.py`.
+- **VERIFY**:
+  - RTI Section 2 merged sentence: `["2.i", "2.i.i"]` <-> `["2.i"]` successfully recovered with similarity 0.7634 (`MERGE_2_1`).
+  - DV Section 3 reordered clause: `["3.d.iv"]` <-> `["3.f"]` aligned semantically with similarity 0.7780 (`SEMANTIC_1_1`).
+  - EPA statutory amendments: all 5 omissions correctly identified with 0 false alignments.
+  - All 34 unit tests in test suite passed in 0.49s.
+
+### Final Verification Results (Dev Set)
+| Metric | Result | Exit Target | Status |
+| --- | --- | --- | --- |
+| **pair_accuracy** | **1.0000** | $\ge 0.92$ | **PASS** |
+| **structural_precision** | **1.0000** | $\ge 0.98$ | **PASS** |
+| **false_alignment_rate** | **0.0000** | $\le 0.04$ | **PASS** |
+| **omission_recall** | **1.0000** | $\ge 0.85$ | **PASS** |
+| **runtime_per_100_clauses** | **0.03s** | benchmark | **PASS** |
+
+### Confusion Cases & Checkpoint Analysis
+1. **Merged Sub-clause Printing in Gazette (RTI Section 2)**:
+   - *Case*: In the official Hindi gazette for the RTI Act, clause `(झ)` (definition of *record* / *अभिलेख*) was printed immediately following the sub-clauses of clause `(i)` without a line break.
+   - *Resolution*: Stage 3 merge recovery identified that combining English `2.i` and `2.i.i` with Hindi `2.i` raised cosine similarity from 0.6526 to 0.7634, cleanly classifying the pair as `MERGE_2_1`.
+2. **Reordered Subclauses (Domestic Violence Act Section 3)**:
+   - *Case*: English Section 3 organizes abuse into nested Roman subclauses (`3.d.i` physical, `3.d.ii` sexual, `3.d.iii` verbal, `3.d.iv` economic). Hindi gazette assigned top-level Devanagari letters (`(क)` to `(च)`), mapping economic abuse to `3.f`.
+   - *Resolution*: Monotonic DP correctly recovered the semantic correspondence between `3.d.iv` and `3.f` (similarity 0.7780), flagging `3.e` and unmapped explanations as unaligned omissions rather than forcing false links.
+3. **Statutory Amendment Asymmetry (Environment Protection Act)**:
+   - *Case*: The English text incorporates 2023 Jan Vishwas Act amendments (Sections 14A, 14B, 15A, 15B, and omitted Section 17), while the official Hindi upload is the principal Act.
+   - *Resolution*: Structural anchor detection and monotonic DP left all 5 amended sections unaligned (`match_type="OMISSION"`), yielding 100% omission recall with 0.0000 false alignment rate.
+
+

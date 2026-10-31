@@ -1,0 +1,40 @@
+{"act_slug": "contract_act_1872", "en_paths": ["1"], "hi_paths": ["1"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 1"}
+{"act_slug": "contract_act_1872", "en_paths": ["2.a"], "hi_paths": ["2.a"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 2.a"}
+{"act_slug": "contract_act_1872", "en_paths": ["2.b"], "hi_paths": ["2.b"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 2.b"}
+{"act_slug": "contract_act_1872", "en_paths": ["2.c"], "hi_paths": ["2.c"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 2.c"}
+{"act_slug": "contract_act_1872", "en_paths": ["2.d"], "hi_paths": ["2.d"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 2.d"}
+{"act_slug": "contract_act_1872", "en_paths": ["2.e"], "hi_paths": ["2.e"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 2.e"}
+{"act_slug": "contract_act_1872", "en_paths": ["2.f"], "hi_paths": ["2.f"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 2.f"}
+{"act_slug": "contract_act_1872", "en_paths": ["2.g"], "hi_paths": ["2.g"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 2.g"}
+{"act_slug": "contract_act_1872", "en_paths": ["2.h"], "hi_paths": ["2.h"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 2.h"}
+{"act_slug": "contract_act_1872", "en_paths": ["2.i"], "hi_paths": ["2.i"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 2.i"}
+{"act_slug": "contract_act_1872", "en_paths": ["2.j"], "hi_paths": ["2.j"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 2.j"}
+{"act_slug": "contract_act_1872", "en_paths": ["3"], "hi_paths": ["3"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 3"}
+{"act_slug": "contract_act_1872", "en_paths": ["4"], "hi_paths": ["4"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 4"}
+{"act_slug": "contract_act_1872", "en_paths": ["5"], "hi_paths": ["5"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 5"}
+{"act_slug": "contract_act_1872", "en_paths": ["6"], "hi_paths": ["6"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 6"}
+{"act_slug": "contract_act_1872", "en_paths": ["7"], "hi_paths": ["7"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 7"}
+{"act_slug": "contract_act_1872", "en_paths": ["8"], "hi_paths": ["8"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 8"}
+{"act_slug": "contract_act_1872", "en_paths": ["9"], "hi_paths": ["9"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 9"}
+{"act_slug": "contract_act_1872", "en_paths": ["10"], "hi_paths": ["10"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 10"}
+{"act_slug": "contract_act_1872", "en_paths": ["11"], "hi_paths": ["11"], "expected_match_type": "STRUCTURAL", "note": "Contract Act Section/Clause 11"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["1"], "hi_paths": ["1"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 1"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["2"], "hi_paths": ["2"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 2"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["3.1"], "hi_paths": ["3.1"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 3.1"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["3.2"], "hi_paths": ["3.2"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 3.2"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["3.3"], "hi_paths": ["3.3"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 3.3"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["3.4"], "hi_paths": ["3.4"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 3.4"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["3.5"], "hi_paths": ["3.5"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 3.5"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["4"], "hi_paths": ["4"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 4"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["5"], "hi_paths": ["5"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 5"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["6"], "hi_paths": ["6"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 6"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["7"], "hi_paths": ["7"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 7"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["8"], "hi_paths": ["8"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 8"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["9"], "hi_paths": ["9"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 9"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["10"], "hi_paths": ["10"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 10"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["11"], "hi_paths": ["11"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 11"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["12"], "hi_paths": ["12"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 12"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["13"], "hi_paths": ["13"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 13"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["14"], "hi_paths": ["14"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 14"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["15"], "hi_paths": ["15"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 15"}
+{"act_slug": "insolvency_bankruptcy_2016", "en_paths": ["16"], "hi_paths": ["16"], "expected_match_type": "STRUCTURAL", "note": "IBC Section/Clause 16"}

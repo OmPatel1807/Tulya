@@ -1,0 +1,60 @@
+{"act_slug": "domestic_violence_2005", "en_paths": ["1"], "hi_paths": ["1"], "expected_match_type": "STRUCTURAL", "note": "Section 1 short title heading"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["1.1"], "hi_paths": ["1.1"], "expected_match_type": "STRUCTURAL", "note": "Section 1(1) act title"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["1.2"], "hi_paths": ["1.2"], "expected_match_type": "STRUCTURAL", "note": "Section 1(2) territorial extent"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["1.3"], "hi_paths": ["1.3"], "expected_match_type": "STRUCTURAL", "note": "Section 1(3) commencement notification"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.a"], "hi_paths": ["2.a"], "expected_match_type": "STRUCTURAL", "note": "Def: aggrieved person"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.b"], "hi_paths": ["2.b"], "expected_match_type": "STRUCTURAL", "note": "Def: child"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.c"], "hi_paths": ["2.c"], "expected_match_type": "STRUCTURAL", "note": "Def: compensation order"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.d"], "hi_paths": ["2.d"], "expected_match_type": "STRUCTURAL", "note": "Def: custody order"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.e"], "hi_paths": ["2.e"], "expected_match_type": "STRUCTURAL", "note": "Def: domestic incident report"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.f"], "hi_paths": ["2.f"], "expected_match_type": "STRUCTURAL", "note": "Def: domestic relationship"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.g"], "hi_paths": ["2.g"], "expected_match_type": "STRUCTURAL", "note": "Def: domestic violence"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.h"], "hi_paths": ["2.h"], "expected_match_type": "STRUCTURAL", "note": "Def: dowry"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.i"], "hi_paths": ["2.i"], "expected_match_type": "STRUCTURAL", "note": "Def: Magistrate"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.j"], "hi_paths": ["2.j"], "expected_match_type": "STRUCTURAL", "note": "Def: medical facility"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.k"], "hi_paths": ["2.k"], "expected_match_type": "STRUCTURAL", "note": "Def: monetary relief"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.l"], "hi_paths": ["2.l"], "expected_match_type": "STRUCTURAL", "note": "Def: notification"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.m"], "hi_paths": ["2.m"], "expected_match_type": "STRUCTURAL", "note": "Def: prescribed"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.n"], "hi_paths": ["2.n"], "expected_match_type": "STRUCTURAL", "note": "Def: Protection Officer"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.o"], "hi_paths": ["2.o"], "expected_match_type": "STRUCTURAL", "note": "Def: protection order"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["3.d.iv"], "hi_paths": ["3.f"], "expected_match_type": "SEMANTIC_1_1", "note": "Reordered clause: economic abuse definition under 3.d.iv (EN) vs 3.f (HI)"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.q"], "hi_paths": ["2.q"], "expected_match_type": "STRUCTURAL", "note": "Def: respondent"}
+{"act_slug": "domestic_violence_2005", "en_paths": ["2.proviso_1"], "hi_paths": ["2.proviso_1"], "expected_match_type": "STRUCTURAL", "note": "Proviso to respondent definition"}
+{"act_slug": "right_to_information_2005", "en_paths": ["1"], "hi_paths": ["1"], "expected_match_type": "STRUCTURAL", "note": "RTI Section 1 heading"}
+{"act_slug": "right_to_information_2005", "en_paths": ["1.1"], "hi_paths": ["1.1"], "expected_match_type": "STRUCTURAL", "note": "RTI Section 1(1) short title"}
+{"act_slug": "right_to_information_2005", "en_paths": ["1.2"], "hi_paths": ["1.2"], "expected_match_type": "STRUCTURAL", "note": "RTI Section 1(2) territorial extent"}
+{"act_slug": "right_to_information_2005", "en_paths": ["1.3"], "hi_paths": ["1.3"], "expected_match_type": "STRUCTURAL", "note": "RTI Section 1(3) staggered commencement"}
+{"act_slug": "right_to_information_2005", "en_paths": ["2.a"], "hi_paths": ["2.a"], "expected_match_type": "STRUCTURAL", "note": "RTI Def: appropriate Government"}
+{"act_slug": "right_to_information_2005", "en_paths": ["2.b"], "hi_paths": ["2.b"], "expected_match_type": "STRUCTURAL", "note": "RTI Def: Central Information Commission"}
+{"act_slug": "right_to_information_2005", "en_paths": ["2.c"], "hi_paths": ["2.c"], "expected_match_type": "STRUCTURAL", "note": "RTI Def: Central Public Information Officer"}
+{"act_slug": "right_to_information_2005", "en_paths": ["2.d"], "hi_paths": ["2.d"], "expected_match_type": "STRUCTURAL", "note": "RTI Def: Chief Information Commissioner"}
+{"act_slug": "right_to_information_2005", "en_paths": ["2.e"], "hi_paths": ["2.e"], "expected_match_type": "STRUCTURAL", "note": "RTI Def: competent authority"}
+{"act_slug": "right_to_information_2005", "en_paths": ["2.f"], "hi_paths": ["2.f"], "expected_match_type": "STRUCTURAL", "note": "RTI Def: information"}
+{"act_slug": "right_to_information_2005", "en_paths": ["2.g"], "hi_paths": ["2.g"], "expected_match_type": "STRUCTURAL", "note": "RTI Def: public authority"}
+{"act_slug": "right_to_information_2005", "en_paths": ["2.h"], "hi_paths": ["2.h"], "expected_match_type": "STRUCTURAL", "note": "RTI Def: public authority definition clauses"}
+{"act_slug": "right_to_information_2005", "en_paths": ["2.i", "2.i.i"], "hi_paths": ["2.i"], "expected_match_type": "MERGE_2_1", "note": "Merged Hindi sentence: record definition (झ) printed continuously into clause 2.i in Hindi"}
+{"act_slug": "right_to_information_2005", "en_paths": ["3"], "hi_paths": ["3"], "expected_match_type": "STRUCTURAL", "note": "RTI Section 3 right to information core provision"}
+{"act_slug": "right_to_information_2005", "en_paths": ["4.1.a"], "hi_paths": ["4.1.a"], "expected_match_type": "STRUCTURAL", "note": "RTI 4(1)(a) record maintenance and cataloguing"}
+{"act_slug": "right_to_information_2005", "en_paths": ["4.1.b"], "hi_paths": ["4.1.b"], "expected_match_type": "STRUCTURAL", "note": "RTI 4(1)(b) proactive publication within 120 days"}
+{"act_slug": "right_to_information_2005", "en_paths": ["4.2"], "hi_paths": ["4.2"], "expected_match_type": "STRUCTURAL", "note": "RTI 4(2) suo motu disclosure duties"}
+{"act_slug": "right_to_information_2005", "en_paths": ["4.3"], "hi_paths": ["4.3"], "expected_match_type": "STRUCTURAL", "note": "RTI 4(3) dissemination format"}
+{"act_slug": "right_to_information_2005", "en_paths": ["5.1"], "hi_paths": ["5.1"], "expected_match_type": "STRUCTURAL", "note": "RTI 5(1) designation of CPIOs"}
+{"act_slug": "right_to_information_2005", "en_paths": ["6.1"], "hi_paths": ["6.1"], "expected_match_type": "STRUCTURAL", "note": "RTI 6(1) request procedure for obtaining information"}
+{"act_slug": "right_to_information_2005", "en_paths": ["7.1"], "hi_paths": ["7.1"], "expected_match_type": "STRUCTURAL", "note": "RTI 7(1) disposal of request within 30 days"}
+{"act_slug": "right_to_information_2005", "en_paths": ["8.1.a"], "hi_paths": ["8.1.a"], "expected_match_type": "STRUCTURAL", "note": "RTI 8(1)(a) exemption: sovereignty and integrity of India"}
+{"act_slug": "environment_protection_1986", "en_paths": ["1.1"], "hi_paths": ["1.1"], "expected_match_type": "STRUCTURAL", "note": "EPA Section 1(1) title"}
+{"act_slug": "environment_protection_1986", "en_paths": ["1.2"], "hi_paths": ["1.2"], "expected_match_type": "STRUCTURAL", "note": "EPA Section 1(2) extent"}
+{"act_slug": "environment_protection_1986", "en_paths": ["1.3"], "hi_paths": ["1.3"], "expected_match_type": "STRUCTURAL", "note": "EPA Section 1(3) commencement"}
+{"act_slug": "environment_protection_1986", "en_paths": ["2.a"], "hi_paths": ["2.a"], "expected_match_type": "STRUCTURAL", "note": "EPA Def: environment"}
+{"act_slug": "environment_protection_1986", "en_paths": ["2.b"], "hi_paths": ["2.b"], "expected_match_type": "STRUCTURAL", "note": "EPA Def: environmental pollutant"}
+{"act_slug": "environment_protection_1986", "en_paths": ["2.c"], "hi_paths": ["2.c"], "expected_match_type": "STRUCTURAL", "note": "EPA Def: environmental pollution"}
+{"act_slug": "environment_protection_1986", "en_paths": ["3.1"], "hi_paths": ["3.1"], "expected_match_type": "STRUCTURAL", "note": "EPA 3(1) Central Government power to protect environment"}
+{"act_slug": "environment_protection_1986", "en_paths": ["4.1"], "hi_paths": ["4.1"], "expected_match_type": "STRUCTURAL", "note": "EPA 4(1) appointment of officers"}
+{"act_slug": "environment_protection_1986", "en_paths": ["5"], "hi_paths": ["5"], "expected_match_type": "STRUCTURAL", "note": "EPA 5 power to give directions"}
+{"act_slug": "environment_protection_1986", "en_paths": ["5A"], "hi_paths": ["5A"], "expected_match_type": "STRUCTURAL", "note": "EPA 5A appeal to National Green Tribunal"}
+{"act_slug": "environment_protection_1986", "en_paths": ["6.1"], "hi_paths": ["6.1"], "expected_match_type": "STRUCTURAL", "note": "EPA 6(1) rules to regulate environmental pollution"}
+{"act_slug": "environment_protection_1986", "en_paths": ["14A"], "hi_paths": [], "expected_match_type": "OMISSION", "note": "EPA 14A penalty inserted by Act 18 of 2023 in EN; absent in HI"}
+{"act_slug": "environment_protection_1986", "en_paths": ["14B"], "hi_paths": [], "expected_match_type": "OMISSION", "note": "EPA 14B penalty inserted by Act 18 of 2023 in EN; absent in HI"}
+{"act_slug": "environment_protection_1986", "en_paths": ["15A"], "hi_paths": [], "expected_match_type": "OMISSION", "note": "EPA 15A penalty inserted by Act 18 of 2023 in EN; absent in HI"}
+{"act_slug": "environment_protection_1986", "en_paths": ["15B"], "hi_paths": [], "expected_match_type": "OMISSION", "note": "EPA 15B penalty inserted by Act 18 of 2023 in EN; absent in HI"}
+{"act_slug": "environment_protection_1986", "en_paths": [], "hi_paths": ["17"], "expected_match_type": "OMISSION", "note": "EPA 17 in principal HI text; omitted in EN by 2023 amendment"}

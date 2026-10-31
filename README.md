@@ -16,12 +16,13 @@ Tulya serves as a **Reviewer's Assistant**:
 
 ---
 
-## Current Status: Phase Loop 2 Complete (Structural Segmentation)
-Bilingual texts are parsed into hierarchical Clause Trees with stable paths (e.g. `12.3.b`):
-- **Models & Tree Hierarchy** (`backend/app/segment/models.py`): Pydantic data models for `ClauseNode` and `ClauseTree`.
-- **Numbering & Script Normalization** (`backend/app/segment/numbering.py`): Devanagari digits `०-९`, Hindi consonant mapping `(क)` to `(न)` -> `a` to `t`, roman numerals `(i)` to `(xvii)`.
-- **Segmentation Engine** (`backend/app/segment/segmenter.py`): Front-matter TOC skipping via enactment formula anchoring, strict monotonic numbering guard, omitted section jump tolerance, proviso & explanation detection.
-- **Evaluation Framework** (`backend/eval/verify_segment.py`): Dev gold trees in `data/eval/dev/gold_trees/` for 3 Acts (`domestic_violence_2005`, `environment_protection_1986`, `right_to_information_2005`). Frozen held-out set preserved in `data/eval/heldout/` (`contract_act_1872`, `insolvency_bankruptcy_2016`).
+## Current Status: Phase Loop 3 Complete (Bilingual Clause Alignment)
+Bilingual English and Hindi statutory trees are aligned clause-by-clause using multi-stage alignment:
+- **Data Models** (`backend/app/align/models.py`): Pydantic models for `AlignedPair` and `AlignmentResult` tracking canonical paths, concatenated text, match types (`STRUCTURAL`, `SEMANTIC_1_1`, `MERGE_1_2`, `MERGE_2_1`, `REORDERED`, `OMISSION`), similarity scores, and `low_similarity` flags.
+- **Cross-Lingual Embedding Engine & Cache** (`backend/app/align/encoder.py`): `sentence-transformers/LaBSE` singleton with persistent SQLite vector caching in `data/processed/embeddings_cache/labse_embeddings.sqlite` keyed by SHA-256 text hashes (<0.5ms lookups).
+- **Monotonic Dynamic Programming** (`backend/app/align/dp_align.py`): Sequence alignment supporting 1-to-1 matches, 1-to-2 merges, 2-to-1 merges, gap penalties, and reordered clause detection.
+- **Pipeline Coordinator** (`backend/app/align/aligner.py`): Structural anchor prioritization by normalized paths (`1.1`, `2.a`, `proviso_1`), within-section semantic DP fallback, and adjacent omission absorption.
+- **Evaluation Verifier** (`backend/eval/verify_align.py`): Evaluates alignment against hand-verified dev gold set (`data/eval/dev/gold_alignment.jsonl`, 60 pairs) with 40 pairs in frozen held-out (`data/eval/heldout/gold_alignment.jsonl`).
 
 ### Verified Corpus (`data/raw/`)
 1. **The Environment (Protection) Act, 1986** (Act 29 of 1986) — *Short Act* (13 EN / 7 HI pages)
@@ -38,27 +39,32 @@ Full provenance and direct bitstream URLs are documented in [`data/raw/SOURCES.m
 
 ## Running the Pipeline & Verifiers
 
-### 1. Run Structural Segmentation Verifier (Phase Loop 2 Exit Verifier)
+### 1. Run Alignment Verifier (Phase Loop 3 Exit Verifier)
+```bash
+python3 backend/eval/verify_align.py
+```
+
+### 2. Run Structural Segmentation Verifier (Phase Loop 2 Exit Verifier)
 ```bash
 python3 backend/eval/verify_segment.py
 ```
 
-### 2. Run Ingestion Verifier (Phase Loop 1 Exit Verifier)
+### 3. Run Ingestion Verifier (Phase Loop 1 Exit Verifier)
 ```bash
 python3 backend/eval/verify_ingest.py
 ```
 
-### 3. Run Ingestion CLI on an Act
+### 4. Run Ingestion CLI on an Act
 ```bash
 python3 -m backend.app.ingest.cli right_to_information_2005 --out data/processed/right_to_information_2005.json
 ```
 
-### 4. Run Unit Tests (All 27 Tests)
+### 5. Run Unit Tests (All 34 Tests)
 ```bash
 pytest backend/tests/ -v
 ```
 
-### 5. Run Data Readiness Verifier (Phase Loop 0 Verifier)
+### 6. Run Data Readiness Verifier (Phase Loop 0 Verifier)
 ```bash
 python3 backend/scripts/validate_data.py --data-dir data/raw
 ```

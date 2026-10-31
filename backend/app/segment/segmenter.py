@@ -55,7 +55,7 @@ END_MATTER_PATTERNS = [
 
 # Proviso patterns
 PROVISO_PATTERNS_EN = re.compile(r'^\s*Provided\s+(?:further\s+|also\s+)?that\b', re.IGNORECASE)
-PROVISO_PATTERNS_HI = re.compile(r'^\s*(?:परन्तु|परंतु|परंतुक)(?:\s|[,:—–-]|$)', re.UNICODE)
+PROVISO_PATTERNS_HI = re.compile(r'^\s*(?:परन्तु|परंतु|परिंतु|परंतुक)(?:\s|[,:—–-]|$)', re.UNICODE)
 
 # Explanation patterns
 EXPLANATION_PATTERNS_EN = re.compile(r'^\s*Explanation(?:\s+([I|V|X]+|\d+))?\s*[.—–:\-]', re.IGNORECASE)
@@ -297,36 +297,38 @@ def parse_section_body(sec_id: str, title: str, lines: List[Tuple[str, int]], pa
         proviso_match = PROVISO_PATTERNS_EN.match(line_clean) or PROVISO_PATTERNS_HI.match(line_clean)
         if proviso_match:
             proviso_count += 1
-            parent_path = current_subsec.path if current_subsec else sec_id
+            if sec_id == "2" and current_subsec and current_subsec.path == f"{sec_id}.1":
+                parent_node = root_node
+            else:
+                parent_node = current_subsec if current_subsec else root_node
+
             p_node = ClauseNode(
-                path=f"{parent_path}.proviso_{proviso_count}",
+                path=f"{parent_node.path}.proviso_{proviso_count}",
                 label=f"Proviso {proviso_count}" if lang == "en" else f"परन्तुक {proviso_count}",
                 text=line_clean,
                 page_no=p_no,
                 children=[]
             )
-            if current_subsec:
-                current_subsec.children.append(p_node)
-            else:
-                root_node.children.append(p_node)
+            parent_node.children.append(p_node)
             continue
 
         # Check for Explanation
         exp_match = EXPLANATION_PATTERNS_EN.match(line_clean) or EXPLANATION_PATTERNS_HI.match(line_clean)
         if exp_match:
             explanation_count += 1
-            parent_path = current_subsec.path if current_subsec else sec_id
+            if sec_id == "2" and current_subsec and current_subsec.path == f"{sec_id}.1":
+                parent_node = root_node
+            else:
+                parent_node = current_subsec if current_subsec else root_node
+
             e_node = ClauseNode(
-                path=f"{parent_path}.explanation_{explanation_count}",
+                path=f"{parent_node.path}.explanation_{explanation_count}",
                 label=f"Explanation {explanation_count}" if lang == "en" else f"स्पष्टीकरण {explanation_count}",
                 text=line_clean,
                 page_no=p_no,
                 children=[]
             )
-            if current_subsec:
-                current_subsec.children.append(e_node)
-            else:
-                root_node.children.append(e_node)
+            parent_node.children.append(e_node)
             continue
 
         # Check for Subsection: e.g. '(1)', '(१)', '––(1)' at line start
