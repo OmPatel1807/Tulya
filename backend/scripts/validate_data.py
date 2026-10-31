@@ -121,11 +121,14 @@ def assess_hindi_text(page_texts: List[str]) -> Tuple[str, List[float], float]:
 
     overall_frac = total_dev / total_alpha if total_alpha > 0 else 0.0
 
-    # Detection logic:
-    # If there is text, but almost no Devanagari (< 15%), and lots of Latin chars:
-    # Check if text is English or legacy font. Legacy Hindi fonts (KrutiDev, etc.)
-    # use ASCII codes for glyphs, yielding strings with high frequencies of odd symbols or non-English words.
-    if overall_frac > 0.40:
+    # Check if a substantial portion of pages has low Devanagari (< 0.25)
+    # A genuine Hindi document must not have >15% pages in legacy/corrupted font
+    low_dev_pages = sum(1 for f in fractions if f < 0.25)
+    low_dev_ratio = low_dev_pages / max(len(fractions), 1)
+
+    if low_dev_ratio > 0.15 and len(fractions) >= 3:
+        verdict = "LEGACY_FONT_SUSPECTED"
+    elif overall_frac > 0.40:
         verdict = "OK_UNICODE_HINDI"
     elif overall_frac < 0.10:
         # Check if the page is English text or legacy font gibberish

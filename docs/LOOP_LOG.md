@@ -53,3 +53,57 @@ Acquire at least 6 usable bilingual (English + Hindi) Indian legal documents int
 - **Constitution Slot**: Discarded due to non-Unicode legacy font (`LEGACY_FONT_SUSPECTED`) on the official India Code Hindi portal upload.
 - **Provenance Documentation**: Complete in `data/raw/SOURCES.md`.
 - **Exit Status**: PASSED.
+
+---
+
+## Phase Loop 1: Ingestion (Extraction, Cleaning, Language Splitting)
+
+### Context & Goal
+Transform each usable bilingual document from Phase Loop 0 into clean `english_text` and `hindi_text` streams with accurate page references, Unicode NFC normalization, automated repeated header/footer removal, and hyphenation repair without legacy font pollution or OCR.
+
+### Iteration 1 - Core Ingestion Architecture & Initial Verification
+- **PLAN**:
+  - Implement verifier FIRST: `backend/eval/verify_ingest.py` tracking `extraction_ok_rate`, `garbage_rate`, `header_footer_leak`, `language_mix_error`, and page statistics.
+  - Implement `pdf_loader.py` with PyMuPDF primary and pdfplumber fallback.
+  - Implement `script_check.py` with Devanagari fraction computation, KrutiDev/ShreeLipi legacy font signature detection, and `LegacyFontError`.
+  - Implement `clean.py` with Unicode NFC normalization, dynamic repeated header/footer line detection across edge lines, isolated page number stripping, and cross-lingual hyphenation repair.
+  - Implement `split_language.py` supporting both separate `_en`/`_hi` PDFs and synthetic/real `_bi` single bilingual PDFs.
+  - Implement CLI in `backend/app/ingest/cli.py` outputting `{english: [...], hindi: [...], warnings: [...], stats: {...}}`.
+  - Add comprehensive pytest suite in `backend/tests/test_ingest.py` (13 tests including Hindi edge cases).
+- **ACT**: Created all 5 modules, CLI, test suite, and verifier.
+- **VERIFY**:
+  - `pytest backend/tests/`: 13/13 passed.
+  - `python3 backend/eval/verify_ingest.py`: 6 of 7 documents passed with `garbage_rate = 0.000` and `header_footer_leak = 0`.
+  - One document failed extraction: `consumer_protection_2019`.
+- **DIAGNOSE**:
+  - Deep inspection of `consumer_protection_2019_hi.pdf` revealed that pages 1 to 20 were scanned/encoded with an 8-bit legacy font (`Gweror srfufm, 2019`), and only pages 21 to 40 were Unicode Devanagari.
+  - `validate_data.py` previously looked only at document-wide aggregate Devanagari fraction (0.689) which masked that the first half of the Act was unreadable ASCII glyphs.
+  - `check_script` correctly caught this and raised `LegacyFontError`.
+- **DECIDE**:
+  - Strengthened `assess_hindi_text` in `backend/scripts/validate_data.py` to enforce that documents where >15% of pages have low Devanagari fraction (<0.25) are flagged as `LEGACY_FONT_SUSPECTED`.
+  - Replaced `consumer_protection_2019` with a clean official Act: `The National Green Tribunal Act, 2010` (Act 19 of 2010), verified to be 100% pure Unicode Devanagari across all pages (`dev_fraction = 0.996`, min page fraction = 0.970).
+  - Regenerated `data/processed/data_readiness.json`.
+
+### Iteration 2 - Re-Verification of Corpus & Exit Check
+- **PLAN**: Re-run the full ingestion verifier and unit test suite against the 7 verified clean Acts.
+- **ACT**: Ran `validate_data.py`, `pytest backend/tests/`, and `verify_ingest.py`.
+- **VERIFY**:
+  - `extraction_ok_rate`: 1.000 (Target: 1.0)
+  - `avg_garbage_rate`: 0.0000 (Target: < 0.02)
+  - `total_header_footer_leak`: 0 (Target: 0)
+  - `avg_language_mix_error`: 0.0000 (Target: < 0.02)
+  - `avg_blank_page_rate`: 0.0000
+  - Unit tests: 13 passed in 0.44s.
+  - CLI: Tested with `right_to_information_2005`, generating clean JSON output with 25 EN and 20 HI pages.
+- **DIAGNOSE**: Zero header/footer leaks, zero garbage lines, zero language mix errors across all 7 usable Acts.
+- **DECIDE**: Keep all changes. Commit and log. All exit criteria for Phase Loop 1 are satisfied.
+
+### Exit Metrics Summary
+- **Total Usable Documents Ingested**: 7 pairs (14 PDF files)
+- **extraction_ok_rate**: 1.000 (7 / 7)
+- **garbage_rate**: 0.0000
+- **header_footer_leak**: 0 lines leaked
+- **language_mix_error**: 0.0000 (only 1 stray English citation token across 280 pages)
+- **all unit tests passing**: YES (13/13)
+- **Exit Status**: PASSED.
+

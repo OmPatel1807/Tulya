@@ -21,7 +21,7 @@ According to the official Copyright Policy published by the Legislative Departme
 
 ---
 
-## Document Provenance Table
+## Document Provenance Table (Active Usable Documents)
 
 | Act Name | Act No. & Year | Language | Exact URL | Date Retrieved | File Size | Pages | Verdict |
 |---|---|---|---|---|---|---|---|
@@ -33,8 +33,8 @@ According to the official Copyright Policy published by the Legislative Departme
 | The Right of Children to Free and Compulsory Education Act, 2009 | Act 35 of 2009 | Hindi | `https://indiacode.gov.in/server/api/core/bitstreams/a35b64fa-5a20-4af5-879e-45fdd61005e9/content` | 2026-10-31 | 647 KB (647,004 bytes) | 15 | OK_UNICODE_HINDI |
 | The Right to Information Act, 2005 | Act 22 of 2005 | English | `https://indiacode.gov.in/server/api/core/bitstreams/78f68a27-8902-4081-8d53-a3932264ca52/content` | 2026-10-31 | 447 KB (447,103 bytes) | 25 | OK_ENGLISH |
 | The Right to Information Act, 2005 | Act 22 of 2005 | Hindi | `https://indiacode.gov.in/server/api/core/bitstreams/3cfec817-8b3b-4fc4-9395-f04bfcca1a1f/content` | 2026-10-31 | 1.09 MB (1,090,669 bytes) | 20 | OK_UNICODE_HINDI |
-| The Consumer Protection Act, 2019 | Act 35 of 2019 | English | `https://indiacode.gov.in/server/api/core/bitstreams/b5ba879f-4662-458c-b5d3-dae377ff92e0/content` | 2026-10-31 | 628 KB (627,796 bytes) | 42 | OK_ENGLISH |
-| The Consumer Protection Act, 2019 | Act 35 of 2019 | Hindi | `https://indiacode.gov.in/server/api/core/bitstreams/a4008e1f-39ef-4859-98ed-613ccdd2c835/content` | 2026-10-31 | 11.3 MB (11,302,337 bytes) | 40 | OK_UNICODE_HINDI |
+| The National Green Tribunal Act, 2010 | Act 19 of 2010 | English | `https://indiacode.gov.in/server/api/core/bitstreams/3f4723dd-aab3-4ba7-a288-46561b1829f5/content` | 2026-10-31 | 472 KB (471,789 bytes) | 23 | OK_ENGLISH |
+| The National Green Tribunal Act, 2010 | Act 19 of 2010 | Hindi | `https://indiacode.gov.in/server/api/core/bitstreams/f01bb2d5-4457-4cd8-a59b-6864c2480630/content` | 2026-10-31 | 763 KB (762,515 bytes) | 19 | OK_UNICODE_HINDI |
 | The Indian Contract Act, 1872 | Act 9 of 1872 | English | `https://indiacode.gov.in/server/api/core/bitstreams/e7571d39-11a7-4a2c-86e3-c515ae43e617/content` | 2026-10-31 | 713 KB (712,769 bytes) | 53 | OK_ENGLISH |
 | The Indian Contract Act, 1872 | Act 9 of 1872 | Hindi | `https://indiacode.gov.in/server/api/core/bitstreams/b8516d55-a010-4616-91b3-954251074b2c/content` | 2026-10-31 | 1.84 MB (1,844,543 bytes) | 41 | OK_UNICODE_HINDI |
 | The Insolvency and Bankruptcy Code, 2016 | Act 31 of 2016 | English | `https://indiacode.gov.in/server/api/core/bitstreams/bf689ae0-08e3-47e2-92f2-1711a774254e/content` | 2026-10-31 | 1.76 MB (1,760,426 bytes) | 174 | OK_ENGLISH |
@@ -46,4 +46,5 @@ According to the official Copyright Policy published by the Legislative Departme
 
 | Candidate | Sources Checked | Discard Reason | Guardrail Applied |
 |---|---|---|---|
-| **The Constitution of India** | English: `https://indiacode.gov.in/server/api/core/bitstreams/2bd776ff-891e-444c-9344-f63df7b299fc/content` (402 pages, English-only despite diglot cover title)<br>Hindi: `https://indiacode.gov.in/server/api/core/bitstreams/c83e9912-5843-450f-8d17-200ad52425cb/content` | **LEGACY_FONT_SUSPECTED**: The Hindi PDF uploaded on India Code is encoded in a legacy 8-bit font (KrutiDev) where text extracts as ASCII glyphs (`fof/k vkSj U;k; ea=ky;`). Also, amendment edition dates do not match (EN: as of Sept 2026 vs HI: as of May 2024). | Guardrail 3 (Discard `LEGACY_FONT_SUSPECTED`, do not attempt OCR or third-party mirrors). |
+| **The Consumer Protection Act, 2019** | English: `https://indiacode.gov.in/.../b5ba879f-4662-458c-b5d3-dae377ff92e0`<br>Hindi: `https://indiacode.gov.in/.../a4008e1f-39ef-4859-98ed-613ccdd2c835` | **LEGACY_FONT_SUSPECTED**: Pages 1 to 20 are encoded in legacy non-Unicode font where text extracts as ASCII glyphs (`Gweror srfufm, 2019`). Only pages 21–40 are Unicode. Discarded to prevent corrupted input into downstream pipeline. Replaced with *The National Green Tribunal Act, 2010*. | Guardrail 3 (Discard `LEGACY_FONT_SUSPECTED`, no OCR fallback). |
+| **The Constitution of India** | English: `https://indiacode.gov.in/.../2bd776ff-891e-444c-9344-f63df7b299fc` (402 pages, English-only)<br>Hindi: `https://indiacode.gov.in/.../c83e9912-5843-450f-8d17-200ad52425cb` | **LEGACY_FONT_SUSPECTED**: The Hindi PDF uploaded on India Code is encoded in a legacy 8-bit font (KrutiDev) where text extracts as ASCII glyphs (`fof/k vkSj U;k; ea=ky;`). Also, amendment edition dates do not match (EN: Sept 2026 vs HI: May 2024). | Guardrail 3 (Discard `LEGACY_FONT_SUSPECTED`, no OCR fallback). |
