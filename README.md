@@ -16,14 +16,12 @@ Tulya serves as a **Reviewer's Assistant**:
 
 ---
 
-## Current Status: Phase Loop 1 Complete (Ingestion & Normalization)
-All 7 verified Central Act bilingual pairs (14 PDF files) are processed through the ingestion pipeline (`backend/app/ingest/`):
-- PyMuPDF text extraction with `pdfplumber` fallback.
-- Unicode NFC normalization and zero-width artifact stripping.
-- Script validation and legacy font detection (`script_check.py`).
-- Automatic edge-line repeated header and footer removal (`clean.py`).
-- Cross-lingual hyphenated line break repair (`clean.py`).
-- Language splitting for separate files (`_en`/`_hi`) and single bilingual files (`_bi`).
+## Current Status: Phase Loop 2 Complete (Structural Segmentation)
+Bilingual texts are parsed into hierarchical Clause Trees with stable paths (e.g. `12.3.b`):
+- **Models & Tree Hierarchy** (`backend/app/segment/models.py`): Pydantic data models for `ClauseNode` and `ClauseTree`.
+- **Numbering & Script Normalization** (`backend/app/segment/numbering.py`): Devanagari digits `०-९`, Hindi consonant mapping `(क)` to `(न)` -> `a` to `t`, roman numerals `(i)` to `(xvii)`.
+- **Segmentation Engine** (`backend/app/segment/segmenter.py`): Front-matter TOC skipping via enactment formula anchoring, strict monotonic numbering guard, omitted section jump tolerance, proviso & explanation detection.
+- **Evaluation Framework** (`backend/eval/verify_segment.py`): Dev gold trees in `data/eval/dev/gold_trees/` for 3 Acts (`domestic_violence_2005`, `environment_protection_1986`, `right_to_information_2005`). Frozen held-out set preserved in `data/eval/heldout/` (`contract_act_1872`, `insolvency_bankruptcy_2016`).
 
 ### Verified Corpus (`data/raw/`)
 1. **The Environment (Protection) Act, 1986** (Act 29 of 1986) — *Short Act* (13 EN / 7 HI pages)
@@ -31,35 +29,36 @@ All 7 verified Central Act bilingual pairs (14 PDF files) are processed through 
 3. **The Right of Children to Free and Compulsory Education Act, 2009** (Act 35 of 2009) — *Short Act* (20 EN / 15 HI pages)
 4. **The Right to Information Act, 2005** (Act 22 of 2005) — *Medium Act* (25 EN / 20 HI pages)
 5. **The National Green Tribunal Act, 2010** (Act 19 of 2010) — *Medium Act* (23 EN / 19 HI pages)
-6. **The Indian Contract Act, 1872** (Act 9 of 1872) — *Medium Act* (53 EN / 41 HI pages)
-7. **The Insolvency and Bankruptcy Code, 2016** (Act 31 of 2016) — *Long Act* (174 EN / 106 HI pages)
+6. **The Indian Contract Act, 1872** (Act 9 of 1872) — *Medium Act* (53 EN / 41 HI pages) [Frozen Held-Out]
+7. **The Insolvency and Bankruptcy Code, 2016** (Act 31 of 2016) — *Long Act* (174 EN / 106 HI pages) [Frozen Held-Out]
 
 Full provenance and direct bitstream URLs are documented in [`data/raw/SOURCES.md`](data/raw/SOURCES.md).
 
 ---
 
-## Running the Ingestion Pipeline & Verifiers
+## Running the Pipeline & Verifiers
 
-### 1. Run Ingestion CLI on an Act
+### 1. Run Structural Segmentation Verifier (Phase Loop 2 Exit Verifier)
 ```bash
-python3 -m backend.app.ingest.cli right_to_information_2005 --out data/processed/right_to_information_2005.json
+python3 backend/eval/verify_segment.py
 ```
 
 ### 2. Run Ingestion Verifier (Phase Loop 1 Exit Verifier)
 ```bash
 python3 backend/eval/verify_ingest.py
 ```
-To print 15 random sample lines per language per document for visual inspection:
+
+### 3. Run Ingestion CLI on an Act
 ```bash
-python3 backend/eval/verify_ingest.py --samples
+python3 -m backend.app.ingest.cli right_to_information_2005 --out data/processed/right_to_information_2005.json
 ```
 
-### 3. Run Unit Tests
+### 4. Run Unit Tests (All 27 Tests)
 ```bash
-python3 -m pytest backend/tests/ -v
+pytest backend/tests/ -v
 ```
 
-### 4. Run Data Readiness Verifier (Phase Loop 0 Verifier)
+### 5. Run Data Readiness Verifier (Phase Loop 0 Verifier)
 ```bash
 python3 backend/scripts/validate_data.py --data-dir data/raw
 ```

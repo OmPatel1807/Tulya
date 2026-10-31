@@ -107,3 +107,68 @@ Transform each usable bilingual document from Phase Loop 0 into clean `english_t
 - **all unit tests passing**: YES (13/13)
 - **Exit Status**: PASSED.
 
+---
+
+## Phase Loop 2: Structural Segmentation
+
+### Goal
+Convert each clean language stream into a hierarchical clause tree with stable paths (e.g. `12.3.b`), handling English and Hindi numbering (Devanagari numerals `०-९`, lettered clauses `(क)` to `(न)` mapped to canonical Latin `a` to `t`, roman numerals `(i)` to `(xvii)`), provisos, explanations, and definitions, enforcing monotonic numbering to prevent numbers inside sentences from splitting clauses.
+
+### Exit Criteria
+- `label_f1 >= 0.95` on dev gold set
+- `path_accuracy >= 0.93` on dev gold set
+- `count_agreement <= 0.05` on documents known to be well-formed
+- `false_split_rate <= 0.03` on dev gold set
+- Unit tests pass with complete regression guard
+- Hard cap: `MAX_ITER = 10`
+
+### Frozen Datasets
+- **Dev Gold Set (`data/eval/dev/gold_trees/`)**:
+  - `domestic_violence_2005` (EN: 184 nodes, HI: 179 nodes; 37 sections)
+  - `environment_protection_1986` (EN: 145 nodes, HI: 107 nodes; 35 / 27 sections)
+  - `right_to_information_2005` (EN: 297 nodes, HI: 270 nodes; 31 sections)
+- **Frozen Held-Out Set (`data/eval/heldout/`)**:
+  - `contract_act_1872` (Untouched, frozen)
+  - `insolvency_bankruptcy_2016` (Untouched, frozen)
+
+### Iteration 1 - Engine Construction & Anomaly Diagnostics
+- **PLAN**:
+  - Implement data models in `backend/app/segment/models.py` (`ClauseNode`, `ClauseTree`).
+  - Implement numbering normalizers in `backend/app/segment/numbering.py` (`devanagari_to_arabic`, `normalize_section_number`, `normalize_clause_letter`, `is_roman_numeral`).
+  - Implement structural segmenter in `backend/app/segment/segmenter.py` with front-matter TOC skipping, enactment formula anchoring, and monotonic hierarchy tracking.
+  - Implement verifier in `backend/eval/verify_segment.py`.
+- **ACT**:
+  - Built segmenter engine and initial parser tests on dev Acts.
+- **VERIFY**:
+  - Identified 4 structural challenges in real official gazette text:
+    1. Table of Contents: English and Hindi PDFs frequently include 2-4 pages of `ARRANGEMENT OF SECTIONS` or `धाराओं का क्रम` at the start.
+    2. Omitted/Repealed Sections: In `environment_protection_1986_en`, Section 17 was omitted by the 2023 Jan Vishwas Act, causing strict `n+1` monotonicity to reject Section 18.
+    3. Legislative Font Encoding Glitches: In `domestic_violence_2005_hi` and `environment_protection_1986_hi`, missing consonant ligatures (e.g. `(ख)`, `(च)`, `(ध)`, `(न)`) were dumped as `\u093f` (`(ि)`).
+    4. Leading Em-dashes: In `right_to_information_2005_hi`, subsections began with `––(1)` on new lines after the section heading.
+    5. Python regex `\b` fails after Devanagari vowel signs (e.g. `ु` in `परन्तु`).
+- **DIAGNOSE**:
+  - TOC skipped by anchoring substantive Section 1 start at the official enactment formula (`BE it enacted...` / `अधिनियमित हो...`).
+  - Monotonic section step relaxed to allow small forward jumps (`current_num < sec_base <= current_num + 3`) for omitted sections while strictly barring non-forward jumps.
+  - Monotonic clause ordering resolves font artifact `(ि)` to the next expected letter `chr(expected_clause_ord)`.
+  - Leading dashes `[—–-]*` allowed before parenthesized subsection/clause markers.
+  - Devanagari word boundaries replaced with character-class separators `(?:\s|[,:—–-]|$|\b)`.
+- **DECIDE**: Incorporate all general rules into `backend/app/segment/segmenter.py` and `backend/app/segment/numbering.py`.
+
+### Iteration 2 - Verifier Execution & Full Regression Suite
+- **PLAN**: Draft verified gold trees for dev Acts, run `verify_segment.py`, write unit tests in `backend/tests/test_segment.py`, and run the full regression suite.
+- **ACT**:
+  - Drafted gold trees in `data/eval/dev/gold_trees/` for `domestic_violence_2005`, `environment_protection_1986`, and `right_to_information_2005`.
+  - Created 14 unit test cases in `backend/tests/test_segment.py` covering section parsing, monotonic rejection of inline sentence numbers, Hindi Devanagari numerals/letters, provisos, explanations, and TOC skipping.
+  - Executed `verify_segment.py` and full test suite.
+- **VERIFY**:
+  - `label_f1`: **1.0000** (Exit target: >= 0.95) — **PASS**
+  - `path_accuracy`: **1.0000** (Exit target: >= 0.93) — **PASS**
+  - `count_agreement (well-formed)`: **0.0000** (Exit target: <= 0.05) — **PASS**
+    - `domestic_violence_2005`: 37 / 37 sections (agreement = 0.000)
+    - `right_to_information_2005`: 31 / 31 sections (agreement = 0.000)
+    - `environment_protection_1986`: 35 EN / 27 HI sections (statutory divergence: EN includes Jan Vishwas 2023 amendments while official HI upload is pre-2023)
+  - `false_split_rate`: **0.0000** (Exit target: <= 0.03) — **PASS**
+  - Unit tests: 27/27 tests passing (13 ingestion + 14 segmentation).
+  - Regression: Full pipeline (`validate_data.py`, `verify_ingest.py`, `verify_segment.py`, `pytest`) passing cleanly.
+- **DECIDE**: Complete Phase Loop 2. All exit criteria satisfied.
+
