@@ -16,13 +16,17 @@ Tulya serves as a **Reviewer's Assistant**:
 
 ---
 
-## Current Status: Phase Loop 3 Complete (Bilingual Clause Alignment)
-Bilingual English and Hindi statutory trees are aligned clause-by-clause using multi-stage alignment:
-- **Data Models** (`backend/app/align/models.py`): Pydantic models for `AlignedPair` and `AlignmentResult` tracking canonical paths, concatenated text, match types (`STRUCTURAL`, `SEMANTIC_1_1`, `MERGE_1_2`, `MERGE_2_1`, `REORDERED`, `OMISSION`), similarity scores, and `low_similarity` flags.
-- **Cross-Lingual Embedding Engine & Cache** (`backend/app/align/encoder.py`): `sentence-transformers/LaBSE` singleton with persistent SQLite vector caching in `data/processed/embeddings_cache/labse_embeddings.sqlite` keyed by SHA-256 text hashes (<0.5ms lookups).
-- **Monotonic Dynamic Programming** (`backend/app/align/dp_align.py`): Sequence alignment supporting 1-to-1 matches, 1-to-2 merges, 2-to-1 merges, gap penalties, and reordered clause detection.
-- **Pipeline Coordinator** (`backend/app/align/aligner.py`): Structural anchor prioritization by normalized paths (`1.1`, `2.a`, `proviso_1`), within-section semantic DP fallback, and adjacent omission absorption.
-- **Evaluation Verifier** (`backend/eval/verify_align.py`): Evaluates alignment against hand-verified dev gold set (`data/eval/dev/gold_alignment.jsonl`, 60 pairs) with 40 pairs in frozen held-out (`data/eval/heldout/gold_alignment.jsonl`).
+## Current Status: Phase Loop 4 Complete (Bilingual Fact Extraction & Comparison)
+Bilingual English and Hindi clause facts are extracted, canonicalized, and compared with exact evidence spans:
+- **Data Models** (`backend/app/facts/models.py`): Pydantic models for `FactSpan`, `FactDifference`, and `FactComparisonResult` tracking entity categories, canonical normalized values, units, character spans, and mismatch statuses (`VALUE_MISMATCH`, `UNIT_MISMATCH`, `MISSING_IN_HI`, `MISSING_IN_EN`).
+- **Number Words & Scales** (`backend/app/facts/number_words.py`): Bilingual base number words (1-100), ordinals, fractions, Devanagari digit mapping, and Indian scale words (lakh, crore, million, billion, अरब).
+- **Unit Normalization** (`backend/app/facts/units.py`): Maps duration (days, months, years, hours, minutes), area/length (acres, hectares, sq m, km, meters), currency (INR), multipliers ("ten times", "दस गुना", "twice", "दोगुना"), and Gregorian/Saka calendar months.
+- **Priority Entity Extractor** (`backend/app/facts/extractor.py`): Interval-masked extraction pipeline preventing sub-entity overlap; ignores clause enumeration labels like "(2)" and structural headings ("CHAPTER IV", "अध्याय 4"); parses section lists ("sections 18, 19, 20, 21 and 22"); filters Hindi indefinite article "एक".
+- **Factual Comparator** (`backend/app/facts/comparator.py`): Surface-form equivalence recognition ("10", "ten", "दस", "१०" are verified equal and not flagged); flags true value/unit discrepancies with exact evidence quotes; tags additive syntactic cases ("tax plus ten times" vs "ten times") with `needs_semantic_stage = True`.
+- **Three-Part Verifier** (`backend/eval/verify_facts.py`):
+  1. Table-driven suite (86 cases, 100% pass rate).
+  2. Property-based fuzz loop (200 random values, 100% equality recognition, 100% perturbation detection).
+  3. Clean dev corpus precision check (373 clauses, 0 false positive extraction errors on 30 reviewed flags).
 
 ### Verified Corpus (`data/raw/`)
 1. **The Environment (Protection) Act, 1986** (Act 29 of 1986) — *Short Act* (13 EN / 7 HI pages)
@@ -39,32 +43,37 @@ Full provenance and direct bitstream URLs are documented in [`data/raw/SOURCES.m
 
 ## Running the Pipeline & Verifiers
 
-### 1. Run Alignment Verifier (Phase Loop 3 Exit Verifier)
+### 1. Run Fact Extraction & Comparison Verifier (Phase Loop 4 Exit Verifier)
+```bash
+python3 backend/eval/verify_facts.py
+```
+
+### 2. Run Alignment Verifier (Phase Loop 3 Exit Verifier)
 ```bash
 python3 backend/eval/verify_align.py
 ```
 
-### 2. Run Structural Segmentation Verifier (Phase Loop 2 Exit Verifier)
+### 3. Run Structural Segmentation Verifier (Phase Loop 2 Exit Verifier)
 ```bash
 python3 backend/eval/verify_segment.py
 ```
 
-### 3. Run Ingestion Verifier (Phase Loop 1 Exit Verifier)
+### 4. Run Ingestion Verifier (Phase Loop 1 Exit Verifier)
 ```bash
 python3 backend/eval/verify_ingest.py
 ```
 
-### 4. Run Ingestion CLI on an Act
+### 5. Run Ingestion CLI on an Act
 ```bash
 python3 -m backend.app.ingest.cli right_to_information_2005 --out data/processed/right_to_information_2005.json
 ```
 
-### 5. Run Unit Tests (All 34 Tests)
+### 6. Run Unit Tests (All 60 Tests)
 ```bash
 pytest backend/tests/ -v
 ```
 
-### 6. Run Data Readiness Verifier (Phase Loop 0 Verifier)
+### 7. Run Data Readiness Verifier (Phase Loop 0 Verifier)
 ```bash
 python3 backend/scripts/validate_data.py --data-dir data/raw
 ```
@@ -72,6 +81,7 @@ python3 backend/scripts/validate_data.py --data-dir data/raw
 ---
 
 ## Known Limitations & Honest Assessments
-1. **Partial-Legacy Gazettes**: Some official portal uploads (such as *Consumer Protection Act 2019*) contain hybrid PDFs where initial pages are in proprietary legacy 8-bit ASCII fonts (KrutiDev) while later pages are Unicode Devanagari. Tulya detects and discards these (`LEGACY_FONT_SUSPECTED`) to protect the integrity of downstream alignment and fact comparison.
-2. **Inline Heading Formatting in Hindi Gazettes**: In several Acts (e.g., NGT 2010 and IBC 2016), Hindi translations format section headings inline with paragraph text or omit bold marginal tags, resulting in lower section-heading regex counts despite complete clause text presence.
-3. **Usage Terms**: Official legal texts are sourced from `indiacode.gov.in` under fair-use provisions for academic, research, and legal review, with attribution to the Legislative Department, Ministry of Law and Justice. Commercial redistribution is prohibited.
+1. **Additive Statutory Syntax Limit ("needs semantic stage")**: Pure numeric extraction alone cannot resolve structural phrase modifications such as "ten times the tax" vs. "tax plus a penalty of ten times the tax". Both clauses contain the numeric multiplier 10.0. Tulya's fact engine explicitly identifies additive statutory markers ("plus", "in addition to", "के अतिरिक्त") and marks these cases as `needs_semantic_stage = True` for the downstream semantic auditor.
+2. **Partial-Legacy Gazettes**: Some official portal uploads (such as *Consumer Protection Act 2019*) contain hybrid PDFs where initial pages are in proprietary legacy 8-bit ASCII fonts (KrutiDev) while later pages are Unicode Devanagari. Tulya detects and discards these (`LEGACY_FONT_SUSPECTED`) to protect the integrity of downstream alignment and fact comparison.
+3. **Inline Heading Formatting in Hindi Gazettes**: In several Acts (e.g., NGT 2010 and IBC 2016), Hindi translations format section headings inline with paragraph text or omit bold marginal tags, resulting in lower section-heading regex counts despite complete clause text presence.
+4. **Usage Terms**: Official legal texts are sourced from `indiacode.gov.in` under fair-use provisions for academic, research, and legal review, with attribution to the Legislative Department, Ministry of Law and Justice. Commercial redistribution is prohibited.
