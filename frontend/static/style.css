@@ -445,17 +445,25 @@ body.is-scrolling .story-checkpoint-panel.active {
   color: var(--page-ink);
 }
 
-/* Synthetic Demo Badge */
+/* Synthetic Demo Tag & Subtitle (Fix 1: small tag in top-left, no heavy header) */
+.synthetic-tag,
 .synthetic-banner {
   display: inline-block;
   background: var(--mismatch-rose);
   color: #FFFFFF;
+  font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   padding: 0.2rem 0.55rem;
   border-radius: var(--radius-sm);
-  margin-bottom: 0.75rem;
+}
+
+.synthetic-sub {
+  font-size: 0.82rem;
+  color: var(--ink-secondary);
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 /* ==========================================================================

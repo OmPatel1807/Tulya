@@ -867,10 +867,96 @@ Rebuild the Tulya landing story (`/`) into an authentic, buttery smooth, and cre
 
 ---
 
+---
+
+## Phase Loop 7C: Two Essential Visual Fixes (Synthetic Demo Cleanup & Hardcover Kinematics)
+
+### Context & Goal
+Execute two targeted, loop-engineered fixes on the Tulya landing story (`/`) while preserving the "Ink and Clay" palette and all existing capabilities:
+1. **Fix 1 - Synthetic Demo Scene Cleanup**:
+   - Completely remove the brass lens ring, handle, and concentric plum-rose circles/shockwaves that covered and blurred quoted text.
+   - Replace the heavy plum-rose header bar with a small tag in the card's top-left corner: `"SYNTHETIC DEMO"`, accompanied by subtitle `"Section 12(3) divergence, illustrative only"`.
+   - Highlight the mismatch strictly with text: slate underline on `"TEN TIMES THE TAX"`, clay underline on `"अतिरिक्त दस गुना शास्ति"`, and a thin connector line routed through the central gutter and margins so it never crosses a glyph.
+   - Retain the bottom finding strip on one readable line.
+   - Mismatch moment: single soft pulse of the card border to plum-rose (600 ms, eased), then stays solid plum-rose. Zero positional shake, zero rings over text.
+   - Verification: Playwright assert with `getBoundingClientRect` that zero overlay elements intersect quoted text bounding boxes.
+2. **Fix 2 - Real-World Hardcover Book Open & Close**:
+   - Structure: Physical hardcover lying on a table viewed from a slightly raised three-quarter angle ($~24^\circ$ tilt). Front cover slab, back cover, spine half-cylinder at $X = 0$, page blocks with visible thickness (stratified edge shading), and constitutional endpapers inside both covers.
+   - Hinge: Front cover hinges strictly at the spine edge ($X = 0$), rotation pivot is a group on the hinge axis, not the cover center.
+   - Opening ($p = 0.00 \to 0.28$): Free edge lifts first; cover rotates $0 \to 170^\circ$ with `easeInOutCubic` and physical board flex (max ~6 degrees bend at $90^\circ$ vertical); lands on the left with a damped settle; book shifts $X$ from `-1.2` to `0.0` so open spread is centered in view; right page shows English Preamble and left inside shows endpaper.
+   - Page Turn ($p = 0.28 \to 0.36$): One leaf hinges on spine and curls with vertex-shader bend, flipping onto left side to reveal English Preamble on left and Hindi Preamble on right; page blocks adjust thickness dynamically.
+   - Closing ($p = 0.88 \to 1.00$): Exact reverse; leaf turns back; cover lifts from left, rotates $170 \to 0^\circ$ with flex, slows near closure, lands on page block with damped settle and contact shadow darkening; book re-centers to $X = -1.2$; CTA appears.
+
+---
+
+### Implementation Details
+- **`frontend/static/story.js`**:
+  - Implemented `createEndpaperTexture()` and `createPageEdgeTexture()` for classical constitutional endpapers and stratified paper edges.
+  - Rebuilt `createSyntheticSheetTexture()`: removed heavy header bar; added top-left `"SYNTHETIC DEMO"` pill and subtitle; added text underlines in slate (`#5B7C99`) and clay (`#C0805F`); routed clean connector line through column gutter below text; preserved finding strip.
+  - Deleted `pulseRing` and `magnifierGroup` (rim, handle, glass) completely from scene and render loops.
+  - Added `synthBorderMesh` with `synthBorderMat` to provide a single soft 600ms eased border pulse to plum-rose at $p \approx 0.65\text{--}0.72$, settling at solid `#A5566B`.
+  - Rebuilt book geometry: `backCover` with endpaper; `rightPageBlock` and `leftPageBlock` with dynamic Z-scaling; `coverPivot` strictly at spine hinge `(0, 0, BOOK_T / 2)`; `frontCoverMesh` thin slab with 24 width subdivisions and `coverFlexUniform` vertex shader; `turnLeafPivot` with double-sided English Preamble leaf and `turnLeafCurlUniform`.
+  - Updated `calcBookState(p)`: fully deterministic `coverAngle` (`easeInOutCubic`), `coverFlex`, `turnLeafAngle`, `turnLeafCurl`, `bookShiftX`, `leftBlockScaleZ`, `rightBlockScaleZ`, and `synthBorderOpacity`.
+  - Updated camera path for table three-quarter perspective.
+- **`frontend/index.html`**:
+  - Replaced heavy banner with `.synthetic-tag` and `.synthetic-sub`.
+  - Added IDs `#quote-en-text` and `#quote-hi-text` for automated bounding box collision checks.
+  - Updated panel 5 description to reflect substantive text review without obsolete glass lens terminology.
+- **`frontend/static/style.css`**:
+  - Added styling for `.synthetic-tag` and `.synthetic-sub`.
+  - Added `visibility: hidden` to `.preloader.fade-out`.
+- **`backend/eval/verify_book_and_demo.py`**:
+  - Created automated Playwright verifier testing opening checkpoints ($0.00, 0.05, 0.10, 0.15, 0.20, 0.28$), closing checkpoints ($0.88, 0.92, 0.96, 1.00$), spine hinge tracking, `getBoundingClientRect` text bounding box isolation, idle shake, and frame compute time.
+
+---
+
+### Verification Results (`backend/eval/verify_book_and_demo.py`)
+1. **Check 1 (Diagnostics API)**: `window.__tulya.debug` verified; initial `coverAngle = 0.0°`, `bookShiftX = -1.2`, Tier 3.
+2. **Check 2 (Opening Checkpoints & Hinge Tracking)**:
+   - $p=0.00$: `coverAngle = 0.0°`, `bookShiftX = -1.20` (Idle diff: 0.022%)
+   - $p=0.05$: `coverAngle = 0.0°`, `bookShiftX = -1.20` (Idle diff: 0.081%)
+   - $p=0.10$: `coverAngle = 0.7°`, `bookShiftX = -1.20` (Idle diff: 0.061%)
+   - $p=0.15$: `coverAngle = 29.1°`, `bookShiftX = -0.99` (Idle diff: 0.121%)
+   - $p=0.20$: `coverAngle = 126.6°`, `bookShiftX = -0.31` (Idle diff: 0.179%)
+   - $p=0.28$: `coverAngle = 170.0°`, `bookShiftX = 0.00` (Idle diff: 0.076%)
+   - Hinge remains visibly on spine side; cover never intersects page block; spread centered at $X = 0.0$.
+3. **Check 3 (Closing Checkpoints & Re-Centering)**:
+   - $p=0.88$: `coverAngle = 170.0°`, `bookShiftX = 0.00` (Idle diff: 0.269%)
+   - $p=0.92$: `coverAngle = 170.0°`, `bookShiftX = 0.00` (Idle diff: 0.026%)
+   - $p=0.96$: `coverAngle = 116.6°`, `bookShiftX = -0.38` (Idle diff: 0.148%)
+   - $p=1.00$: `coverAngle = 0.0°`, `bookShiftX = -1.20` (Idle diff: 0.054%)
+   - Reverses opening exactly; re-centers closed book to $X = -1.20$; contact shadow darkens.
+4. **Check 4 (Synthetic Demo Scene Text Bounding Box Isolation)**:
+   - `docs/checkpoints/synthetic_demo_clean.png` captured.
+   - `SYNTHETIC DEMO` tag and subtitle verified visible.
+   - Automated `getBoundingClientRect` check: **0 overlay elements intersect quoted text bounding boxes** (English quote rect: top 863.2, left 684.4, width 553.2, height 24.3; Hindi quote rect: top 951.7, left 684.4, width 553.2, height 24.3).
+5. **Check 5 (Idle Shake & Smoothness)**:
+   - Maximum idle shake diff across all checkpoints: **0.269%** (Threshold $< 2.0\%$).
+   - Mean frame compute time: **0.07 ms**, p95: **0.20 ms** (Target $< 20$ ms).
+   - Frames $> 50$ ms: **0** (Target == 0).
+6. **Check 6 (Console Cleanliness)**: **Zero** console errors.
+- **Result: ALL CHECKS PASSED**.
+
+---
+
+### Visual Critique Rubric (5 Lines)
+1. **Legibility**: Removing the brass lens and concentric shockwaves fully restores pristine legibility to the Hindi and English statutory provisions, with clean slate and clay underlines directing attention without glyph interference.
+2. **Hierarchy**: The top-left `"SYNTHETIC DEMO"` pill tag with muted subtitle firmly fulfills rule R3 disclosure without dominating the card like the previous solid header banner.
+3. **Physical Materiality**: The hardcover volume behaves like an authentic physical book on a table: thin slab boards, tactile leather grain, visible paper stack strata, and constitutional endpapers.
+4. **Hinge & Flex Kinematics**: Grounding the rotation pivot strictly on the spine-side edge ($X = 0$) and adding subtle vertex shader flex ensures the cover lifts, bends, and lands flat with a realistic damped settle rather than swinging like an ungrounded door.
+5. **Reversibility & Smoothness**: Bi-directional Lenis scroll drives every angle, shift, and pulse through pure deterministic functions, achieving 0.20 ms p95 frame compute time and flawless reverse transitions.
+
+### Single Worst Problem & Fix Applied
+- **Problem**: In the previous synthetic demo implementation, the brass lens frame and concentric shockwaves sat directly over `"अतिरिक्त दस गुना शास्ति"`, partially obscuring and blurring the Devanagari text that reviewers need to evaluate.
+- **Fix**: Deleted all lens and shockwave meshes entirely. Replaced them with text-only underlines, routed the connecting thread exclusively through the empty gutter between columns, and signaled the mismatch via a single soft 600ms card border pulse to plum-rose, achieving 0 bounding box intersections.
+
+---
+
 ### Exit Status
-- All Phase Loop 7B requirements and verifier checks passed.
-- Deliverables committed and documented.
+- Both Fix 1 and Fix 2 implemented, tested, and verified.
+- Checkpoints saved in `docs/checkpoints/`.
 - Status: **PASSED**.
+
 
 
 

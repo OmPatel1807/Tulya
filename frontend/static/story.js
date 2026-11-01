@@ -314,80 +314,221 @@
     return tex;
   }
 
-  // 4. Synthetic Demo Sheet Texture
+  // 3b. Constitutional Endpaper Texture
+  function createEndpaperTexture() {
+    const cvs = document.createElement('canvas');
+    cvs.width = 512;
+    cvs.height = 724;
+    const ctx = cvs.getContext('2d');
+
+    // Base warm parchment
+    ctx.fillStyle = '#F3ECDD';
+    ctx.fillRect(0, 0, 512, 724);
+
+    // Subtle paper grain
+    ctx.fillStyle = 'rgba(184, 155, 94, 0.04)';
+    for (let i = 0; i < 20; i++) {
+      ctx.fillRect(0, i * 36, 512, 18);
+    }
+
+    // Outer double brass rule
+    ctx.strokeStyle = '#B89B5E';
+    ctx.lineWidth = 2.0;
+    ctx.strokeRect(24, 24, 464, 676);
+    ctx.strokeStyle = 'rgba(184, 155, 94, 0.45)';
+    ctx.lineWidth = 1.0;
+    ctx.strokeRect(32, 32, 448, 660);
+
+    // Center subtle institutional motif
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(35, 74, 82, 0.35)';
+    ctx.font = '600 13px "Cinzel", Georgia, serif';
+    ctx.fillText('CONSTITUTION OF INDIA', 256, 350);
+    ctx.font = '500 11px "Noto Sans Devanagari", sans-serif';
+    ctx.fillText('भारत का संविधान', 256, 372);
+    ctx.fillStyle = 'rgba(184, 155, 94, 0.4)';
+    ctx.font = '400 9px "Inter", sans-serif';
+    ctx.fillText('OFFICIAL PARCHMENT LEAF', 256, 394);
+
+    const tex = new THREE.CanvasTexture(cvs);
+    tex.anisotropy = 1;
+    return tex;
+  }
+
+  // 3c. Stratified Page Edge Texture
+  function createPageEdgeTexture() {
+    const cvs = document.createElement('canvas');
+    cvs.width = 128;
+    cvs.height = 128;
+    const ctx = cvs.getContext('2d');
+    ctx.fillStyle = '#FAF6EC';
+    ctx.fillRect(0, 0, 128, 128);
+    ctx.strokeStyle = 'rgba(43, 58, 63, 0.08)';
+    ctx.lineWidth = 1;
+    for (let y = 0; y < 128; y += 4) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(128, y);
+      ctx.stroke();
+    }
+    const tex = new THREE.CanvasTexture(cvs);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(6, 2);
+    return tex;
+  }
+
+  // 4. Synthetic Demo Sheet Texture (Fix 1: Cleaned up, no ring, no handle, small tag, text-only underlines, edge connector)
   function createSyntheticSheetTexture() {
     const cvs = document.createElement('canvas');
     cvs.width = 1024;
     cvs.height = 512;
     const ctx = cvs.getContext('2d');
 
+    // Warm paper card
     ctx.fillStyle = '#FAF7EE';
     ctx.fillRect(0, 0, 1024, 512);
 
+    // Outer subtle border
     ctx.strokeStyle = 'rgba(165, 86, 107, 0.45)';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(10, 10, 1004, 492);
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(12, 12, 1000, 488);
 
+    // 1. Tag in top-left corner: "SYNTHETIC DEMO"
     ctx.fillStyle = '#A5566B';
-    ctx.fillRect(10, 10, 1004, 52);
+    const tagX = 28, tagY = 22, tagW = 142, tagH = 26, tagR = 4;
+    ctx.beginPath();
+    ctx.moveTo(tagX + tagR, tagY);
+    ctx.lineTo(tagX + tagW - tagR, tagY);
+    ctx.quadraticCurveTo(tagX + tagW, tagY, tagX + tagW, tagY + tagR);
+    ctx.lineTo(tagX + tagW, tagY + tagH - tagR);
+    ctx.quadraticCurveTo(tagX + tagW, tagY + tagH, tagX + tagW - tagR, tagY + tagH);
+    ctx.lineTo(tagX + tagR, tagY + tagH);
+    ctx.quadraticCurveTo(tagX, tagY + tagH, tagX, tagY + tagH - tagR);
+    ctx.lineTo(tagX, tagY + tagR);
+    ctx.quadraticCurveTo(tagX, tagY, tagX + tagR, tagY);
+    ctx.closePath();
+    ctx.fill();
 
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = '700 17px "JetBrains Mono", monospace';
+    ctx.font = '700 12px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('SYNTHETIC DEMO EXAMPLE: Section 12(3) Divergence', 512, 42);
+    ctx.fillText('SYNTHETIC DEMO', tagX + tagW / 2, tagY + 17);
 
-    ctx.strokeStyle = 'rgba(35, 74, 82, 0.12)';
-    ctx.lineWidth = 1.5;
+    // Subtitle right beside tag: "Section 12(3) divergence, illustrative only"
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#6C7D82';
+    ctx.font = '500 13px "Inter", sans-serif';
+    ctx.fillText('Section 12(3) divergence, illustrative only', tagX + tagW + 14, tagY + 18);
+
+    // Top rule divider
+    ctx.strokeStyle = 'rgba(43, 58, 63, 0.08)';
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(512, 75);
-    ctx.lineTo(512, 400);
+    ctx.moveTo(28, 60);
+    ctx.lineTo(996, 60);
     ctx.stroke();
 
-    // English Column
+    // Central column divider
+    ctx.strokeStyle = 'rgba(43, 58, 63, 0.10)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(512, 75);
+    ctx.lineTo(512, 405);
+    ctx.stroke();
+
+    // 2. English Column (Left)
     ctx.textAlign = 'left';
     ctx.fillStyle = '#5B7C99';
-    ctx.font = '700 16px "Cinzel", Georgia, serif';
-    ctx.fillText('ENGLISH STATUTORY PROVISION', 45, 105);
+    ctx.font = '700 15px "Cinzel", Georgia, serif';
+    ctx.fillText('ENGLISH STATUTORY PROVISION', 45, 100);
 
     ctx.fillStyle = '#2B3A3F';
     ctx.font = '500 18px "Inter", sans-serif';
-    ctx.fillText('...shall be liable to pay a penalty equal to', 45, 155);
+    ctx.fillText('...shall be liable to pay a penalty equal to', 45, 148);
 
-    ctx.font = '700 24px "Inter", sans-serif';
+    ctx.font = '700 23px "Inter", sans-serif';
     ctx.fillStyle = '#3F5F7E';
-    ctx.fillText('TEN TIMES THE TAX', 45, 205);
+    ctx.fillText('TEN TIMES THE TAX', 45, 198);
+
+    const enPhraseWidth = ctx.measureText('TEN TIMES THE TAX').width;
+
+    // Slate underline for English phrase
+    ctx.strokeStyle = '#5B7C99';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(45, 206);
+    ctx.lineTo(45 + enPhraseWidth, 206);
+    ctx.stroke();
 
     ctx.fillStyle = '#6C7D82';
-    ctx.font = '400 15px "Inter", sans-serif';
-    ctx.fillText('Statutory cap: liability limited to 10× tax payable', 45, 245);
+    ctx.font = '400 14px "Inter", sans-serif';
+    ctx.fillText('Statutory cap: liability limited to 10× tax payable', 45, 246);
 
-    // Hindi Column
+    // 3. Hindi Column (Right)
     ctx.textAlign = 'left';
     ctx.fillStyle = '#C0805F';
-    ctx.font = '700 18px "Noto Sans Devanagari", sans-serif';
-    ctx.fillText('हिन्दी सांविधिक उपबंध (निर्दिष्ट)', 545, 105);
+    ctx.font = '700 17px "Noto Sans Devanagari", sans-serif';
+    ctx.fillText('हिन्दी सांविधिक उपबंध (निर्दिष्ट)', 545, 100);
 
     ctx.fillStyle = '#2B3A3F';
     ctx.font = '500 18px "Noto Sans Devanagari", sans-serif';
-    ctx.fillText('...देय कर की रकम के दस गुने के', 545, 155);
+    ctx.fillText('...देय कर की रकम के दस गुने के', 545, 148);
 
-    ctx.font = '700 24px "Noto Sans Devanagari", sans-serif';
+    ctx.font = '700 23px "Noto Sans Devanagari", sans-serif';
     ctx.fillStyle = '#8F4F32';
-    ctx.fillText('अतिरिक्त दस गुना शास्ति...', 545, 205);
+    ctx.fillText('अतिरिक्त दस गुना शास्ति', 545, 198);
+
+    const hiPhraseWidth = ctx.measureText('अतिरिक्त दस गुना शास्ति').width;
+
+    // Clay underline for Hindi phrase
+    ctx.strokeStyle = '#C0805F';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(545, 206);
+    ctx.lineTo(545 + hiPhraseWidth, 206);
+    ctx.stroke();
 
     ctx.fillStyle = '#6C7D82';
-    ctx.font = '400 15px "Noto Sans Devanagari", sans-serif';
-    ctx.fillText('विधिक अर्थ: कर की रकम + 10 गुना अतिरिक्त शास्ति', 545, 245);
+    ctx.font = '400 14px "Noto Sans Devanagari", sans-serif';
+    ctx.fillText('विधिक अर्थ: कर की रकम + 10 गुना अतिरिक्त शास्ति', 545, 246);
 
-    // Discrepancy Box
-    ctx.fillStyle = 'rgba(165, 86, 107, 0.12)';
-    ctx.fillRect(45, 415, 934, 70);
-    ctx.strokeStyle = 'rgba(165, 86, 107, 0.4)';
-    ctx.strokeRect(45, 415, 934, 70);
+    // 4. Thin Connector Line routed strictly along gutter/margins so it NEVER crosses a glyph
+    ctx.strokeStyle = 'rgba(165, 86, 107, 0.70)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    // From end of English underline
+    ctx.moveTo(45 + enPhraseWidth + 8, 206);
+    // Drop down into margin below phrase text
+    ctx.lineTo(45 + enPhraseWidth + 8, 222);
+    // Route horizontally across center gutter
+    ctx.lineTo(545 - 8, 222);
+    // Rise up to Hindi underline level
+    ctx.lineTo(545 - 8, 206);
+    // Connect to start of Hindi underline
+    ctx.lineTo(545, 206);
+    ctx.stroke();
+
+    // Small connector dots at endpoints
+    ctx.fillStyle = '#5B7C99';
+    ctx.beginPath();
+    ctx.arc(45 + enPhraseWidth + 8, 206, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#C0805F';
+    ctx.beginPath();
+    ctx.arc(545 - 8, 206, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 5. Finding strip at bottom (one line, fully readable)
+    ctx.fillStyle = 'rgba(165, 86, 107, 0.08)';
+    ctx.fillRect(36, 420, 952, 60);
+    ctx.strokeStyle = 'rgba(165, 86, 107, 0.35)';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(36, 420, 952, 60);
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#7D3A4D';
-    ctx.font = '600 16px "Inter", sans-serif';
+    ctx.font = '600 15px "Inter", sans-serif';
     ctx.fillText("▲ Discrepancy: 'कर के अतिरिक्त' specifies penalty IN ADDITION TO tax (tax + 10x penalty)", 512, 456);
 
     const tex = new THREE.CanvasTexture(cvs);
@@ -395,39 +536,55 @@
     return tex;
   }
 
-  // --- 3D Procedural Book Hierarchy (B1, B2) ---
+  // --- 3D Procedural Book Hierarchy (Hardcover on Table with Spine Hinge) ---
   const bookGroup = new THREE.Group();
-  bookGroup.position.set(0, 0.65, 0);
+  bookGroup.position.set(-1.2, 0.65, 0); // Initially shifted so closed book is centered
   scene.add(bookGroup);
-
-  // Soft Contact Shadow Plane (B3 baked)
-  const shadowGeo = new THREE.PlaneGeometry(5.6, 4.4);
-  const shadowMat = new THREE.MeshBasicMaterial({
-    color: 0x234A52,
-    transparent: true,
-    opacity: 0.08
-  });
-  const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
-  shadowMesh.position.set(0, -0.15, -0.3);
-  bookGroup.add(shadowMesh);
 
   const BOOK_W = 2.4;
   const BOOK_H = 3.4;
   const BOOK_T = 0.28;
+  const COVER_T = 0.05;
 
-  // Back Cover
-  const backCoverGeo = new THREE.BoxGeometry(BOOK_W, BOOK_H, 0.05);
-  const backCoverMat = new THREE.MeshStandardMaterial({
+  const endpaperTex = createEndpaperTexture();
+  const pageEdgeTex = createPageEdgeTexture();
+
+  // Soft Baked Contact Shadow Plane directly underneath book on table
+  const shadowGeo = new THREE.PlaneGeometry(6.4, 4.4);
+  const shadowMat = new THREE.MeshBasicMaterial({
+    color: 0x14282B,
+    transparent: true,
+    opacity: 0.14
+  });
+  const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
+  shadowMesh.position.set(0, -0.05, -BOOK_T / 2 - 0.02);
+  bookGroup.add(shadowMesh);
+
+  // Back Cover Slab (resting flat on table, endpaper facing up into book)
+  const backCoverGeo = new THREE.BoxGeometry(BOOK_W, BOOK_H, COVER_T);
+  const backCoverLeatherMat = new THREE.MeshStandardMaterial({
     color: COLOR_COVER,
     roughness: 0.55,
     metalness: 0.1
   });
-  const backCover = new THREE.Mesh(backCoverGeo, backCoverMat);
+  const backCoverEndpaperMat = new THREE.MeshStandardMaterial({
+    map: endpaperTex,
+    roughness: 0.65
+  });
+  const backCoverMaterials = [
+    backCoverLeatherMat, // +X
+    backCoverLeatherMat, // -X
+    backCoverLeatherMat, // +Y
+    backCoverLeatherMat, // -Y
+    backCoverEndpaperMat, // +Z (inside face)
+    backCoverLeatherMat  // -Z (outside face on table)
+  ];
+  const backCover = new THREE.Mesh(backCoverGeo, backCoverMaterials);
   backCover.position.set(BOOK_W / 2, 0, -BOOK_T / 2);
   bookGroup.add(backCover);
 
-  // Spine: Rounded half-cylinder wrapping along Y axis
-  const spineGeo = new THREE.CylinderGeometry(0.15, 0.15, BOOK_H, 24, 1, false, Math.PI / 2, Math.PI);
+  // Spine: Rounded half-cylinder wrapping along Y axis at X = 0
+  const spineGeo = new THREE.CylinderGeometry(0.14, 0.14, BOOK_H, 24, 1, false, Math.PI / 2, Math.PI);
   const spineMat = new THREE.MeshStandardMaterial({
     color: COLOR_COVER,
     roughness: 0.55,
@@ -437,91 +594,138 @@
   spine.position.set(0, 0, 0);
   bookGroup.add(spine);
 
-  // Pages Block Base
-  const pageBlockGeo = new THREE.BoxGeometry(BOOK_W - 0.08, BOOK_H - 0.08, BOOK_T - 0.06);
-  const pageBlockMat = new THREE.MeshStandardMaterial({
+  // Page Block Materials (stratified edges with paper layers)
+  const pageEdgeMat = new THREE.MeshStandardMaterial({
+    map: pageEdgeTex,
     color: COLOR_EDGE,
-    roughness: 0.7,
-    metalness: 0.05
+    roughness: 0.8
   });
-  const pageBlock = new THREE.Mesh(pageBlockGeo, pageBlockMat);
-  pageBlock.position.set((BOOK_W - 0.08) / 2 + 0.04, 0, -0.01);
-  bookGroup.add(pageBlock);
+  const pageTopMat = new THREE.MeshStandardMaterial({
+    color: COLOR_PARCHMENT,
+    roughness: 0.65
+  });
+  const pageBlockMaterials = [
+    pageEdgeMat, // +X
+    pageEdgeMat, // -X
+    pageEdgeMat, // +Y
+    pageEdgeMat, // -Y
+    pageTopMat,  // +Z
+    pageTopMat   // -Z
+  ];
 
-  // Base Right Spread (Hindi Preamble)
+  // Right Page Block Base
+  const rightBlockGeo = new THREE.BoxGeometry(BOOK_W - 0.08, BOOK_H - 0.08, BOOK_T - 0.06);
+  const rightPageBlock = new THREE.Mesh(rightBlockGeo, pageBlockMaterials);
+  rightPageBlock.position.set((BOOK_W - 0.08) / 2 + 0.04, 0, -0.01);
+  bookGroup.add(rightPageBlock);
+
+  // Left Page Block Base (grows as pages turn from right to left)
+  const leftBlockGeo = new THREE.BoxGeometry(BOOK_W - 0.08, BOOK_H - 0.08, BOOK_T - 0.06);
+  const leftPageBlock = new THREE.Mesh(leftBlockGeo, pageBlockMaterials);
+  leftPageBlock.position.set(-(BOOK_W - 0.08) / 2 - 0.04, 0, -0.01);
+  leftPageBlock.scale.set(1.0, 1.0, 0.001);
+  bookGroup.add(leftPageBlock);
+
+  // Base Right Spread (Hindi Preamble text on right page)
   const hiSpreadGeo = new THREE.PlaneGeometry(BOOK_W - 0.1, BOOK_H - 0.1);
   const hiSpreadMat = new THREE.MeshBasicMaterial({ map: createPreambleHiTexture() });
   const hiSpreadMesh = new THREE.Mesh(hiSpreadGeo, hiSpreadMat);
   hiSpreadMesh.position.set((BOOK_W - 0.1) / 2 + 0.05, 0, (BOOK_T - 0.06) / 2 + 0.002);
   bookGroup.add(hiSpreadMesh);
 
-  // Front Cover Pivot (Hinged at x = 0, y = 0, z = BOOK_T / 2)
+  // Front Cover Pivot: Hinged STRICTLY at the spine edge (X = 0, Y = 0, Z = BOOK_T / 2)
   const coverPivot = new THREE.Group();
   coverPivot.position.set(0, 0, BOOK_T / 2);
   bookGroup.add(coverPivot);
 
-  const frontCoverGeo = new THREE.BoxGeometry(BOOK_W, BOOK_H, 0.05);
+  // Front cover thin slab with 24 width segments for board flex
+  const frontCoverGeo = new THREE.BoxGeometry(BOOK_W, BOOK_H, COVER_T, 24, 1, 1);
   const coverTex = createCoverTexture();
 
-  const coverMaterials = [
-    new THREE.MeshStandardMaterial({ color: COLOR_COVER, roughness: 0.55 }),
-    new THREE.MeshStandardMaterial({ color: COLOR_COVER, roughness: 0.55 }),
-    new THREE.MeshStandardMaterial({ color: COLOR_COVER, roughness: 0.55 }),
-    new THREE.MeshStandardMaterial({ color: COLOR_COVER, roughness: 0.55 }),
-    new THREE.MeshBasicMaterial({ map: coverTex }),
-    new THREE.MeshStandardMaterial({ color: COLOR_PARCHMENT, roughness: 0.6 })
+  const coverFlexUniform = { value: 0.0 };
+  const frontCoverLeatherMat = new THREE.MeshStandardMaterial({
+    color: COLOR_COVER,
+    roughness: 0.55
+  });
+  const frontCoverFaceMat = new THREE.MeshBasicMaterial({ map: coverTex });
+  const frontCoverEndpaperMat = new THREE.MeshStandardMaterial({
+    map: endpaperTex,
+    roughness: 0.65
+  });
+
+  const frontCoverMaterials = [
+    frontCoverLeatherMat, // +X
+    frontCoverLeatherMat, // -X
+    frontCoverLeatherMat, // +Y
+    frontCoverLeatherMat, // -Y
+    frontCoverFaceMat,    // +Z (outside cover face)
+    frontCoverEndpaperMat // -Z (inside endpaper face)
   ];
-  const frontCoverMesh = new THREE.Mesh(frontCoverGeo, coverMaterials);
-  frontCoverMesh.position.set(BOOK_W / 2, 0, 0.025);
+
+  // Apply board flex vertex shader (max ~6 degrees bend at middle of swing)
+  frontCoverMaterials.forEach((mat) => {
+    mat.onBeforeCompile = (shader) => {
+      shader.uniforms.uCoverFlex = coverFlexUniform;
+      shader.vertexShader = 'uniform float uCoverFlex;\n' + shader.vertexShader;
+      shader.vertexShader = shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        `
+        #include <begin_vertex>
+        float normX = clamp((position.x + ${BOOK_W / 2}) / ${BOOK_W}, 0.0, 1.0);
+        transformed.z += normX * normX * uCoverFlex * 0.16;
+        `
+      );
+    };
+  });
+
+  const frontCoverMesh = new THREE.Mesh(frontCoverGeo, frontCoverMaterials);
+  // Position frontCoverMesh so its spine edge sits exactly on the rotation axis X = 0
+  frontCoverMesh.position.set(BOOK_W / 2, 0, COVER_T / 2);
   coverPivot.add(frontCoverMesh);
 
   // Progressive texture load: CC0 leather normal map if available
   const texLoader = new THREE.TextureLoader();
   texLoader.load('/public/assets/cover_leather_nor_gl_1k.webp', (tex) => {
-    coverMaterials[4].normalMap = tex;
-    coverMaterials[4].normalScale = new THREE.Vector2(0.4, 0.4);
-    coverMaterials[4].needsUpdate = true;
+    frontCoverFaceMat.normalMap = tex;
+    frontCoverFaceMat.normalScale = new THREE.Vector2(0.4, 0.4);
+    frontCoverFaceMat.needsUpdate = true;
   }, undefined, () => {});
 
-  // 14 Animated Leaves with Vertex-Shader Page Curl (B2)
-  const NUM_LEAVES = 14;
-  const leafPivots = [];
-  const leafCurlUniforms = [];
+  // Turning Page Leaf (One leaf, scroll 0.28 to 0.34)
+  const turnLeafPivot = new THREE.Group();
+  turnLeafPivot.position.set(0, 0, (BOOK_T - 0.06) / 2 + 0.005);
+  bookGroup.add(turnLeafPivot);
+
+  const turnLeafGeo = new THREE.PlaneGeometry(BOOK_W - 0.12, BOOK_H - 0.1, 24, 24);
+  const turnLeafCurlUniform = { value: 0.0 };
   const enSpreadTex = createPreambleEnTexture();
 
-  for (let i = 0; i < NUM_LEAVES; i++) {
-    const lp = new THREE.Group();
-    lp.position.set(0, 0, 0.005 + (i * 0.006));
-    bookGroup.add(lp);
-    leafPivots.push(lp);
+  const leafMatFront = new THREE.MeshBasicMaterial({ map: enSpreadTex, side: THREE.FrontSide });
+  const leafMatBack = new THREE.MeshBasicMaterial({ map: enSpreadTex, side: THREE.BackSide });
 
-    const leafGeo = new THREE.PlaneGeometry(BOOK_W - 0.12, BOOK_H - 0.1, 16, 16);
-    const curlUniform = { value: 0.0 };
-    leafCurlUniforms.push(curlUniform);
+  [leafMatFront, leafMatBack].forEach((mat) => {
+    mat.onBeforeCompile = (shader) => {
+      shader.uniforms.uLeafCurl = turnLeafCurlUniform;
+      shader.vertexShader = 'uniform float uLeafCurl;\n' + shader.vertexShader;
+      shader.vertexShader = shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        `
+        #include <begin_vertex>
+        float normLx = clamp((position.x + ${(BOOK_W - 0.12) / 2}) / ${BOOK_W - 0.12}, 0.0, 1.0);
+        transformed.z += sin(normLx * 3.14159 * 0.5) * uLeafCurl * 0.24;
+        `
+      );
+    };
+  });
 
-    if (i === NUM_LEAVES - 1) {
-      // Top leaf reveals English Preamble on left spread when flipped
-      const frontMat = new THREE.MeshStandardMaterial({ color: COLOR_PARCHMENT, roughness: 0.65 });
-      const frontMesh = new THREE.Mesh(leafGeo, frontMat);
-      frontMesh.position.set((BOOK_W - 0.12) / 2 + 0.06, 0, 0.001);
-      lp.add(frontMesh);
+  const leafFrontMesh = new THREE.Mesh(turnLeafGeo, leafMatFront);
+  leafFrontMesh.position.set((BOOK_W - 0.12) / 2 + 0.06, 0, 0.001);
+  turnLeafPivot.add(leafFrontMesh);
 
-      const backMat = new THREE.MeshBasicMaterial({ map: enSpreadTex });
-      const backMesh = new THREE.Mesh(leafGeo, backMat);
-      backMesh.position.set((BOOK_W - 0.12) / 2 + 0.06, 0, -0.001);
-      backMesh.rotation.y = Math.PI;
-      lp.add(backMesh);
-    } else {
-      const leafMat = new THREE.MeshStandardMaterial({
-        color: COLOR_PARCHMENT,
-        roughness: 0.65,
-        side: THREE.DoubleSide
-      });
-      const leafMesh = new THREE.Mesh(leafGeo, leafMat);
-      leafMesh.position.set((BOOK_W - 0.12) / 2 + 0.06, 0, 0);
-      lp.add(leafMesh);
-    }
-  }
+  const leafBackMesh = new THREE.Mesh(turnLeafGeo, leafMatBack);
+  leafBackMesh.position.set((BOOK_W - 0.12) / 2 + 0.06, 0, -0.001);
+  leafBackMesh.rotation.y = Math.PI;
+  turnLeafPivot.add(leafBackMesh);
 
   // --- Dust Motes in Sunbeam (B4 Idle Life, D1 Tier-Gated) ---
   const moteCount = isReducedMotion ? 0 : 120;
@@ -664,7 +868,7 @@
     threadLines.push(threadMesh);
   });
 
-  // --- Synthetic Demo Sheet & Pulse Ring (Phase C, p in [0.58, 0.74]) ---
+  // --- Synthetic Demo Sheet (Fix 1: Cleaned up, no ring, no handle, small tag, text-only underlines, edge connector) ---
   const syntheticSheetGroup = new THREE.Group();
   syntheticSheetGroup.position.set(0, 4.0, 0.42);
   bookGroup.add(syntheticSheetGroup);
@@ -679,106 +883,109 @@
   const synthMesh = new THREE.Mesh(synthGeo, synthMat);
   syntheticSheetGroup.add(synthMesh);
 
-  // Plum-Rose Shockwave Pulse Ring
-  const pulseRingGeo = new THREE.RingGeometry(0.24, 0.29, 32);
-  const pulseRingMat = new THREE.MeshBasicMaterial({
+  // Soft border pulse mesh (Fix 1: border pulses to plum-rose, zero rings over text)
+  const synthBorderGeo = new THREE.EdgesGeometry(synthGeo);
+  const synthBorderMat = new THREE.LineBasicMaterial({
     color: COLOR_ROSE,
     transparent: true,
-    opacity: 0.0,
-    side: THREE.DoubleSide
-  });
-  const pulseRing = new THREE.Mesh(pulseRingGeo, pulseRingMat);
-  pulseRing.position.set(0.88, -0.06, 0.01);
-  syntheticSheetGroup.add(pulseRing);
-
-  // --- Semantic Review Glass Lens (Phase C, p in [0.74, 0.88]) ---
-  const magnifierGroup = new THREE.Group();
-  magnifierGroup.position.set(0.88, 0.0, 0.52);
-  bookGroup.add(magnifierGroup);
-
-  const rimGeo = new THREE.TorusGeometry(0.38, 0.024, 16, 32);
-  const rimMat = new THREE.MeshStandardMaterial({
-    color: COLOR_BRASS,
-    roughness: 0.35,
-    metalness: 0.8,
-    transparent: true,
     opacity: 0.0
   });
-  const rimMesh = new THREE.Mesh(rimGeo, rimMat);
-  magnifierGroup.add(rimMesh);
+  const synthBorderMesh = new THREE.LineSegments(synthBorderGeo, synthBorderMat);
+  syntheticSheetGroup.add(synthBorderMesh);
 
-  const handleGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.4, 12);
-  const handleMesh = new THREE.Mesh(handleGeo, rimMat);
-  handleMesh.position.set(0.32, -0.32, 0);
-  handleMesh.rotation.z = -Math.PI / 4;
-  magnifierGroup.add(handleMesh);
-
-  const glassGeo = new THREE.CircleGeometry(0.36, 32);
-  const glassMat = new THREE.MeshBasicMaterial({
-    color: 0xEEF5F8,
-    transparent: true,
-    opacity: 0.0
-  });
-  const glassMesh = new THREE.Mesh(glassGeo, glassMat);
-  magnifierGroup.add(glassMesh);
-
-  // --- Catmull-Rom Camera Spline Path (B5) ---
+  // --- Catmull-Rom Camera Spline Path (Viewed from slightly raised table perspective) ---
   const cameraPath = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0, 0.65, 7.8),   // 0.00: Closed hero
-    new THREE.Vector3(0, 0.70, 7.2),   // 0.15: Opening arc
-    new THREE.Vector3(0, 0.85, 6.2),   // 0.35: Spread overview
-    new THREE.Vector3(0, 0.75, 5.4),   // 0.50: Alignment flythrough
-    new THREE.Vector3(0, 0.65, 5.2),   // 0.70: Facts collision
-    new THREE.Vector3(0, 0.72, 5.8),   // 0.85: Semantic lens review
-    new THREE.Vector3(0, 0.65, 7.8)    // 1.00: Closed hero CTA
+    new THREE.Vector3(0, 0.65, 7.6),   // 0.00: Closed hero
+    new THREE.Vector3(0, 0.68, 7.2),   // 0.15: Opening arc
+    new THREE.Vector3(0, 0.58, 6.7),   // 0.32: Spread settled
+    new THREE.Vector3(0, 0.55, 6.4),   // 0.48: Clause cards lift
+    new THREE.Vector3(0, 0.52, 6.0),   // 0.65: Synthetic demo card
+    new THREE.Vector3(0, 0.55, 6.4),   // 0.80: Substantive review
+    new THREE.Vector3(0, 0.62, 7.2),   // 0.94: Closing
+    new THREE.Vector3(0, 0.65, 7.6)    // 1.00: Closed CTA
   ]);
 
   // --- Pure Deterministic Timeline State Function: calcBookState(p) ---
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
   function calcBookState(p) {
     p = Math.max(0.0, Math.min(1.0, p));
 
-    // 1. Cover Angle: 0 to 165 deg
+    // 1. Front Cover Angle (0 to 170 deg), Flex, and Centering Shift (Fix 2)
     let coverAngle = 0.0;
+    let coverFlex = 0.0;
+    let bookShiftX = -1.2;
+
     if (p < 0.08) {
       coverAngle = 0.0;
-    } else if (p < 0.25) {
-      const t = (p - 0.08) / (0.25 - 0.08);
-      const ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-      coverAngle = ease * 165.0;
-    } else if (p < 0.97) {
-      coverAngle = 165.0;
-    } else {
-      const t = (p - 0.97) / (1.00 - 0.97);
-      const ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-      coverAngle = (1.0 - ease) * 165.0;
+      coverFlex = 0.0;
+      bookShiftX = -1.2;
+    } else if (p >= 0.08 && p < 0.28) {
+      const u = (p - 0.08) / 0.20;
+      const eu = easeInOutCubic(u);
+      let ang = eu * 170.0;
+      if (u > 0.88) {
+        const su = (u - 0.88) / 0.12;
+        // Damped settle: 1.5 deg overshoot decaying to 0
+        ang += Math.sin(su * Math.PI) * 1.5 * (1.0 - su);
+      }
+      coverAngle = ang;
+      coverFlex = Math.sin(Math.min(Math.PI, (coverAngle / 170.0) * Math.PI));
+      bookShiftX = -1.2 * (1.0 - eu);
+    } else if (p >= 0.28 && p < 0.93) {
+      coverAngle = 170.0;
+      coverFlex = 0.0;
+      bookShiftX = 0.0;
+    } else if (p >= 0.93 && p <= 1.00) {
+      const v = (p - 0.93) / 0.07;
+      const ev = easeInOutCubic(1.0 - v);
+      let ang = ev * 170.0;
+      if (v > 0.88) {
+        const sv = (v - 0.88) / 0.12;
+        ang += Math.sin(sv * Math.PI) * 1.5 * (1.0 - sv);
+      }
+      coverAngle = ang;
+      coverFlex = Math.sin(Math.min(Math.PI, (coverAngle / 170.0) * Math.PI));
+      bookShiftX = -1.2 * (1.0 - ev);
     }
 
-    // 2. Leaf Angles (14 leaves turning right-to-left)
-    const leafAngles = new Array(NUM_LEAVES).fill(0.0);
-    for (let i = 0; i < NUM_LEAVES; i++) {
-      const startP = 0.10 + (i * 0.012);
-      const endP = startP + 0.045;
-      if (p < startP) {
-        leafAngles[i] = 0.0;
-      } else if (p <= endP) {
-        const t = (p - startP) / (endP - startP);
-        const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-        leafAngles[i] = ease * 180.0;
-      } else if (p < 0.97) {
-        leafAngles[i] = 180.0;
-      } else {
-        const returnStart = 0.97 + ((NUM_LEAVES - 1 - i) * 0.0018);
-        const returnEnd = returnStart + 0.010;
-        if (p < returnStart) {
-          leafAngles[i] = 180.0;
-        } else if (p <= returnEnd) {
-          const t = (p - returnStart) / (returnEnd - returnStart);
-          const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-          leafAngles[i] = (1.0 - ease) * 180.0;
-        } else {
-          leafAngles[i] = 0.0;
-        }
-      }
+    // 2. Turning Leaf (p in [0.28, 0.36] opening, [0.88, 0.93] closing)
+    let turnLeafAngle = 0.0;
+    let turnLeafCurl = 0.0;
+    let leftBlockScaleZ = 0.001;
+    let rightBlockScaleZ = 1.0;
+
+    if (p < 0.28) {
+      turnLeafAngle = 0.0;
+      turnLeafCurl = 0.0;
+      leftBlockScaleZ = 0.001;
+      rightBlockScaleZ = 1.0;
+    } else if (p >= 0.28 && p < 0.36) {
+      const t = (p - 0.28) / 0.08;
+      const et = easeInOutCubic(t);
+      turnLeafAngle = et * 180.0;
+      turnLeafCurl = Math.sin(et * Math.PI);
+      leftBlockScaleZ = 0.001 + et * 0.55;
+      rightBlockScaleZ = 1.0 - et * 0.25;
+    } else if (p >= 0.36 && p < 0.88) {
+      turnLeafAngle = 180.0;
+      turnLeafCurl = 0.0;
+      leftBlockScaleZ = 0.55;
+      rightBlockScaleZ = 0.75;
+    } else if (p >= 0.88 && p < 0.93) {
+      const t = (p - 0.88) / 0.05;
+      const et = easeInOutCubic(1.0 - t);
+      turnLeafAngle = et * 180.0;
+      turnLeafCurl = Math.sin(et * Math.PI);
+      leftBlockScaleZ = 0.001 + et * 0.55;
+      rightBlockScaleZ = 1.0 - et * 0.25;
+    } else {
+      turnLeafAngle = 0.0;
+      turnLeafCurl = 0.0;
+      leftBlockScaleZ = 0.001;
+      rightBlockScaleZ = 1.0;
     }
 
     // 3. Glyph Particles Lift-Off (p in [0.28, 0.42])
@@ -801,11 +1008,11 @@
       const t = (p - 0.38) / (0.52 - 0.38);
       cardLift = Math.min(1.0, t * 1.4) * 0.16;
       cardAlpha = Math.min(1.0, t * 2.0);
-    } else if (p >= 0.52 && p <= 0.90) {
+    } else if (p >= 0.52 && p <= 0.88) {
       cardLift = 0.16;
       cardAlpha = 1.0;
-    } else if (p > 0.90 && p < 0.96) {
-      const t = (p - 0.90) / 0.06;
+    } else if (p > 0.88 && p < 0.93) {
+      const t = (p - 0.88) / 0.05;
       cardLift = (1.0 - t) * 0.16;
       cardAlpha = 1.0 - t;
     }
@@ -814,10 +1021,10 @@
     let threadAlpha = 0.0;
     if (p >= 0.42 && p <= 0.56) {
       threadAlpha = (p - 0.42) / (0.56 - 0.42);
-    } else if (p > 0.56 && p <= 0.90) {
+    } else if (p > 0.56 && p <= 0.88) {
       threadAlpha = 1.0;
-    } else if (p > 0.90 && p < 0.95) {
-      threadAlpha = 1.0 - (p - 0.90) / 0.05;
+    } else if (p > 0.88 && p < 0.93) {
+      threadAlpha = 1.0 - (p - 0.88) / 0.05;
     }
 
     // 6. Synthetic Loose Sheet Position & Opacity (p in [0.58, 0.74])
@@ -827,51 +1034,60 @@
       const t = (p - 0.58) / 0.07;
       sheetY = 4.0 * (1.0 - t);
       sheetAlpha = t;
-    } else if (p >= 0.65 && p <= 0.80) {
+    } else if (p >= 0.65 && p <= 0.84) {
       sheetY = 0.0;
       sheetAlpha = 1.0;
-    } else if (p > 0.80 && p < 0.90) {
-      sheetY = 0.0;
-      sheetAlpha = 1.0;
-    } else if (p >= 0.90 && p < 0.95) {
-      const t = (p - 0.90) / 0.05;
+    } else if (p > 0.84 && p < 0.89) {
+      const t = (p - 0.84) / 0.05;
       sheetY = -4.0 * t;
       sheetAlpha = 1.0 - t;
     }
 
-    // 7. Semantic Magnifier Frame (p in [0.74, 0.88])
-    let magnifierAlpha = 0.0;
-    let magnifierY = 0.2;
-    if (p >= 0.74 && p <= 0.88) {
-      const t = (p - 0.74) / 0.14;
-      magnifierAlpha = Math.sin(t * Math.PI);
-      magnifierY = 0.25 - (t * 0.45);
+    // 7. Synthetic Demo Card Border Pulse (Single soft pulse at p in [0.65, 0.72], then stays solid)
+    let synthBorderOpacity = 0.4;
+    if (p >= 0.65 && p < 0.72) {
+      const t = (p - 0.65) / 0.07;
+      const pulse = Math.sin(t * Math.PI);
+      synthBorderOpacity = 0.4 + pulse * 0.6;
+    } else if (p >= 0.72) {
+      synthBorderOpacity = 0.85;
     }
 
-    // 8. Book Orientation
-    let bookRotX = 0.14;
-    let bookRotY = -0.22;
-    let bookRotZ = 0.08;
+    // 8. Book Tilt & Perspective
+    let bookRotX = 0.38;
+    let bookRotY = -0.10;
+    let bookRotZ = 0.04;
 
     if (p >= 0.08 && p < 0.28) {
       const t = (p - 0.08) / 0.20;
-      bookRotX = 0.14 + (0.34 - 0.14) * t;
-      bookRotY = -0.22 * (1.0 - t);
-      bookRotZ = 0.08 * (1.0 - t);
-    } else if (p >= 0.28 && p < 0.94) {
-      bookRotX = 0.34;
+      bookRotX = 0.38 - 0.06 * t;
+      bookRotY = -0.10 * (1.0 - t);
+      bookRotZ = 0.04 * (1.0 - t);
+    } else if (p >= 0.28 && p < 0.93) {
+      bookRotX = 0.32;
       bookRotY = 0.0;
       bookRotZ = 0.0;
-    } else if (p >= 0.94) {
-      const t = (p - 0.94) / 0.06;
-      bookRotX = 0.34 - (0.34 - 0.14) * t;
-      bookRotY = -0.22 * t;
-      bookRotZ = 0.08 * t;
+    } else if (p >= 0.93) {
+      const t = (p - 0.93) / 0.07;
+      bookRotX = 0.32 + 0.06 * t;
+      bookRotY = -0.10 * t;
+      bookRotZ = 0.04 * t;
+    }
+
+    // 9. Shadow Opacity (subtle darkening on landing)
+    let shadowOpacity = 0.09;
+    if (p <= 0.04 || p >= 0.97) {
+      shadowOpacity = 0.14;
     }
 
     return {
       coverAngle,
-      leafAngles,
+      coverFlex,
+      turnLeafAngle,
+      turnLeafCurl,
+      bookShiftX,
+      leftBlockScaleZ,
+      rightBlockScaleZ,
       glyphAlpha,
       glyphLift,
       cardLift,
@@ -879,11 +1095,11 @@
       threadAlpha,
       sheetY,
       sheetAlpha,
-      magnifierAlpha,
-      magnifierY,
+      synthBorderOpacity,
       bookRotX,
       bookRotY,
-      bookRotZ
+      bookRotZ,
+      shadowOpacity
     };
   }
 
@@ -894,19 +1110,29 @@
     const state = calcBookState(p);
     latestState = state;
 
-    // Cover Rotation
-    coverPivot.rotation.y = THREE.MathUtils.degToRad(state.coverAngle);
+    // Shift book position to keep open spread or closed cover centered
+    bookGroup.position.x = state.bookShiftX;
+    bookGroup.rotation.x = state.bookRotX;
+    bookGroup.rotation.y = state.bookRotY;
+    bookGroup.rotation.z = state.bookRotZ;
 
-    // Leaf Rotations & Vertex Curl
-    for (let i = 0; i < NUM_LEAVES; i++) {
-      const angle = state.leafAngles[i];
-      leafPivots[i].rotation.y = THREE.MathUtils.degToRad(angle);
-      // Curl is highest when leaf is turning midway (near 90 deg)
-      const curlIntensity = Math.sin(THREE.MathUtils.degToRad(angle));
-      if (leafCurlUniforms[i]) {
-        leafCurlUniforms[i].value = curlIntensity;
-      }
-    }
+    // Contact shadow
+    shadowMat.opacity = state.shadowOpacity;
+    const openFrac = (state.coverAngle / 170.0);
+    shadowMesh.scale.x = 0.6 + openFrac * 0.4;
+    shadowMesh.position.x = -state.bookShiftX * 0.5;
+
+    // Cover Rotation & Flex
+    coverPivot.rotation.y = THREE.MathUtils.degToRad(state.coverAngle);
+    coverFlexUniform.value = state.coverFlex;
+
+    // Turning Leaf Rotation & Curl
+    turnLeafPivot.rotation.y = THREE.MathUtils.degToRad(state.turnLeafAngle);
+    turnLeafCurlUniform.value = state.turnLeafCurl;
+
+    // Page Block Thickness Dynamics
+    leftPageBlock.scale.z = state.leftBlockScaleZ;
+    rightPageBlock.scale.z = state.rightBlockScaleZ;
 
     // Glyph Particles
     glyphMat.opacity = state.glyphAlpha * 0.85;
@@ -923,19 +1149,9 @@
     // Synthetic Demo Sheet
     syntheticSheetGroup.position.y = state.sheetY;
     synthMat.opacity = state.sheetAlpha;
-    pulseRingMat.opacity = state.sheetAlpha * 0.85;
+    synthBorderMat.opacity = state.sheetAlpha * state.synthBorderOpacity;
 
-    // Magnifier Frame
-    magnifierGroup.position.y = state.magnifierY;
-    rimMat.opacity = state.magnifierAlpha;
-    glassMat.opacity = state.magnifierAlpha * 0.28;
-
-    // Book Orientation
-    bookGroup.rotation.x = state.bookRotX;
-    bookGroup.rotation.y = state.bookRotY;
-    bookGroup.rotation.z = state.bookRotZ;
-
-    // Smooth Catmull-Rom Camera Interpolation (B5)
+    // Smooth Catmull-Rom Camera Interpolation
     const camPos = cameraPath.getPointAt(p);
     camera.position.set(camPos.x, camPos.y, camPos.z);
     camera.lookAt(0, 0.45, 0);
@@ -1095,10 +1311,6 @@
       const floatY = 0.65 + Math.sin(now * 0.00105) * 0.006;
       bookGroup.position.y = floatY;
 
-      // Subtle pulse ring oscillation
-      const ringScale = 1.0 + Math.sin(now * 0.0012) * 0.025;
-      pulseRing.scale.set(ringScale, ringScale, 1.0);
-
       // Dust motes gentle drift
       motePoints.rotation.y = now * 0.00004;
       motePoints.position.y = Math.sin(now * 0.0003) * 0.04;
@@ -1107,7 +1319,6 @@
       dirLight.intensity = 0.90 + Math.sin(now * 0.000785) * 0.05;
     } else {
       bookGroup.position.y = 0.65;
-      pulseRing.scale.set(1.0, 1.0, 1.0);
     }
 
     renderer.render(scene, camera);
@@ -1180,7 +1391,9 @@
     get debug() {
       return {
         coverAngle: latestState.coverAngle,
-        leafAngles: latestState.leafAngles,
+        turnLeafAngle: latestState.turnLeafAngle,
+        leafAngles: [latestState.turnLeafAngle],
+        bookShiftX: latestState.bookShiftX,
         progress: storyStore.getState().scrollProgress,
         tier: tier,
         fps: storyStore.getState().fps
@@ -1210,8 +1423,8 @@
     hasSyntheticLabel: function () {
       const p = storyStore.getState().scrollProgress;
       if (p >= 0.55 && p <= 0.85) {
-        const banner = document.querySelector('.synthetic-banner');
-        if (banner && banner.textContent.includes('SYNTHETIC')) {
+        const el = document.querySelector('.synthetic-tag, .synthetic-banner');
+        if (el && el.textContent.includes('SYNTHETIC')) {
           return true;
         }
       }
