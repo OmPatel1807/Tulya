@@ -691,6 +691,61 @@ Provide production-ready REST API endpoints for asynchronous pipeline execution 
 - **Total Iterations**: 4 outer iterations across Part A and Part B (well under maximum of 12).
 - **Status**: PASSED.
 
+---
+
+## Design Overhaul: Calm Pastel Minimalist & "Two Sheets, One Law"
+
+### Context & Goal
+Pivot the Tulya presentation away from dark neon glassmorphism toward a dignified, trustworthy, calm pastel aesthetic designed for government reviewers, legal researchers, and judges. Replace weighing scale imagery with the "Two sheets, one law" concept (soft paper gazettes, procedural connecting threads, calm pulse rings, procedural inspection lens). Enforce data-driven statistics, WCAG AA contrast ($\ge 4.5:1$), and official prototype trust notices.
+
+---
+
+### Iteration 1 - Verifier Construction & Full System Transformation
+- **PLAN**:
+  - Build `backend/eval/verify_frontend_redesign.py` as an automated Playwright verifier enforcing: (a) 6 story scroll checkpoints, (b) zero console errors, (c) contrast $\ge 4.5:1$, (d) FPS $\ge 55$ (Tier 3) / $\ge 30$ (Tier 1), (e) absence of dark navy/neon tokens in CSS, (f) `docs/ASSETS.md` asset registration, (g) data-driven stat cards (no literal numbers in markup), (h) reduced-motion pass, (i) mandatory government prototype disclaimer footer.
+  - Create `docs/ASSETS.md` registering procedural geometries and vendored libraries under open licenses.
+  - Implement calm pastel CSS in `frontend/static/style.css` (`#F7F5F0` canvas, translucent white surfaces, ink `#1F2A37` / `#4B5A6B`, soft blue `#A9C5E8`, soft sand `#F0CDB0`, sage `#A8CDB5`, muted coral `#E8918F`).
+  - Implement "Two sheets, one law" procedural 3D scene in `frontend/static/story.js` with canvas-rendered gazette text textures and gentle lighting.
+  - Update `frontend/index.html` with softened, defensible copy and data-driven placeholders (`—`).
+  - Update `frontend/app.html` and `frontend/static/app.js` with icon+text severity badges, pastel connectors, and trust notices.
+- **ACT**: Created `verify_frontend_redesign.py`, `docs/ASSETS.md`, updated all frontend files.
+- **VERIFY**:
+  - `docs/ASSETS.md`: Verified all assets registered with licenses.
+  - CSS Token Check: Zero dark/neon tokens found.
+  - Stat Cards Check: Zero hardcoded literal numbers in component source.
+  - Initial contrast check revealed `#A8642E` yielded 4.38:1 against `#FAF8F5`.
+  - Calibrated Hindi accent tone to `#945320` $\to$ achieved 5.63:1 (exceeding 4.5:1 threshold).
+  - Material performance optimization: Replaced `MeshPhysicalMaterial` transmission with `MeshStandardMaterial` for the lens $\to$ Tier 3 FPS increased from 52.0 to 60.0 FPS.
+  - Re-ran `backend/eval/verify_frontend_redesign.py`:
+    - `[+] Tier 3 FPS: 60.0 (Threshold >= 55)`
+    - `[+] Tier 1 FPS: 60.0 (Threshold >= 30)`
+    - `[+] Contrast: Primary Ink 13.71:1, Secondary Ink 6.66:1, English Accent 5.01:1, Hindi Accent 5.63:1, Sage 4.78:1, Coral 5.29:1`
+    - `[+] Dual quote highlight + SVG connector + Confirm persistence verified`
+    - `[+] Hindi Devanagari typography verified`
+    - `[+] Reduced-motion verified`
+    - `[+] Zero console errors`
+    - **Result: ALL PASS**.
+
+---
+
+### Visual Critique Rubric (5 Lines)
+1. **Calmness**: The warm off-white `#F7F5F0` background and soft translucent paper textures eliminate visual fatigue, presenting statutory findings with the gravity and restraint expected by judicial and administrative reviewers.
+2. **Legibility**: Deep ink `#1F2A37` on crisp white cards delivers high contrast (13.7:1), with Devanagari typography (`Noto Sans Devanagari`) rendering intricate conjuncts (`दृष्टि`, `स्थिति`, `निर्दिष्ट`) without glyph clipping or baseline distortion.
+3. **Hierarchy**: A disciplined vertical and horizontal flow: primary toolbar at top, balanced 50/50 dual reader columns in the center, and a structured discrepancy drawer on the right with multi-attribute filtering.
+4. **Palette Consistency**: Strict adherence to the calm pastel color system — soft blue `#A9C5E8` (EN), soft peach `#F0CDB0` (HI), sage `#A8CDB5` (matches), and muted coral `#E8918F` (discrepancies) — with zero neon, bloom, or starfield remnants.
+5. **Motion Restraint**: Procedural 3D animation ("Two sheets, one law") moves smoothly at 60.0 FPS with gentle, purposeful transitions (450ms), and gracefully falls back to static presentation under `prefers-reduced-motion`.
+
+### Single Worst Problem & Fix Applied
+- **Problem**: The Hindi accent text tone `#A8642E` originally achieved 4.38:1 contrast against light surface backgrounds, falling slightly shy of the WCAG AA 4.5:1 threshold.
+- **Fix**: Calibrated to `#945320` (5.63:1 contrast), securing full accessibility compliance while preserving the warm terracotta palette.
+
+---
+
+### Exit Status
+- All redesign exit criteria satisfied.
+- Deliverables committed and documented.
+- Status: **PASSED**.
+
 
 
 

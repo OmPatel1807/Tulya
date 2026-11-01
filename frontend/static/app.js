@@ -1,5 +1,6 @@
 /**
  * Tulya (तुल्य) - Glass Workspace Application Controller
+ * Calm Pastel Minimalist Edition.
  * Handles Bilingual Dual Reader, Discrepancy Drawer, SVG Connectors, and Review State.
  */
 
@@ -301,7 +302,7 @@
       const headerEn = document.createElement('div');
       headerEn.className = 'clause-header';
       headerEn.innerHTML = `
-        <span class="clause-num">${pair.en_paths && pair.en_paths.length ? pair.en_paths.join(' > ') : `Provision #${idx+1}`}</span>
+        <span class="clause-num">${pair.en_paths && pair.en_paths.length ? pair.en_paths.join(' > ') : `Provision #${idx + 1}`}</span>
         <span class="badge-lang en">EN</span>
       `;
 
@@ -323,7 +324,7 @@
       const headerHi = document.createElement('div');
       headerHi.className = 'clause-header';
       headerHi.innerHTML = `
-        <span class="clause-num">${pair.hi_paths && pair.hi_paths.length ? pair.hi_paths.join(' > ') : `उपबंध #${idx+1}`}</span>
+        <span class="clause-num">${pair.hi_paths && pair.hi_paths.length ? pair.hi_paths.join(' > ') : `उपबंध #${idx + 1}`}</span>
         <span class="badge-lang hi">HI</span>
       `;
 
@@ -336,6 +337,16 @@
       blockHi.appendChild(textHi);
       readerHi.appendChild(blockHi);
     });
+  }
+
+  // --- Severity Icon and Label Formatter (Never color alone) ---
+  function formatSeverityBadge(sev) {
+    let icon = '▲';
+    if (sev === 'CRITICAL') icon = '●';
+    else if (sev === 'HIGH') icon = '▲';
+    else if (sev === 'MEDIUM') icon = '■';
+    else if (sev === 'LOW') icon = '◆';
+    return `<span class="badge-sev ${sev}">${icon} ${sev}</span>`;
   }
 
   // --- Render Findings List ---
@@ -354,6 +365,12 @@
       findingsCountBadge.textContent = `${filtered.length} of ${allFindings.length}`;
     }
 
+    // Add Review Disclaimer Callout at Top of List
+    const disclaimerNotice = document.createElement('div');
+    disclaimerNotice.style.cssText = 'font-size: 0.78rem; color: var(--ink-secondary); background: #FFFFFF; padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--surface-border); line-height: 1.45;';
+    disclaimerNotice.innerHTML = `<strong>Note:</strong> Tulya flags differences for human review. It does not decide or imply which version is legally authoritative.`;
+    findingsListEl.appendChild(disclaimerNotice);
+
     filtered.forEach(f => {
       const card = document.createElement('div');
       card.className = `finding-card ${f.finding_id === activeFindingId ? 'selected' : ''}`;
@@ -370,23 +387,24 @@
 
       const quoteEnPreview = f.quote_en ? f.quote_en.substring(0, 80) : 'None';
       const quoteHiPreview = f.quote_hi ? f.quote_hi.substring(0, 80) : 'None';
+      const citationText = f.metadata && f.metadata.provision_en ? f.metadata.provision_en : (f.metadata && f.metadata.en_paths ? f.metadata.en_paths.join(' > ') : 'Provision Reference');
 
       card.innerHTML = `
         <div class="finding-badges">
           <span class="badge-cat">${f.category}</span>
-          <span class="badge-sev ${f.severity}">${f.severity}</span>
+          ${formatSeverityBadge(f.severity)}
           <span class="badge-src">${f.source}</span>
           ${decisionBadgeHtml}
         </div>
-        <div class="finding-citation">${f.metadata && f.metadata.provision_en ? f.metadata.provision_en : 'Clause Reference'}</div>
+        <div class="finding-citation">${citationText}</div>
         <div class="finding-desc">${escapeHtml(f.explanation)}</div>
         <div class="finding-quotes">
           <div class="fq-item"><strong>EN:</strong> "${escapeHtml(quoteEnPreview)}..."</div>
-          <div class="fq-item" style="font-family: var(--font-hindi);"><strong>HI:</strong> "${escapeHtml(quoteHiPreview)}..."</div>
+          <div class="fq-item" lang="hi" style="font-family: var(--font-hindi);"><strong>HI:</strong> "${escapeHtml(quoteHiPreview)}..."</div>
         </div>
         <div class="finding-actions">
-          <button class="btn btn-sm btn-glass btn-confirm" data-fid="${f.finding_id}">Confirm</button>
-          <button class="btn btn-sm btn-glass btn-dismiss" data-fid="${f.finding_id}">Dismiss</button>
+          <button class="btn btn-sm btn-secondary btn-confirm" data-fid="${f.finding_id}">Confirm</button>
+          <button class="btn btn-sm btn-secondary btn-dismiss" data-fid="${f.finding_id}">Dismiss</button>
         </div>
       `;
 
@@ -535,12 +553,12 @@
     const rectHi = markHi.getBoundingClientRect();
 
     // Start point at right edge of English quote
-    const x1 = rectEn.right - svgRect.left;
-    const y1 = rectEn.top + rectEn.height / 2 - svgRect.top;
+    const x1 = Math.max(0, rectEn.right - svgRect.left);
+    const y1 = Math.max(0, rectEn.top + rectEn.height / 2 - svgRect.top);
 
     // End point at left edge of Hindi quote
-    const x2 = rectHi.left - svgRect.left;
-    const y2 = rectHi.top + rectHi.height / 2 - svgRect.top;
+    const x2 = Math.max(0, rectHi.left - svgRect.left);
+    const y2 = Math.max(0, rectHi.top + rectHi.height / 2 - svgRect.top);
 
     // Bezier control points for smooth bridge curve
     const dx = Math.abs(x2 - x1) * 0.5;
@@ -552,18 +570,9 @@
     const pathData = `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`;
 
     connectorSvg.innerHTML = `
-      <defs>
-        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="3" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-      <circle cx="${x1}" cy="${y1}" r="4" fill="#f59e0b" />
-      <path d="${pathData}" class="connector-path" filter="url(#glow)" />
-      <circle cx="${x2}" cy="${y2}" r="4" fill="#ef4444" />
+      <circle cx="${x1}" cy="${y1}" r="3.5" fill="#3A6EA5" />
+      <path d="${pathData}" class="connector-path" />
+      <circle cx="${x2}" cy="${y2}" r="3.5" fill="#A8642E" />
     `;
 
     window.__connectorRendered = true;
@@ -596,4 +605,3 @@
   }
 
 })();
-
