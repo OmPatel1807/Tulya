@@ -782,14 +782,25 @@
 
   // Front cover thin slab with 24 width segments for board flex
   const frontCoverGeo = new THREE.BoxGeometry(BOOK_W, BOOK_H, COVER_T, 24, 1, 1);
-  const coverTex = createCoverTexture();
+  const texLoader = new THREE.TextureLoader();
+  const photoCoverTex = texLoader.load('/public/assets/constitution_cover.webp', (tex) => {
+    tex.anisotropy = 4;
+    frontCoverFaceMat.map = tex;
+    frontCoverFaceMat.needsUpdate = true;
+  }, undefined, () => {
+    texLoader.load('/public/assets/constitution_cover.jpg', (tex) => {
+      tex.anisotropy = 4;
+      frontCoverFaceMat.map = tex;
+      frontCoverFaceMat.needsUpdate = true;
+    });
+  });
 
   const coverFlexUniform = { value: 0.0 };
   const frontCoverLeatherMat = new THREE.MeshStandardMaterial({
     color: COLOR_COVER,
     roughness: 0.55
   });
-  const frontCoverFaceMat = new THREE.MeshBasicMaterial({ map: coverTex, color: 0xFFFFFF });
+  const frontCoverFaceMat = new THREE.MeshBasicMaterial({ map: photoCoverTex, color: 0xFFFFFF });
   const frontCoverEndpaperMat = new THREE.MeshStandardMaterial({
     map: endpaperTex,
     roughness: 0.65
@@ -825,9 +836,7 @@
   frontCoverMesh.position.set(BOOK_W / 2, 0, COVER_T / 2);
   coverPivot.add(frontCoverMesh);
 
-  // FIX 6: Cover uses procedural illustrated gold-foil lotus border cover (no emblem photograph)
   // Normal map loaded for realistic tactile leather relief
-  const texLoader = new THREE.TextureLoader();
   texLoader.load('/public/assets/cover_leather_nor_gl_1k.webp', (tex) => {
     frontCoverFaceMat.normalMap = tex;
     frontCoverFaceMat.normalScale = new THREE.Vector2(0.35, 0.35);
@@ -1701,10 +1710,6 @@
   // Font readiness: update canvas textures when web fonts finish shaping
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {
-      const newCover = createCoverTexture();
-      frontCoverFaceMat.map = newCover;
-      frontCoverFaceMat.needsUpdate = true;
-
       const newEn = createPreambleEnTexture();
       enSpreadMat.map = newEn;
       enSpreadMat.needsUpdate = true;
