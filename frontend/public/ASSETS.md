@@ -58,7 +58,17 @@ All assets are licensed under **Creative Commons CC0 1.0 Universal (Public Domai
 
 ---
 
-## 4. Compliance & Verification
+## 4. Animation & Smooth Scroll Engine Libraries
+
+| Asset Name | Type / Format | Author / Source | License | Date Added | Modification & Usage Notes |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `lenis.min.js` (v1.1.18) | JavaScript Smooth Scroll Library | Studio Freight ([github.com/darkroomengineering/lenis](https://github.com/darkroomengineering/lenis)) | MIT License | 2026-11-01 | Vendored in `frontend/static/vendor/lenis.min.js` (13 KB) for hardware-accelerated, jitter-free scroll interpolation. |
+| `gsap.min.js` (v3.12.5) | JavaScript Animation Library | GreenSock ([greensock.com/gsap](https://greensock.com/gsap)) | GreenSock Standard "No-Charge" License | 2026-11-01 | Vendored in `frontend/static/vendor/gsap.min.js` (72 KB) for synchronized 60fps ticker loop (`lagSmoothing(0)`). |
+| `ScrollTrigger.min.js` (v3.12.5) | Scroll-Linked Timeline Plugin | GreenSock ([greensock.com/scrolltrigger](https://greensock.com/scrolltrigger)) | GreenSock Standard "No-Charge" License | 2026-11-01 | Vendored in `frontend/static/vendor/ScrollTrigger.min.js` (43 KB) with Lenis proxy binding for buttery timeline progression. |
+
+---
+
+## 5. Compliance & Verification
 
 - **License Verification**: All upstream asset providers (Poly Haven and ambientCG) explicitly license all assets under CC0 1.0 Universal.
 - **Offline Self-Containment**: Zero external CDN requests. All files are bundled directly in the local repository under `frontend/public/assets/`.
@@ -67,3 +77,4 @@ All assets are licensed under **Creative Commons CC0 1.0 Universal (Public Domai
   - Zero flags or tricolor motifs.
   - Zero photographs of persons, officials, or judicial buildings.
 - **Procedural Fallback**: If file access is interrupted, the renderer gracefully falls back to the built-in procedural CanvasTextures and normal maps.
+

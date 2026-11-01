@@ -9,6 +9,19 @@
 </head>
 <body>
 
+  <!-- Preloader: Calm 1.5s brass line loader -->
+  <div id="preloader" class="preloader" aria-hidden="true">
+    <div class="preloader-content">
+      <div class="preloader-emblem">तु</div>
+      <div class="preloader-bar"><div class="preloader-line"></div></div>
+      <div class="preloader-text">Loading Legal Architecture...</div>
+    </div>
+  </div>
+
+  <!-- Custom Ink Dot Cursor -->
+  <div id="cursor-dot" class="cursor-dot" aria-hidden="true"></div>
+  <div id="cursor-ring" class="cursor-ring" aria-hidden="true"></div>
+
   <!-- Top Navigation Header -->
   <header class="navbar" role="banner">
     <a href="/" class="brand" aria-label="Tulya Home">
@@ -19,13 +32,23 @@
       </div>
     </a>
     <div class="nav-actions">
-      <!-- Debug elements: Hidden by default, toggled with 'd' key or ?debug=1 -->
+      <!-- Debug elements: Hidden by default, toggled with 'd' or backtick ` key -->
       <span class="tier-badge" id="tier-badge" aria-hidden="true">Tier 3</span>
       <span class="fps-counter" id="fps-display" aria-hidden="true">60 FPS</span>
 
       <a href="/app" class="btn btn-primary" id="skip-intro-btn">Review Workspace &rarr;</a>
     </div>
   </header>
+
+  <!-- Performance HUD Dev Overlay (toggled with backtick ` key) -->
+  <div id="dev-overlay" class="dev-overlay" aria-hidden="true">
+    <div class="dev-overlay-header">Tulya Performance HUD <span class="dev-key">[`]</span></div>
+    <div class="dev-metric-row"><span>FPS:</span> <strong id="dev-fps">60</strong></div>
+    <div class="dev-metric-row"><span>Frame Time (p95):</span> <strong id="dev-p95">16.6 ms</strong></div>
+    <div class="dev-metric-row"><span>Long Tasks:</span> <strong id="dev-longtasks">0</strong></div>
+    <div class="dev-metric-row"><span>Scroll Progress:</span> <strong id="dev-progress">0.000</strong></div>
+    <div class="dev-metric-row"><span>Hardware Tier:</span> <strong id="dev-tier">Tier 3</strong></div>
+  </div>
 
   <!-- 3D Background Canvas ("The Book of Two Languages") -->
   <div id="story-canvas-container" aria-hidden="true">
@@ -35,7 +58,7 @@
   <!-- Narrative Scroll Content (600vh scroll container) -->
   <main class="story-scroll-wrapper" id="main-content">
 
-    <!-- Checkpoint Panel 0: p = 0.00 - 0.08 (Closed Book Hero) -->
+    <!-- Checkpoint Panel 0: p = 0.00 - 0.10 (Closed Book Hero) -->
     <section class="story-checkpoint-panel active" id="panel-0" aria-labelledby="title-p0">
       <span class="story-tag">Constitutional Framework</span>
       <h2 class="story-title" id="title-p0">Two official versions. One law. Do they agree?</h2>
@@ -43,68 +66,56 @@
         Under Article 348 and the Official Languages Act, Indian statutes are published in both English and Hindi. Citizens and courts reference both texts. Differences between official language versions can alter statutory interpretation.
       </p>
       <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 1rem;">
-        <span style="font-size: 0.85rem; color: var(--ink-secondary);">Scroll to open the volume</span>
+        <span style="font-size: 0.85rem; color: var(--ink-secondary);">Scroll or use Space/Arrows to explore</span>
         <span style="color: var(--ink-muted);">·</span>
         <a href="/app" class="btn btn-secondary btn-sm" id="skip-intro-link">Skip intro &rarr;</a>
       </div>
     </section>
 
-    <!-- Checkpoint Panel 1: p = 0.08 - 0.25 (Cover Opens) -->
+    <!-- Checkpoint Panel 1: p = 0.10 - 0.28 (Cover Opens & Leaves Turn) -->
     <section class="story-checkpoint-panel" id="panel-1" aria-labelledby="title-p1">
-      <span class="story-tag">Bilingual Foundation</span>
-      <h2 class="story-title" id="title-p1">Opening the Statute</h2>
+      <span class="story-tag">Official Spread</span>
+      <h2 class="story-title" id="title-p1">Opening the Constitution (भारत का संविधान)</h2>
       <p class="story-desc">
-        The Constitution of India provides the foundational standard for bilingual governance. The front cover opens to reveal the parallel enactments across languages.
-      </p>
-      <p class="story-desc" style="margin-bottom: 0;">
-        Every Central Act is enacted with equal solemnity, establishing rights and obligations across jurisdictions.
-      </p>
-    </section>
-
-    <!-- Checkpoint Panel 2: p = 0.25 - 0.38 (Pages Turn to Spread) -->
-    <section class="story-checkpoint-panel" id="panel-2" aria-labelledby="title-p2">
-      <span class="story-tag">Official Text</span>
-      <h2 class="story-title" id="title-p2">The Preamble in Two Languages</h2>
-      <p class="story-desc">
-        Pages turn to an open spread: English on the left page, Hindi on the right page. In this foundational excerpt, both language editions express identical constitutional values.
+        The front cover opens to reveal the parallel enactments across languages. 14 leaves curl smoothly across the spine to reveal the official Preamble spread (प्राधिकृत पाठ).
       </p>
       <div style="display: flex; gap: 1rem; margin-top: 0.75rem;">
-        <span style="font-size: 0.8rem; font-weight: 600; color: var(--accent-en-text);">Left: English Gazette</span>
-        <span style="font-size: 0.8rem; font-weight: 600; color: var(--accent-hi-text);">Right: Hindi Gazette (हिन्दी)</span>
+        <span style="font-size: 0.82rem; font-weight: 600; color: var(--accent-en-text);">Left: English Gazette</span>
+        <span style="font-size: 0.82rem; font-weight: 600; color: var(--accent-hi-text);">Right: Hindi Gazette (हिन्दी)</span>
       </div>
     </section>
 
-    <!-- Checkpoint Panel 3: p = 0.38 - 0.52 (Clause Segmentation) -->
-    <section class="story-checkpoint-panel" id="panel-3" aria-labelledby="title-p3">
+    <!-- Checkpoint Panel 2: p = 0.28 - 0.42 (Text Lift-off & Reflow into Cards) -->
+    <section class="story-checkpoint-panel" id="panel-2" aria-labelledby="title-p2">
       <span class="story-tag">Structural Segmentation</span>
-      <h2 class="story-title" id="title-p3">Hierarchical Clause Parsing</h2>
+      <h2 class="story-title" id="title-p2">Glyphs Lift Off into Clause Coordinates</h2>
       <p class="story-desc">
-        Statutory text lines lift off the parchment into structured clause cards, arranged in parallel columns for sentence-by-sentence comparison.
+        Text lines lift off the parchment in 3D particles and assemble into two parallel columns of auditable clause cards: English in slate blue, Hindi in terracotta clay.
       </p>
       <p class="story-desc" style="margin-bottom: 0;">
-        Each provision is assigned an addressable statutory coordinate before linguistic review begins.
+        Each statutory provision (निर्दिष्ट उपबंध) is anchored to a persistent tree coordinate before linguistic review begins.
       </p>
     </section>
 
-    <!-- Checkpoint Panel 4: p = 0.52 - 0.66 (Clause Alignment) -->
-    <section class="story-checkpoint-panel" id="panel-4" aria-labelledby="title-p4">
+    <!-- Checkpoint Panel 3: p = 0.42 - 0.58 (Clause Alignment Threads) -->
+    <section class="story-checkpoint-panel" id="panel-3" aria-labelledby="title-p3">
       <span class="story-tag">Bilingual Pairing</span>
-      <h2 class="story-title" id="title-p4">Clause-by-Clause Alignment</h2>
+      <h2 class="story-title" id="title-p3">Light Threads Connect Matching Clauses</h2>
       <p class="story-desc">
-        Thin sage threads connect each English provision to its corresponding Hindi counterpart across the spread.
+        Thin sage threads draw across the spread with animated pulses connecting equivalent provisions. The camera glides along the threads like an aerial inspection.
       </p>
       <div style="margin-top: 1rem;">
         <span class="status-chip chip-consistent">Consistent in this excerpt</span>
       </div>
     </section>
 
-    <!-- Checkpoint Panel 5: p = 0.66 - 0.80 (The Test - Synthetic Divergence Demo) -->
-    <section class="story-checkpoint-panel" id="panel-5" aria-labelledby="title-p5">
+    <!-- Checkpoint Panel 4: p = 0.58 - 0.74 (Facts & Synthetic Discrepancy Test) -->
+    <section class="story-checkpoint-panel" id="panel-4" aria-labelledby="title-p4">
       <div>
         <span class="synthetic-banner" data-synthetic="true">SYNTHETIC DEMO EXAMPLE: Section 12(3) Divergence</span>
       </div>
       <span class="story-tag">Audit Methodology</span>
-      <h2 class="story-title" id="title-p5">Isolating Divergence: The Test</h2>
+      <h2 class="story-title" id="title-p4">Isolating Divergence: The Test</h2>
       <p class="story-desc">
         To demonstrate how discrepancies are detected, a synthetic case is introduced on a loose sheet. The Constitution itself has no known divergence shown here; this demonstrates pipeline sensitivity on reported statutory divergence patterns.
       </p>
@@ -121,24 +132,25 @@
       </div>
     </section>
 
-    <!-- Checkpoint Panel 6: p = 0.80 - 0.90 (Semantic & Modality Inspection) -->
-    <section class="story-checkpoint-panel" id="panel-6" aria-labelledby="title-p6">
-      <span class="story-tag">Semantic Inspection</span>
-      <h2 class="story-title" id="title-p6">Magnifying Obligation & Penalty Differences</h2>
+    <!-- Checkpoint Panel 5: p = 0.74 - 0.88 (Semantic Lens & Finding Pinning) -->
+    <section class="story-checkpoint-panel" id="panel-5" aria-labelledby="title-p5">
+      <span class="story-tag">Semantic Review</span>
+      <h2 class="story-title" id="title-p5">Magnifying Obligation & Penalty Differences</h2>
       <p class="story-desc">
-        A focused lens glides across the divergence, isolating how "in addition to tax" modifies liability compared to "ten times the tax".
+        A focused glass lens glides down the columns, isolating how "in addition to tax" modifies liability compared to "ten times the tax". Finding chips pin with explicit category and severity labels.
       </p>
-      <div style="margin-top: 1rem;">
-        <span class="status-chip chip-divergence">Numeric discrepancy: 10x penalty vs 10x penalty in addition to tax</span>
+      <div style="margin-top: 1rem; display: flex; gap: 0.75rem; align-items: center;">
+        <span class="status-chip chip-divergence">ADDITION · HIGH SEVERITY</span>
+        <span style="font-size: 0.85rem; color: var(--ink-secondary);">10x penalty vs 10x in addition to tax</span>
       </div>
     </section>
 
-    <!-- Checkpoint Panel 7: p = 0.90 - 0.97 (Summary & Flatten) -->
-    <section class="story-checkpoint-panel" id="panel-7" aria-labelledby="title-p7">
+    <!-- Checkpoint Panel 6: p = 0.88 - 0.95 (Evidence-Backed Audit Summary) -->
+    <section class="story-checkpoint-panel" id="panel-6" aria-labelledby="title-p6">
       <span class="story-tag">Verification Summary</span>
-      <h2 class="story-title" id="title-p7">Evidence-Backed Audit Summary</h2>
+      <h2 class="story-title" id="title-p6">Evidence-Backed Audit Summary</h2>
       <p class="story-desc">
-        The cards flatten back into the volume. Real metrics computed from verified pipeline runs across Central Acts:
+        The cards fold back onto the pages as the volume prepares to close. Real metrics computed from verified pipeline runs across Central Acts (द्वितीय अनुसूची):
       </p>
       <div class="story-stat-grid" aria-label="Audited Central Acts">
         <div class="stat-item">
@@ -160,10 +172,10 @@
       </div>
     </section>
 
-    <!-- Checkpoint Panel 8: p = 0.97 - 1.00 (Closing & Workspace CTA) -->
-    <section class="story-checkpoint-panel" id="panel-8" aria-labelledby="title-p8" style="text-align: center;">
+    <!-- Checkpoint Panel 7: p = 0.95 - 1.00 (Closing & Workspace CTA) -->
+    <section class="story-checkpoint-panel" id="panel-7" aria-labelledby="title-p7" style="text-align: center;">
       <span class="story-tag">Review Workspace</span>
-      <h2 class="story-title" id="title-p8">Begin Verification</h2>
+      <h2 class="story-title" id="title-p7">Begin Verification</h2>
       <p class="story-desc">
         The Constitution closes. Step into the auditor to inspect bundled Central Acts, evaluate alignments, or upload custom gazette PDFs.
       </p>
@@ -181,8 +193,11 @@
     <span>Tulya is an independent prototype for reviewing differences between official language versions. It is not an official government service and does not determine which version is legally authoritative.</span>
   </footer>
 
-  <!-- Scripts -->
+  <!-- Scripts (Vendored locally for 100% offline self-containment) -->
   <script src="/static/vendor/three.min.js"></script>
+  <script src="/static/vendor/gsap.min.js"></script>
+  <script src="/static/vendor/ScrollTrigger.min.js"></script>
+  <script src="/static/vendor/lenis.min.js"></script>
   <script src="/static/story.js"></script>
 </body>
 </html>

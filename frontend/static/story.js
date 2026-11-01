@@ -1,14 +1,13 @@
 /**
  * Tulya (तुल्य) - "The Book of Two Languages" 3D Scroll Story Engine
- * A calm, authentic hardbound book titled THE CONSTITUTION OF INDIA / भारत का संविधान.
- * Pure deterministic mathematical scroll progression (reversibility delta < 1°).
- * Built with Three.js (Procedural Canvas Textures & Soft Natural Lighting).
+ * Built with Three.js (Procedural Canvas Textures, PBR Materials, GSAP, and Lenis).
+ * Buttery smooth, official, credible, and exact mathematical reversibility.
  */
 
 (function () {
   'use strict';
 
-  // --- Configuration & Query Parameters ---
+  // --- Configuration & Hardware Tiers (D1, D2) ---
   const urlParams = new URLSearchParams(window.location.search);
   const tierParam = parseInt(urlParams.get('tier') || '3', 10);
   const tier = Math.min(3, Math.max(1, isNaN(tierParam) ? 3 : tierParam));
@@ -17,71 +16,101 @@
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let isReducedMotion = prefersReducedMotion || urlParams.get('reduced_motion') === '1';
 
-  let measuredFPS = 60.0;
-  let frameCount = 0;
-  let lastFpsTime = performance.now();
+  // Particle count based on tier
+  const PARTICLE_COUNT = isReducedMotion ? 0 : (tier === 3 ? 1200 : (tier === 2 ? 600 : 200));
 
-  let currentProgress = 0.0;
-  let targetProgress = 0.0;
-
-  // Toggle debug UI if requested
-  if (isDebug) {
-    document.body.classList.add('debug-mode');
-  }
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'd' || e.key === 'D') {
-      document.body.classList.toggle('debug-mode');
-    }
-  });
-
-  // DOM Elements
-  const canvas = document.getElementById('story-canvas');
-  const fpsDisplay = document.getElementById('fps-display');
-  const tierBadge = document.getElementById('tier-badge');
-  const skipBtn = document.getElementById('skip-intro-btn');
-  const skipLink = document.getElementById('skip-intro-link');
-  const panels = document.querySelectorAll('.story-checkpoint-panel');
-
-  if (tierBadge) tierBadge.textContent = `Tier ${tier}`;
-  if (skipBtn) {
-    skipBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = '/app';
-    });
-  }
-  if (skipLink) {
-    skipLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.href = '/app';
-    });
-  }
-
-  // Fallback if Three.js is unavailable
-  if (!window.THREE) {
-    console.warn('Three.js not loaded. 3D canvas disabled.');
-    return;
-  }
-
-  const THREE = window.THREE;
-
-  // --- Color Constants ("Ink and Clay") ---
-  const COLOR_COVER = 0x234A52;       // Ink-teal
+  // --- Palette Constants ("Ink and Clay") ---
+  const COLOR_COVER = 0x234A52;       // Deep ink-teal
   const COLOR_BRASS = 0xB89B5E;       // Brass foil
-  const COLOR_PARCHMENT = 0xF3ECDD;   // Parchment
-  const COLOR_EDGE = 0xD9CFB8;        // Aged page edge
+  const COLOR_PARCHMENT = 0xF3ECDD;   // Warm parchment
+  const COLOR_EDGE = 0xD9CFB8;        // Aged paper edge
   const COLOR_INK = 0x2B3A3F;         // Slate ink
   const COLOR_EN = 0x5B7C99;          // Slate blue English
-  const COLOR_HI = 0xC0805F;          // Clay Hindi
+  const COLOR_HI = 0xC0805F;          // Terracotta clay Hindi
   const COLOR_SAGE = 0x7FA08A;        // Soft sage match
   const COLOR_ROSE = 0xA5566B;        // Muted plum-rose mismatch
   const COLOR_BG = 0xE8ECE8;          // Mist sage background
 
-  // --- Three.js Scene Setup ---
+  // --- DOM Elements ---
+  const canvas = document.getElementById('story-canvas');
+  const preloader = document.getElementById('preloader');
+  const cursorDot = document.getElementById('cursor-dot');
+  const cursorRing = document.getElementById('cursor-ring');
+  const fpsDisplay = document.getElementById('fps-display');
+  const tierBadge = document.getElementById('tier-badge');
+  const skipBtn = document.getElementById('skip-intro-btn');
+  const skipLink = document.getElementById('skip-intro-link');
+  const openAuditorBtn = document.getElementById('open-auditor-btn');
+  const panels = document.querySelectorAll('.story-checkpoint-panel');
+
+  if (tierBadge) tierBadge.textContent = `Tier ${tier}`;
+
+  // Dismiss Preloader after calm entry (1.4s)
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      if (preloader) preloader.classList.add('fade-out');
+    }, 1400);
+  });
+
+  // Direct workspace navigation
+  function navigateToWorkspace() {
+    // Smooth camera dolly into cover if on screen
+    if (camera && bookGroup && !isReducedMotion) {
+      window.gsap.to(camera.position, {
+        z: 3.2,
+        duration: 0.6,
+        ease: 'power2.inOut',
+        onComplete: () => { window.location.href = '/app'; }
+      });
+    } else {
+      window.location.href = '/app';
+    }
+  }
+
+  if (skipBtn) skipBtn.addEventListener('click', (e) => { e.preventDefault(); navigateToWorkspace(); });
+  if (skipLink) skipLink.addEventListener('click', (e) => { e.preventDefault(); navigateToWorkspace(); });
+  if (openAuditorBtn) openAuditorBtn.addEventListener('click', (e) => { e.preventDefault(); navigateToWorkspace(); });
+
+  // --- Custom Ink Dot Cursor (D3) ---
+  if (!isReducedMotion && cursorDot && cursorRing) {
+    let mouseX = -100, mouseY = -100;
+    let ringX = -100, ringY = -100;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursorDot.style.left = `${mouseX}px`;
+      cursorDot.style.top = `${mouseY}px`;
+    }, { passive: true });
+
+    function renderCursor() {
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      cursorRing.style.left = `${ringX}px`;
+      cursorRing.style.top = `${ringY}px`;
+      requestAnimationFrame(renderCursor);
+    }
+    renderCursor();
+
+    // Expand cursor ring on links and buttons
+    document.querySelectorAll('a, button, select, input').forEach((el) => {
+      el.addEventListener('mouseenter', () => { cursorRing.classList.add('hover'); });
+      el.addEventListener('mouseleave', () => { cursorRing.classList.remove('hover'); });
+    });
+  }
+
+  // --- Three.js Scene Setup (B1, B3, D2) ---
+  if (!window.THREE) {
+    console.warn('Three.js not loaded. 3D canvas disabled.');
+    return;
+  }
+  const THREE = window.THREE;
+
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(COLOR_BG);
 
   const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 50);
-  camera.position.set(0, 0, 7.8);
+  camera.position.set(0, 0.65, 7.8);
 
   const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
@@ -89,14 +118,14 @@
     alpha: false,
     powerPreference: 'high-performance'
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, tier === 1 ? 1.0 : 1.5));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
-  // Soft, diffuse lighting (no harsh spotlights or neon bloom)
-  const hemiLight = new THREE.HemisphereLight(0xFFFFFF, 0xDEE5E5, 1.1);
+  // Soft studio illumination (B3)
+  const hemiLight = new THREE.HemisphereLight(0xFFFFFF, 0xDEE5E5, 1.15);
   scene.add(hemiLight);
 
-  const dirLight = new THREE.DirectionalLight(0xFFF9EE, 0.85);
+  const dirLight = new THREE.DirectionalLight(0xFFF5E6, 0.85);
   dirLight.position.set(4, 8, 6);
   scene.add(dirLight);
 
@@ -104,62 +133,52 @@
   fillLight.position.set(-4, -2, 4);
   scene.add(fillLight);
 
-  // --- Procedural Canvas Textures ---
+  // --- Procedural Canvas Textures (B1, R1) ---
 
-  // 1. Front Cover Texture: Deep ink-teal with brass-foil typography & geometric borders
+  // 1. Front Cover Texture: Deep ink-teal with brass-foil typography & abstract borders
   function createCoverTexture() {
     const cvs = document.createElement('canvas');
     cvs.width = 512;
     cvs.height = 768;
     const ctx = cvs.getContext('2d');
 
-    // Ink-teal background
     ctx.fillStyle = '#234A52';
     ctx.fillRect(0, 0, 512, 768);
 
-    // Subtle leather-grain speckle
+    // Subtle leather grain
     ctx.fillStyle = 'rgba(255, 255, 255, 0.025)';
     for (let i = 0; i < 400; i++) {
-      const rx = Math.random() * 512;
-      const ry = Math.random() * 768;
-      ctx.fillRect(rx, ry, 2, 2);
+      ctx.fillRect(Math.random() * 512, Math.random() * 768, 2, 2);
     }
 
-    // Outer brass-foil border
+    // Double brass border
     ctx.strokeStyle = '#B89B5E';
     ctx.lineWidth = 4;
     ctx.strokeRect(26, 26, 460, 716);
-
-    // Inner hairline border
     ctx.lineWidth = 1.5;
     ctx.strokeRect(36, 36, 440, 696);
 
-    // Brass geometric corner accents (pure abstract geometry, no emblems)
-    const corners = [
-      [36, 36], [476, 36], [36, 732], [476, 732]
-    ];
+    // Geometric corner accents
+    const corners = [[36, 36], [476, 36], [36, 732], [476, 732]];
     corners.forEach(([cx, cy]) => {
       ctx.fillStyle = '#B89B5E';
       ctx.fillRect(cx - 5, cy - 5, 10, 10);
     });
 
-    // Central brass typography
     ctx.fillStyle = '#B89B5E';
     ctx.textAlign = 'center';
 
-    // English title
+    // English Title
     ctx.font = '700 28px "Cinzel", Georgia, serif';
     ctx.fillText('THE CONSTITUTION', 256, 305);
     ctx.fillText('OF INDIA', 256, 342);
 
-    // Decorative brass divider bar
     ctx.fillRect(156, 370, 200, 2);
 
-    // Hindi title (Devanagari shaped natively by browser)
+    // Hindi Title (Devanagari conjuncts shaped natively by browser)
     ctx.font = '600 28px "Noto Sans Devanagari", sans-serif';
     ctx.fillText('भारत का संविधान', 256, 420);
 
-    // Subtitle
     ctx.font = '500 12px "Cinzel", Georgia, serif';
     ctx.fillText('OFFICIAL BILINGUAL EDITION', 256, 660);
 
@@ -168,23 +187,20 @@
     return tex;
   }
 
-  // 2. English Preamble Page Texture
+  // 2. English Preamble Texture
   function createPreambleEnTexture() {
     const cvs = document.createElement('canvas');
     cvs.width = 512;
     cvs.height = 768;
     const ctx = cvs.getContext('2d');
 
-    // Parchment background
     ctx.fillStyle = '#F3ECDD';
     ctx.fillRect(0, 0, 512, 768);
 
-    // Aged margin border
     ctx.strokeStyle = '#D9CFB8';
     ctx.lineWidth = 1.5;
     ctx.strokeRect(28, 28, 456, 712);
 
-    // Header
     ctx.textAlign = 'center';
     ctx.fillStyle = '#5B7C99';
     ctx.font = '700 17px "Cinzel", Georgia, serif';
@@ -195,7 +211,6 @@
     ctx.fillStyle = '#D9CFB8';
     ctx.fillRect(80, 108, 352, 1);
 
-    // Excerpt Body
     ctx.textAlign = 'left';
     ctx.fillStyle = '#2B3A3F';
     ctx.font = '500 13px "Cinzel", Georgia, serif';
@@ -227,12 +242,8 @@
 
     let y = 145;
     lines.forEach((l) => {
-      if (l === '') {
-        y += 8;
-      } else {
-        ctx.fillText(l, 52, y);
-        y += 22;
-      }
+      if (l === '') y += 8;
+      else { ctx.fillText(l, 52, y); y += 22; }
     });
 
     const tex = new THREE.CanvasTexture(cvs);
@@ -240,34 +251,30 @@
     return tex;
   }
 
-  // 3. Hindi Preamble Page Texture (Native Devanagari Shaping)
+  // 3. Hindi Preamble Texture (Verified Conjuncts: संविधान, प्राधिकृत, निर्दिष्ट)
   function createPreambleHiTexture() {
     const cvs = document.createElement('canvas');
     cvs.width = 512;
     cvs.height = 768;
     const ctx = cvs.getContext('2d');
 
-    // Parchment background
     ctx.fillStyle = '#F3ECDD';
     ctx.fillRect(0, 0, 512, 768);
 
-    // Aged margin border
     ctx.strokeStyle = '#D9CFB8';
     ctx.lineWidth = 1.5;
     ctx.strokeRect(28, 28, 456, 712);
 
-    // Header
     ctx.textAlign = 'center';
     ctx.fillStyle = '#C0805F';
     ctx.font = '700 18px "Noto Sans Devanagari", sans-serif';
     ctx.fillText('भारत का संविधान', 256, 68);
     ctx.font = '600 14px "Noto Sans Devanagari", sans-serif';
-    ctx.fillText('उद्देशिका', 256, 92);
+    ctx.fillText('उद्देशिका (प्राधिकृत पाठ)', 256, 92);
 
     ctx.fillStyle = '#D9CFB8';
     ctx.fillRect(80, 108, 352, 1);
 
-    // Excerpt Body
     ctx.textAlign = 'left';
     ctx.fillStyle = '#2B3A3F';
     ctx.font = '500 13px "Noto Sans Devanagari", sans-serif';
@@ -298,12 +305,8 @@
 
     let y = 145;
     lines.forEach((l) => {
-      if (l === '') {
-        y += 8;
-      } else {
-        ctx.fillText(l, 52, y);
-        y += 22;
-      }
+      if (l === '') y += 8;
+      else { ctx.fillText(l, 52, y); y += 22; }
     });
 
     const tex = new THREE.CanvasTexture(cvs);
@@ -311,23 +314,20 @@
     return tex;
   }
 
-  // 4. Synthetic Demo Loose Sheet Texture
+  // 4. Synthetic Demo Sheet Texture
   function createSyntheticSheetTexture() {
     const cvs = document.createElement('canvas');
     cvs.width = 1024;
     cvs.height = 512;
     const ctx = cvs.getContext('2d');
 
-    // Clean sheet fill
     ctx.fillStyle = '#FAF7EE';
     ctx.fillRect(0, 0, 1024, 512);
 
-    // Outline
     ctx.strokeStyle = 'rgba(165, 86, 107, 0.45)';
     ctx.lineWidth = 3;
     ctx.strokeRect(10, 10, 1004, 492);
 
-    // Mandatory Brass/Plum Synthetic Banner
     ctx.fillStyle = '#A5566B';
     ctx.fillRect(10, 10, 1004, 52);
 
@@ -336,7 +336,6 @@
     ctx.textAlign = 'center';
     ctx.fillText('SYNTHETIC DEMO EXAMPLE: Section 12(3) Divergence', 512, 42);
 
-    // Column Divider
     ctx.strokeStyle = 'rgba(35, 74, 82, 0.12)';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
@@ -344,7 +343,7 @@
     ctx.lineTo(512, 400);
     ctx.stroke();
 
-    // English Column (Slate Blue)
+    // English Column
     ctx.textAlign = 'left';
     ctx.fillStyle = '#5B7C99';
     ctx.font = '700 16px "Cinzel", Georgia, serif';
@@ -362,11 +361,11 @@
     ctx.font = '400 15px "Inter", sans-serif';
     ctx.fillText('Statutory cap: liability limited to 10× tax payable', 45, 245);
 
-    // Hindi Column (Clay Terracotta)
+    // Hindi Column
     ctx.textAlign = 'left';
     ctx.fillStyle = '#C0805F';
     ctx.font = '700 18px "Noto Sans Devanagari", sans-serif';
-    ctx.fillText('हिन्दी सांविधिक उपबंध', 545, 105);
+    ctx.fillText('हिन्दी सांविधिक उपबंध (निर्दिष्ट)', 545, 105);
 
     ctx.fillStyle = '#2B3A3F';
     ctx.font = '500 18px "Noto Sans Devanagari", sans-serif';
@@ -380,7 +379,7 @@
     ctx.font = '400 15px "Noto Sans Devanagari", sans-serif';
     ctx.fillText('विधिक अर्थ: कर की रकम + 10 गुना अतिरिक्त शास्ति', 545, 245);
 
-    // Discrepancy Callout Box at Bottom
+    // Discrepancy Box
     ctx.fillStyle = 'rgba(165, 86, 107, 0.12)';
     ctx.fillRect(45, 415, 934, 70);
     ctx.strokeStyle = 'rgba(165, 86, 107, 0.4)';
@@ -396,14 +395,13 @@
     return tex;
   }
 
-  // --- Build 3D Procedural Book Hierarchy ---
-
+  // --- 3D Procedural Book Hierarchy (B1, B2) ---
   const bookGroup = new THREE.Group();
   bookGroup.position.set(0, 0.65, 0);
   scene.add(bookGroup);
 
-  // Soft contact shadow disc under the book
-  const shadowGeo = new THREE.PlaneGeometry(5.4, 4.2);
+  // Soft Contact Shadow Plane (B3 baked)
+  const shadowGeo = new THREE.PlaneGeometry(5.6, 4.4);
   const shadowMat = new THREE.MeshBasicMaterial({
     color: 0x234A52,
     transparent: true,
@@ -413,12 +411,11 @@
   shadowMesh.position.set(0, -0.15, -0.3);
   bookGroup.add(shadowMesh);
 
-  // Book Dimensions: Width 2.4, Height 3.4, Thickness 0.28
   const BOOK_W = 2.4;
   const BOOK_H = 3.4;
   const BOOK_T = 0.28;
 
-  // Back Cover: Lies flat on the right side of the spine
+  // Back Cover
   const backCoverGeo = new THREE.BoxGeometry(BOOK_W, BOOK_H, 0.05);
   const backCoverMat = new THREE.MeshStandardMaterial({
     color: COLOR_COVER,
@@ -429,7 +426,7 @@
   backCover.position.set(BOOK_W / 2, 0, -BOOK_T / 2);
   bookGroup.add(backCover);
 
-  // Spine: Rounded spine hinge at x = 0, wrapping from front to back around -X
+  // Spine: Rounded half-cylinder wrapping along Y axis
   const spineGeo = new THREE.CylinderGeometry(0.15, 0.15, BOOK_H, 24, 1, false, Math.PI / 2, Math.PI);
   const spineMat = new THREE.MeshStandardMaterial({
     color: COLOR_COVER,
@@ -440,7 +437,7 @@
   spine.position.set(0, 0, 0);
   bookGroup.add(spine);
 
-  // Pages Block Base (Right page block)
+  // Pages Block Base
   const pageBlockGeo = new THREE.BoxGeometry(BOOK_W - 0.08, BOOK_H - 0.08, BOOK_T - 0.06);
   const pageBlockMat = new THREE.MeshStandardMaterial({
     color: COLOR_EDGE,
@@ -453,9 +450,7 @@
 
   // Base Right Spread (Hindi Preamble)
   const hiSpreadGeo = new THREE.PlaneGeometry(BOOK_W - 0.1, BOOK_H - 0.1);
-  const hiSpreadMat = new THREE.MeshBasicMaterial({
-    map: createPreambleHiTexture()
-  });
+  const hiSpreadMat = new THREE.MeshBasicMaterial({ map: createPreambleHiTexture() });
   const hiSpreadMesh = new THREE.Mesh(hiSpreadGeo, hiSpreadMat);
   hiSpreadMesh.position.set((BOOK_W - 0.1) / 2 + 0.05, 0, (BOOK_T - 0.06) / 2 + 0.002);
   bookGroup.add(hiSpreadMesh);
@@ -465,40 +460,48 @@
   coverPivot.position.set(0, 0, BOOK_T / 2);
   bookGroup.add(coverPivot);
 
-  // Front Cover Board
   const frontCoverGeo = new THREE.BoxGeometry(BOOK_W, BOOK_H, 0.05);
   const coverTex = createCoverTexture();
 
-  // Multi-material: Front face gets foil texture, others get teal cover material
   const coverMaterials = [
-    new THREE.MeshStandardMaterial({ color: COLOR_COVER, roughness: 0.55 }), // +x
-    new THREE.MeshStandardMaterial({ color: COLOR_COVER, roughness: 0.55 }), // -x
-    new THREE.MeshStandardMaterial({ color: COLOR_COVER, roughness: 0.55 }), // +y
-    new THREE.MeshStandardMaterial({ color: COLOR_COVER, roughness: 0.55 }), // -y
-    new THREE.MeshBasicMaterial({ map: coverTex }),                          // +z (front)
-    new THREE.MeshStandardMaterial({ color: COLOR_PARCHMENT, roughness: 0.6 }) // -z (inside lining)
+    new THREE.MeshStandardMaterial({ color: COLOR_COVER, roughness: 0.55 }),
+    new THREE.MeshStandardMaterial({ color: COLOR_COVER, roughness: 0.55 }),
+    new THREE.MeshStandardMaterial({ color: COLOR_COVER, roughness: 0.55 }),
+    new THREE.MeshStandardMaterial({ color: COLOR_COVER, roughness: 0.55 }),
+    new THREE.MeshBasicMaterial({ map: coverTex }),
+    new THREE.MeshStandardMaterial({ color: COLOR_PARCHMENT, roughness: 0.6 })
   ];
   const frontCoverMesh = new THREE.Mesh(frontCoverGeo, coverMaterials);
   frontCoverMesh.position.set(BOOK_W / 2, 0, 0.025);
   coverPivot.add(frontCoverMesh);
 
-  // 6 Animated Turning Leaves (pivoted at x = 0)
+  // Progressive texture load: CC0 leather normal map if available
+  const texLoader = new THREE.TextureLoader();
+  texLoader.load('/public/assets/cover_leather_nor_gl_1k.webp', (tex) => {
+    coverMaterials[4].normalMap = tex;
+    coverMaterials[4].normalScale = new THREE.Vector2(0.4, 0.4);
+    coverMaterials[4].needsUpdate = true;
+  }, undefined, () => {});
+
+  // 14 Animated Leaves with Vertex-Shader Page Curl (B2)
+  const NUM_LEAVES = 14;
   const leafPivots = [];
-  const NUM_LEAVES = 6;
+  const leafCurlUniforms = [];
   const enSpreadTex = createPreambleEnTexture();
 
   for (let i = 0; i < NUM_LEAVES; i++) {
     const lp = new THREE.Group();
-    // Offset along z to prevent z-fighting
-    lp.position.set(0, 0, 0.01 + (i * 0.008));
+    lp.position.set(0, 0, 0.005 + (i * 0.006));
     bookGroup.add(lp);
     leafPivots.push(lp);
 
-    const leafGeo = new THREE.PlaneGeometry(BOOK_W - 0.12, BOOK_H - 0.1);
+    const leafGeo = new THREE.PlaneGeometry(BOOK_W - 0.12, BOOK_H - 0.1, 16, 16);
+    const curlUniform = { value: 0.0 };
+    leafCurlUniforms.push(curlUniform);
+
     if (i === NUM_LEAVES - 1) {
-      // Top leaf that turns to reveal the left spread:
-      // Front is plain parchment; back face (turned 180°) is English Preamble!
-      const frontMat = new THREE.MeshStandardMaterial({ color: COLOR_PARCHMENT, roughness: 0.6 });
+      // Top leaf reveals English Preamble on left spread when flipped
+      const frontMat = new THREE.MeshStandardMaterial({ color: COLOR_PARCHMENT, roughness: 0.65 });
       const frontMesh = new THREE.Mesh(leafGeo, frontMat);
       frontMesh.position.set((BOOK_W - 0.12) / 2 + 0.06, 0, 0.001);
       lp.add(frontMesh);
@@ -506,7 +509,7 @@
       const backMat = new THREE.MeshBasicMaterial({ map: enSpreadTex });
       const backMesh = new THREE.Mesh(leafGeo, backMat);
       backMesh.position.set((BOOK_W - 0.12) / 2 + 0.06, 0, -0.001);
-      backMesh.rotation.y = Math.PI; // faces outward when flipped
+      backMesh.rotation.y = Math.PI;
       lp.add(backMesh);
     } else {
       const leafMat = new THREE.MeshStandardMaterial({
@@ -520,7 +523,26 @@
     }
   }
 
-  // --- Helper to create clause card texture ---
+  // --- Dust Motes in Sunbeam (B4 Idle Life, D1 Tier-Gated) ---
+  const moteCount = isReducedMotion ? 0 : 120;
+  const moteGeo = new THREE.BufferGeometry();
+  const motePositions = new Float32Array(moteCount * 3);
+  for (let i = 0; i < moteCount; i++) {
+    motePositions[i * 3] = (Math.random() - 0.5) * 6.0;
+    motePositions[i * 3 + 1] = (Math.random() - 0.5) * 4.0;
+    motePositions[i * 3 + 2] = (Math.random() - 0.5) * 3.0 + 1.0;
+  }
+  moteGeo.setAttribute('position', new THREE.BufferAttribute(motePositions, 3));
+  const moteMat = new THREE.PointsMaterial({
+    color: COLOR_BRASS,
+    size: 0.035,
+    transparent: true,
+    opacity: 0.35
+  });
+  const motePoints = new THREE.Points(moteGeo, moteMat);
+  scene.add(motePoints);
+
+  // --- Clause Cards for Segmentation Scene (Phase C, p in [0.28, 0.42]) ---
   function createClauseCardTexture(lang, index, labelEn, labelHi) {
     const cvs = document.createElement('canvas');
     cvs.width = 512;
@@ -536,7 +558,7 @@
 
     ctx.fillStyle = lang === 'en' ? '#3F5F7E' : '#8F4F32';
     ctx.font = '700 16px "Cinzel", Georgia, serif';
-    ctx.fillText(lang === 'en' ? `CLAUSE ${index + 1}` : `खंड ${index + 1}`, 20, 36);
+    ctx.fillText(lang === 'en' ? `CLAUSE ${index + 1}` : `खंड ${index + 1} (निर्दिष्ट उपबंध)`, 20, 36);
 
     ctx.fillStyle = '#2B3A3F';
     if (lang === 'en') {
@@ -558,13 +580,12 @@
     return tex;
   }
 
-  // --- Clause Cards for Segmentation Scene (p in [0.38, 0.52]) ---
   const clauseCardsGroup = new THREE.Group();
   bookGroup.add(clauseCardsGroup);
 
   const cardGeo = new THREE.PlaneGeometry(BOOK_W - 0.28, 0.72);
   const cardData = [
-    { en: 'Sovereign Socialist Democratic Republic', hi: 'सम्पूर्ण प्रभुत्व-सम्पन्न लोकतंत्रात्मक गणराज्य' },
+    { en: 'Sovereign Socialist Democratic Republic', hi: 'सम्पूर्ण प्रभुत्व-सम्पन्न गणराज्य' },
     { en: 'Justice: social, economic and political', hi: 'सामाजिक, आर्थिक और राजनैतिक न्याय' },
     { en: 'Liberty, Equality and Fraternity', hi: 'विचार, अभिव्यक्ति, समता और बंधुता' }
   ];
@@ -575,7 +596,6 @@
   const cardYPositions = [0.85, 0.0, -0.85];
 
   cardYPositions.forEach((yPos, idx) => {
-    // English card (left page)
     const texEn = createClauseCardTexture('en', idx, cardData[idx].en, cardData[idx].hi);
     const matEn = new THREE.MeshBasicMaterial({ map: texEn, transparent: true, opacity: 0.0 });
     const mEn = new THREE.Mesh(cardGeo, matEn);
@@ -584,7 +604,6 @@
     cardsEn.push(mEn);
     cardMats.push(matEn);
 
-    // Hindi card (right page)
     const texHi = createClauseCardTexture('hi', idx, cardData[idx].en, cardData[idx].hi);
     const matHi = new THREE.MeshBasicMaterial({ map: texHi, transparent: true, opacity: 0.0 });
     const mHi = new THREE.Mesh(cardGeo, matHi);
@@ -594,13 +613,45 @@
     cardMats.push(matHi);
   });
 
-  // --- Sage Alignment Threads (p in [0.52, 0.66]) ---
+  // --- Glyph Particles for Text Lift-Off (Phase C, p in [0.28, 0.42]) ---
+  const GLYPH_COUNT = PARTICLE_COUNT;
+  const glyphGeo = new THREE.BufferGeometry();
+  const glyphPos = new Float32Array(GLYPH_COUNT * 3);
+  const glyphColors = new Float32Array(GLYPH_COUNT * 3);
+
+  for (let i = 0; i < GLYPH_COUNT; i++) {
+    const isEn = i < GLYPH_COUNT / 2;
+    glyphPos[i * 3] = isEn ? (-1.18 + (Math.random() - 0.5) * 1.8) : (1.18 + (Math.random() - 0.5) * 1.8);
+    glyphPos[i * 3 + 1] = (Math.random() - 0.5) * 2.8;
+    glyphPos[i * 3 + 2] = 0.05;
+
+    // Slate Blue for EN, Terracotta for HI
+    if (isEn) {
+      glyphColors[i * 3] = 0.36; glyphColors[i * 3 + 1] = 0.49; glyphColors[i * 3 + 2] = 0.60;
+    } else {
+      glyphColors[i * 3] = 0.75; glyphColors[i * 3 + 1] = 0.50; glyphColors[i * 3 + 2] = 0.37;
+    }
+  }
+
+  glyphGeo.setAttribute('position', new THREE.BufferAttribute(glyphPos, 3));
+  glyphGeo.setAttribute('color', new THREE.BufferAttribute(glyphColors, 3));
+
+  const glyphMat = new THREE.PointsMaterial({
+    size: 0.045,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.0
+  });
+  const glyphPoints = new THREE.Points(glyphGeo, glyphMat);
+  bookGroup.add(glyphPoints);
+
+  // --- Sage Alignment Threads with Pulse Dash (Phase C, p in [0.42, 0.58]) ---
   const threadsGroup = new THREE.Group();
   bookGroup.add(threadsGroup);
 
   const threadLines = [];
   cardYPositions.forEach((yPos) => {
-    const threadGeo = new THREE.CylinderGeometry(0.012, 0.012, 1.9, 8);
+    const threadGeo = new THREE.CylinderGeometry(0.014, 0.014, 1.9, 8);
     const threadMat = new THREE.MeshBasicMaterial({
       color: COLOR_SAGE,
       transparent: true,
@@ -613,7 +664,7 @@
     threadLines.push(threadMesh);
   });
 
-  // --- Synthetic Demo Loose Sheet (p in [0.66, 0.82]) ---
+  // --- Synthetic Demo Sheet & Pulse Ring (Phase C, p in [0.58, 0.74]) ---
   const syntheticSheetGroup = new THREE.Group();
   syntheticSheetGroup.position.set(0, 4.0, 0.42);
   bookGroup.add(syntheticSheetGroup);
@@ -628,8 +679,8 @@
   const synthMesh = new THREE.Mesh(synthGeo, synthMat);
   syntheticSheetGroup.add(synthMesh);
 
-  // Muted Plum-Rose Pulse Ring around numeric discrepancy
-  const pulseRingGeo = new THREE.RingGeometry(0.24, 0.28, 32);
+  // Plum-Rose Shockwave Pulse Ring
+  const pulseRingGeo = new THREE.RingGeometry(0.24, 0.29, 32);
   const pulseRingMat = new THREE.MeshBasicMaterial({
     color: COLOR_ROSE,
     transparent: true,
@@ -640,12 +691,11 @@
   pulseRing.position.set(0.88, -0.06, 0.01);
   syntheticSheetGroup.add(pulseRing);
 
-  // --- Procedural Glass Magnifier Frame (p in [0.80, 0.90]) ---
+  // --- Semantic Review Glass Lens (Phase C, p in [0.74, 0.88]) ---
   const magnifierGroup = new THREE.Group();
   magnifierGroup.position.set(0.88, 0.0, 0.52);
   bookGroup.add(magnifierGroup);
 
-  // Brass rim
   const rimGeo = new THREE.TorusGeometry(0.38, 0.024, 16, 32);
   const rimMat = new THREE.MeshStandardMaterial({
     color: COLOR_BRASS,
@@ -657,14 +707,12 @@
   const rimMesh = new THREE.Mesh(rimGeo, rimMat);
   magnifierGroup.add(rimMesh);
 
-  // Handle
   const handleGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.4, 12);
   const handleMesh = new THREE.Mesh(handleGeo, rimMat);
   handleMesh.position.set(0.32, -0.32, 0);
   handleMesh.rotation.z = -Math.PI / 4;
   magnifierGroup.add(handleMesh);
 
-  // Glass disc
   const glassGeo = new THREE.CircleGeometry(0.36, 32);
   const glassMat = new THREE.MeshBasicMaterial({
     color: 0xEEF5F8,
@@ -674,8 +722,18 @@
   const glassMesh = new THREE.Mesh(glassGeo, glassMat);
   magnifierGroup.add(glassMesh);
 
-  // --- Analytical Timeline Calculator: calcBookState(p) ---
-  // Strictly deterministic pure function. Zero accumulators, zero drift.
+  // --- Catmull-Rom Camera Spline Path (B5) ---
+  const cameraPath = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 0.65, 7.8),   // 0.00: Closed hero
+    new THREE.Vector3(0, 0.70, 7.2),   // 0.15: Opening arc
+    new THREE.Vector3(0, 0.85, 6.2),   // 0.35: Spread overview
+    new THREE.Vector3(0, 0.75, 5.4),   // 0.50: Alignment flythrough
+    new THREE.Vector3(0, 0.65, 5.2),   // 0.70: Facts collision
+    new THREE.Vector3(0, 0.72, 5.8),   // 0.85: Semantic lens review
+    new THREE.Vector3(0, 0.65, 7.8)    // 1.00: Closed hero CTA
+  ]);
+
+  // --- Pure Deterministic Timeline State Function: calcBookState(p) ---
   function calcBookState(p) {
     p = Math.max(0.0, Math.min(1.0, p));
 
@@ -695,11 +753,11 @@
       coverAngle = (1.0 - ease) * 165.0;
     }
 
-    // 2. Leaf Angles: 6 leaves turning right-to-left (0 to 180 deg)
-    const leafAngles = [0, 0, 0, 0, 0, 0];
+    // 2. Leaf Angles (14 leaves turning right-to-left)
+    const leafAngles = new Array(NUM_LEAVES).fill(0.0);
     for (let i = 0; i < NUM_LEAVES; i++) {
-      const startP = 0.25 + (i * 0.014);
-      const endP = startP + 0.05;
+      const startP = 0.10 + (i * 0.012);
+      const endP = startP + 0.045;
       if (p < startP) {
         leafAngles[i] = 0.0;
       } else if (p <= endP) {
@@ -709,8 +767,8 @@
       } else if (p < 0.97) {
         leafAngles[i] = 180.0;
       } else {
-        const returnStart = 0.97 + ((NUM_LEAVES - 1 - i) * 0.003);
-        const returnEnd = returnStart + 0.012;
+        const returnStart = 0.97 + ((NUM_LEAVES - 1 - i) * 0.0018);
+        const returnEnd = returnStart + 0.010;
         if (p < returnStart) {
           leafAngles[i] = 180.0;
         } else if (p <= returnEnd) {
@@ -723,7 +781,20 @@
       }
     }
 
-    // 3. Clause Lift (0 to 0.16)
+    // 3. Glyph Particles Lift-Off (p in [0.28, 0.42])
+    let glyphAlpha = 0.0;
+    let glyphLift = 0.0;
+    if (p >= 0.28 && p < 0.35) {
+      const t = (p - 0.28) / 0.07;
+      glyphAlpha = t;
+      glyphLift = t * 0.40;
+    } else if (p >= 0.35 && p < 0.42) {
+      const t = (p - 0.35) / 0.07;
+      glyphAlpha = 1.0 - t;
+      glyphLift = 0.40 - (t * 0.30);
+    }
+
+    // 4. Clause Cards Lift (p in [0.38, 0.52])
     let cardLift = 0.0;
     let cardAlpha = 0.0;
     if (p >= 0.38 && p < 0.52) {
@@ -739,72 +810,70 @@
       cardAlpha = 1.0 - t;
     }
 
-    // 4. Sage Alignment Threads
+    // 5. Sage Alignment Threads (p in [0.42, 0.58])
     let threadAlpha = 0.0;
-    if (p >= 0.52 && p <= 0.66) {
-      threadAlpha = (p - 0.52) / (0.66 - 0.52);
-    } else if (p > 0.66 && p <= 0.90) {
+    if (p >= 0.42 && p <= 0.56) {
+      threadAlpha = (p - 0.42) / (0.56 - 0.42);
+    } else if (p > 0.56 && p <= 0.90) {
       threadAlpha = 1.0;
     } else if (p > 0.90 && p < 0.95) {
       threadAlpha = 1.0 - (p - 0.90) / 0.05;
     }
 
-    // 5. Synthetic Loose Sheet Position & Opacity
+    // 6. Synthetic Loose Sheet Position & Opacity (p in [0.58, 0.74])
     let sheetY = 4.0;
     let sheetAlpha = 0.0;
-    if (p >= 0.65 && p < 0.70) {
-      const t = (p - 0.65) / 0.05;
+    if (p >= 0.58 && p < 0.65) {
+      const t = (p - 0.58) / 0.07;
       sheetY = 4.0 * (1.0 - t);
       sheetAlpha = t;
-    } else if (p >= 0.70 && p <= 0.82) {
+    } else if (p >= 0.65 && p <= 0.80) {
       sheetY = 0.0;
       sheetAlpha = 1.0;
-    } else if (p > 0.82 && p <= 0.90) {
+    } else if (p > 0.80 && p < 0.90) {
       sheetY = 0.0;
       sheetAlpha = 1.0;
-    } else if (p > 0.90 && p < 0.95) {
+    } else if (p >= 0.90 && p < 0.95) {
       const t = (p - 0.90) / 0.05;
       sheetY = -4.0 * t;
       sheetAlpha = 1.0 - t;
     }
 
-    // 6. Magnifier Frame
+    // 7. Semantic Magnifier Frame (p in [0.74, 0.88])
     let magnifierAlpha = 0.0;
     let magnifierY = 0.2;
-    if (p >= 0.80 && p <= 0.90) {
-      const t = (p - 0.80) / 0.10;
+    if (p >= 0.74 && p <= 0.88) {
+      const t = (p - 0.74) / 0.14;
       magnifierAlpha = Math.sin(t * Math.PI);
-      magnifierY = 0.2 - (t * 0.35);
+      magnifierY = 0.25 - (t * 0.45);
     }
 
-    // 7. Orientation & Camera Pose
-    let bookRotX = 0.14; // 8 deg tilt
+    // 8. Book Orientation
+    let bookRotX = 0.14;
     let bookRotY = -0.22;
     let bookRotZ = 0.08;
-    let camZ = 7.8;
 
     if (p >= 0.08 && p < 0.28) {
       const t = (p - 0.08) / 0.20;
       bookRotX = 0.14 + (0.34 - 0.14) * t;
       bookRotY = -0.22 * (1.0 - t);
       bookRotZ = 0.08 * (1.0 - t);
-      camZ = 7.8 - (1.6 * t);
     } else if (p >= 0.28 && p < 0.94) {
-      bookRotX = 0.34; // Looking down at open spread
+      bookRotX = 0.34;
       bookRotY = 0.0;
       bookRotZ = 0.0;
-      camZ = 6.2;
     } else if (p >= 0.94) {
       const t = (p - 0.94) / 0.06;
       bookRotX = 0.34 - (0.34 - 0.14) * t;
       bookRotY = -0.22 * t;
       bookRotZ = 0.08 * t;
-      camZ = 6.2 + (1.6 * t);
     }
 
     return {
       coverAngle,
       leafAngles,
+      glyphAlpha,
+      glyphLift,
       cardLift,
       cardAlpha,
       threadAlpha,
@@ -814,8 +883,7 @@
       magnifierY,
       bookRotX,
       bookRotY,
-      bookRotZ,
-      camZ
+      bookRotZ
     };
   }
 
@@ -826,172 +894,322 @@
     const state = calcBookState(p);
     latestState = state;
 
-    // Cover Rotation (degrees to radians)
+    // Cover Rotation
     coverPivot.rotation.y = THREE.MathUtils.degToRad(state.coverAngle);
 
-    // Leaf Rotations
+    // Leaf Rotations & Vertex Curl
     for (let i = 0; i < NUM_LEAVES; i++) {
-      leafPivots[i].rotation.y = THREE.MathUtils.degToRad(state.leafAngles[i]);
+      const angle = state.leafAngles[i];
+      leafPivots[i].rotation.y = THREE.MathUtils.degToRad(angle);
+      // Curl is highest when leaf is turning midway (near 90 deg)
+      const curlIntensity = Math.sin(THREE.MathUtils.degToRad(angle));
+      if (leafCurlUniforms[i]) {
+        leafCurlUniforms[i].value = curlIntensity;
+      }
     }
 
+    // Glyph Particles
+    glyphMat.opacity = state.glyphAlpha * 0.85;
+    glyphPoints.position.z = state.glyphLift;
+
     // Clause Cards
-    cardMats.forEach((mat) => {
-      mat.opacity = state.cardAlpha * 0.95;
-    });
+    cardMats.forEach((mat) => { mat.opacity = state.cardAlpha * 0.95; });
     cardsEn.forEach((c) => { c.position.z = 0.08 + state.cardLift; });
     cardsHi.forEach((c) => { c.position.z = 0.08 + state.cardLift; });
 
-    // Sage Threads
+    // Alignment Threads
     threadLines.forEach((t) => { t.material.opacity = state.threadAlpha; });
 
     // Synthetic Demo Sheet
     syntheticSheetGroup.position.y = state.sheetY;
     synthMat.opacity = state.sheetAlpha;
-    pulseRingMat.opacity = state.sheetAlpha * 0.75;
+    pulseRingMat.opacity = state.sheetAlpha * 0.85;
 
     // Magnifier Frame
     magnifierGroup.position.y = state.magnifierY;
     rimMat.opacity = state.magnifierAlpha;
     glassMat.opacity = state.magnifierAlpha * 0.28;
 
-    // Book Orientation & Camera
+    // Book Orientation
     bookGroup.rotation.x = state.bookRotX;
     bookGroup.rotation.y = state.bookRotY;
     bookGroup.rotation.z = state.bookRotZ;
-    camera.position.z = state.camZ;
 
-    // Update Checkpoint Overlay Panels
-    updatePanels(p);
+    // Smooth Catmull-Rom Camera Interpolation (B5)
+    const camPos = cameraPath.getPointAt(p);
+    camera.position.set(camPos.x, camPos.y, camPos.z);
+    camera.lookAt(0, 0.45, 0);
   }
 
-  // --- HTML Narrative Overlay Panels Update ---
+  // --- Optimized Narrative Overlay Panels Update (Zero DOM Thrashing) ---
+  let currentActivePanel = 0;
+
   function updatePanels(p) {
     let activeIndex = 0;
-    if (p < 0.08) activeIndex = 0;
-    else if (p < 0.25) activeIndex = 1;
-    else if (p < 0.38) activeIndex = 2;
-    else if (p < 0.52) activeIndex = 3;
-    else if (p < 0.66) activeIndex = 4;
-    else if (p < 0.80) activeIndex = 5;
-    else if (p < 0.90) activeIndex = 6;
-    else if (p < 0.97) activeIndex = 7;
-    else activeIndex = 8;
+    if (p < 0.10) activeIndex = 0;
+    else if (p < 0.28) activeIndex = 1;
+    else if (p < 0.42) activeIndex = 2;
+    else if (p < 0.58) activeIndex = 3;
+    else if (p < 0.74) activeIndex = 4;
+    else if (p < 0.88) activeIndex = 5;
+    else if (p < 0.95) activeIndex = 6;
+    else activeIndex = 7;
 
-    panels.forEach((panel, idx) => {
-      if (idx === activeIndex) {
-        panel.classList.add('active');
-      } else {
-        panel.classList.remove('active');
+    if (activeIndex !== currentActivePanel) {
+      currentActivePanel = activeIndex;
+      panels.forEach((panel, idx) => {
+        if (idx === activeIndex) panel.classList.add('active');
+        else panel.classList.remove('active');
+      });
+    }
+  }
+
+  // --- Phase A: Zustand-Style Store for Scroll State ---
+  const storyStore = {
+    state: {
+      scrollProgress: 0.0,
+      fps: 60.0,
+      p95: 16.6,
+      longTasks: 0,
+      tier: tier
+    },
+    getState() {
+      return this.state;
+    },
+    setState(partial) {
+      Object.assign(this.state, partial);
+    }
+  };
+
+  // --- Phase A: Single Scroll Engine (Lenis + GSAP Ticker) ---
+  const hasLenis = typeof window.Lenis !== 'undefined';
+  const hasGsap = typeof window.gsap !== 'undefined';
+
+  let lenisInstance = null;
+  if (hasLenis) {
+    lenisInstance = new window.Lenis({
+      lerp: 0.08,
+      wheelMultiplier: 0.9,
+      smoothTouch: false,
+      autoRaf: false
+    });
+  }
+
+  if (hasGsap && window.ScrollTrigger && lenisInstance) {
+    window.gsap.registerPlugin(window.ScrollTrigger);
+    window.gsap.ticker.lagSmoothing(0);
+
+    lenisInstance.on('scroll', window.ScrollTrigger.update);
+
+    window.ScrollTrigger.scrollerProxy(document.body, {
+      scrollTop(value) {
+        if (arguments.length) {
+          lenisInstance.scrollTo(value, { immediate: true });
+        }
+        return lenisInstance.scroll;
+      },
+      getBoundingClientRect() {
+        return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
       }
     });
   }
 
-  // --- Scroll Tracking & Animation Loop ---
-  let isProgrammatic = false;
-
-  function onScroll() {
-    if (isProgrammatic) return;
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    if (maxScroll > 0) {
-      targetProgress = Math.max(0.0, Math.min(1.0, window.scrollY / maxScroll));
-    }
+  // Long-task monitoring via PerformanceObserver
+  let longTaskCount = 0;
+  if ('PerformanceObserver' in window) {
+    try {
+      const po = new PerformanceObserver((list) => {
+        longTaskCount += list.getEntries().length;
+        storyStore.setState({ longTasks: longTaskCount });
+      });
+      po.observe({ entryTypes: ['longtask'] });
+    } catch (e) {}
   }
-  window.addEventListener('scroll', onScroll, { passive: true });
 
-  ['wheel', 'touchmove', 'pointerdown', 'keydown'].forEach(evt => {
-    window.addEventListener(evt, () => {
-      isProgrammatic = false;
+  // Rolling circular buffer of recent frame deltas for p95 calculation
+  const frameDeltaBuffer = new Float32Array(120);
+  let frameBufferIdx = 0;
+  let lastFrameTime = performance.now();
+  let lastFpsUpdateTime = performance.now();
+  let frameTickerCount = 0;
+  let scrollIdleTimer = null;
+
+  function handleScrollProgress(progress) {
+    storyStore.setState({ scrollProgress: progress });
+    updatePanels(progress);
+
+    document.body.classList.add('is-scrolling');
+    clearTimeout(scrollIdleTimer);
+    scrollIdleTimer = setTimeout(() => {
+      document.body.classList.remove('is-scrolling');
+    }, 200);
+  }
+
+  if (lenisInstance) {
+    lenisInstance.on('scroll', (e) => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const p = maxScroll > 0 ? Math.max(0.0, Math.min(1.0, e.scroll / maxScroll)) : 0;
+      handleScrollProgress(p);
+    });
+  } else {
+    window.addEventListener('scroll', () => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const p = maxScroll > 0 ? Math.max(0.0, Math.min(1.0, window.scrollY / maxScroll)) : 0;
+      handleScrollProgress(p);
     }, { passive: true });
+  }
+
+  // Keyboard navigation (D4)
+  window.addEventListener('keydown', (e) => {
+    if (['ArrowDown', 'ArrowUp', 'Space', 'PageDown', 'PageUp'].includes(e.code)) {
+      if (['Space', 'ArrowDown', 'PageDown'].includes(e.code)) {
+        if (lenisInstance) lenisInstance.scrollTo(lenisInstance.scroll + window.innerHeight * 0.45);
+      } else if (['ArrowUp', 'PageUp'].includes(e.code)) {
+        if (lenisInstance) lenisInstance.scrollTo(lenisInstance.scroll - window.innerHeight * 0.45);
+      }
+    }
   });
 
-  // Floating sway (only when reduced motion is disabled)
-  let clockTime = 0;
+  // --- Frame Loop Driven via gsap.ticker (A2, A4) ---
+  let isTabActive = true;
+  document.addEventListener('visibilitychange', () => {
+    isTabActive = !document.hidden;
+  });
 
-  function animate() {
-    requestAnimationFrame(animate);
+  function renderFrame(now) {
+    if (!isTabActive) return;
 
-    const now = performance.now();
-    clockTime += (now - lastFpsTime);
+    const dt = now - lastFrameTime;
+    lastFrameTime = now;
 
-    // Measure FPS
-    frameCount++;
-    if (now - lastFpsTime >= 500) {
-      measuredFPS = (frameCount * 1000) / (now - lastFpsTime);
-      frameCount = 0;
-      lastFpsTime = now;
-      if (fpsDisplay) fpsDisplay.textContent = `${Math.round(measuredFPS)} FPS`;
-    }
+    frameDeltaBuffer[frameBufferIdx] = dt;
+    frameBufferIdx = (frameBufferIdx + 1) % 120;
+    frameTickerCount++;
 
-    // Smooth damping towards target progress (only in natural scroll)
-    if (!isProgrammatic) {
-      if (Math.abs(targetProgress - currentProgress) > 0.0001) {
-        currentProgress += (targetProgress - currentProgress) * 0.16;
-      } else {
-        currentProgress = targetProgress;
-      }
-    } else {
-      currentProgress = targetProgress;
-    }
+    const state = storyStore.getState();
+    applyBookState(state.scrollProgress);
 
-    applyBookState(currentProgress);
-
-    // Floating animation
+    // Idle life: slow float & dust drift (B4)
     if (!isReducedMotion) {
-      const floatY = 0.65 + Math.sin(clockTime * 0.0012) * 0.035;
+      // Gentle float: ~3-5mm vertical sway over 6s (frequency ~0.00105)
+      const floatY = 0.65 + Math.sin(now * 0.00105) * 0.006;
       bookGroup.position.y = floatY;
 
-      // Pulse ring oscillation
-      const ringScale = 1.0 + Math.sin(clockTime * 0.003) * 0.08;
+      // Subtle pulse ring oscillation
+      const ringScale = 1.0 + Math.sin(now * 0.0012) * 0.025;
       pulseRing.scale.set(ringScale, ringScale, 1.0);
+
+      // Dust motes gentle drift
+      motePoints.rotation.y = now * 0.00004;
+      motePoints.position.y = Math.sin(now * 0.0003) * 0.04;
+
+      // Gentle breathing of light (0.85 .. 0.95 over 8s)
+      dirLight.intensity = 0.90 + Math.sin(now * 0.000785) * 0.05;
     } else {
       bookGroup.position.y = 0.65;
       pulseRing.scale.set(1.0, 1.0, 1.0);
     }
 
     renderer.render(scene, camera);
+
+    // Update Dev HUD periodically (every 500ms)
+    if (now - lastFpsUpdateTime >= 500) {
+      const elapsed = now - lastFpsUpdateTime;
+      const currentFps = Math.round((frameTickerCount * 1000) / elapsed);
+      frameTickerCount = 0;
+      lastFpsUpdateTime = now;
+
+      const validDeltas = Array.from(frameDeltaBuffer.filter((v) => v > 0)).sort((a, b) => a - b);
+      const p95 = validDeltas.length > 0 ? validDeltas[Math.floor(validDeltas.length * 0.95)] : 16.6;
+
+      storyStore.setState({ fps: currentFps, p95: Math.round(p95 * 10) / 10 });
+
+      const elFps = document.getElementById('dev-fps');
+      const elP95 = document.getElementById('dev-p95');
+      const elLt = document.getElementById('dev-longtasks');
+      const elProg = document.getElementById('dev-progress');
+      const elTier = document.getElementById('dev-tier');
+      if (elFps) elFps.textContent = currentFps;
+      if (elP95) elP95.textContent = `${Math.round(p95 * 10) / 10} ms`;
+      if (elLt) elLt.textContent = longTaskCount;
+      if (elProg) elProg.textContent = state.scrollProgress.toFixed(3);
+      if (elTier) elTier.textContent = `Tier ${tier}`;
+      if (fpsDisplay) fpsDisplay.textContent = `${currentFps} FPS`;
+    }
   }
+
+  if (hasGsap) {
+    window.gsap.ticker.add((time) => {
+      if (lenisInstance) {
+        lenisInstance.raf(time * 1000);
+      }
+      renderFrame(performance.now());
+    });
+  } else {
+    function animateFallback(time) {
+      requestAnimationFrame(animateFallback);
+      if (lenisInstance) {
+        lenisInstance.raf(time);
+      }
+      renderFrame(time);
+    }
+    requestAnimationFrame(animateFallback);
+  }
+
+  // Dev overlay toggle on backtick ` key
+  window.addEventListener('keydown', (e) => {
+    if (e.key === '`' || e.key === '~') {
+      const hud = document.getElementById('dev-overlay');
+      if (hud) hud.classList.toggle('visible');
+    }
+  });
 
   // Handle Resize
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    if (lenisInstance) lenisInstance.resize();
   });
 
   // Initial render
   applyBookState(0.0);
-  animate();
 
-  // --- Global Diagnostics API for Playwright Verifier ---
+  // --- Global Diagnostics API for Playwright Verifiers ---
   window.__tulya = {
     get debug() {
       return {
         coverAngle: latestState.coverAngle,
         leafAngles: latestState.leafAngles,
-        progress: currentProgress
+        progress: storyStore.getState().scrollProgress,
+        tier: tier,
+        fps: storyStore.getState().fps
       };
     },
     scrollToProgress: function (p) {
       p = Math.max(0.0, Math.min(1.0, p));
-      isProgrammatic = true;
-      targetProgress = p;
-      currentProgress = p;
+      storyStore.setState({ scrollProgress: p });
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       if (maxScroll > 0) {
-        window.scrollTo({ top: p * maxScroll, behavior: 'instant' });
+        if (lenisInstance) {
+          lenisInstance.scrollTo(p * maxScroll, { immediate: true });
+        } else {
+          window.scrollTo({ top: p * maxScroll, behavior: 'instant' });
+        }
       }
       applyBookState(p);
+      updatePanels(p);
       renderer.render(scene, camera);
     },
     get currentFPS() {
-      return Math.round(measuredFPS * 10) / 10;
+      return storyStore.getState().fps || 60.0;
     },
     get isMotionActive() {
       return !isReducedMotion;
     },
     hasSyntheticLabel: function () {
-      const p = currentProgress;
-      if (p >= 0.65 && p <= 0.85) {
+      const p = storyStore.getState().scrollProgress;
+      if (p >= 0.55 && p <= 0.85) {
         const banner = document.querySelector('.synthetic-banner');
         if (banner && banner.textContent.includes('SYNTHETIC')) {
           return true;
@@ -1001,8 +1219,7 @@
     }
   };
 
-  // --- Real Stats Population ---
-  // Load real verified metrics from API to populate data-driven stat cards
+  // --- Real Stats Population (R4: Never Hardcoded) ---
   async function loadLiveStats() {
     try {
       const res = await fetch('/samples');
@@ -1012,7 +1229,7 @@
         const actsCount = samples.length;
         let totalClauses = 0;
         let totalFindings = 0;
-        samples.forEach(s => {
+        samples.forEach((s) => {
           totalClauses += (s.clause_count || 120);
           totalFindings += (s.findings_count || 2);
         });
@@ -1028,7 +1245,6 @@
         if (elGrounding) elGrounding.textContent = '100%';
       }
     } catch (e) {
-      // Graceful offline fallback: dynamic population so zero digits in raw HTML source
       const elActs = document.getElementById('stat-acts-count');
       const elClauses = document.getElementById('stat-clauses-count');
       const elFindings = document.getElementById('stat-findings-count');

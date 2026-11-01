@@ -125,11 +125,9 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   align-items: center;
   justify-content: space-between;
   padding: 0.85rem 2.25rem;
-  background: rgba(251, 248, 241, 0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: #FBF8F1; /* Solid fill without expensive backdrop-filter compositing */
   border-bottom: 1px solid var(--surface-border);
-  box-shadow: 0 1px 12px rgba(35, 74, 82, 0.04);
+  box-shadow: 0 1px 8px rgba(35, 74, 82, 0.04);
 }
 
 .brand {
@@ -259,19 +257,16 @@ body.debug-mode .fps-counter {
   position: fixed;
   bottom: 1.25rem;
   left: 50%;
-  transform: translateX(-50%) translateY(12px);
+  transform: translateX(-50%) translateY(8px);
   max-width: 660px;
   width: 90%;
-  background: var(--surface-card);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: #FBF8F1; /* Solid fill without backdrop-filter for 60fps compositor speed */
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-lg);
   padding: 1.35rem 2rem;
   box-shadow: var(--surface-shadow);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 300ms ease, transform 300ms ease;
   z-index: 20;
 }
 
@@ -279,6 +274,61 @@ body.debug-mode .fps-counter {
   opacity: 1;
   pointer-events: auto;
   transform: translateX(-50%) translateY(0);
+}
+
+/* Active transform will-change only applied during scrolling, removed when idle */
+body.is-scrolling .story-checkpoint-panel.active {
+  will-change: transform;
+}
+
+/* ==========================================================================
+   Performance HUD Dev Overlay (toggled with backtick ` key)
+   ========================================================================== */
+.dev-overlay {
+  display: none;
+  position: fixed;
+  top: 72px;
+  right: 24px;
+  z-index: 9999;
+  background: rgba(35, 74, 82, 0.96);
+  color: #F3ECDD;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 0.85rem 1.15rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--book-brass);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  min-width: 230px;
+  pointer-events: none;
+}
+
+.dev-overlay.visible {
+  display: block !important;
+}
+
+.dev-overlay-header {
+  font-weight: 700;
+  color: var(--book-brass);
+  border-bottom: 1px solid rgba(184, 155, 94, 0.35);
+  padding-bottom: 0.35rem;
+  margin-bottom: 0.45rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.dev-key {
+  color: #A9B0AE;
+  font-weight: normal;
+}
+
+.dev-metric-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.25rem 0;
+}
+
+.dev-metric-row strong {
+  color: #FFFFFF;
 }
 
 .story-tag {
@@ -912,4 +962,107 @@ body.debug-mode .fps-counter {
   width: 90%;
   padding: 2rem;
   box-shadow: var(--surface-shadow-hover);
+}
+
+/* ==========================================================================
+   Preloader & Custom Ink Dot Cursor
+   ========================================================================== */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: var(--bg-scene-top);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 500ms ease, visibility 500ms ease;
+}
+.preloader.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.preloader-content {
+  text-align: center;
+}
+.preloader-emblem {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 1.25rem;
+  background: var(--book-cover);
+  color: var(--book-brass);
+  font-family: var(--font-hindi);
+  font-size: 1.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 16px rgba(35, 74, 82, 0.15);
+}
+.preloader-bar {
+  width: 180px;
+  height: 2px;
+  background: rgba(35, 74, 82, 0.12);
+  margin: 0 auto 0.85rem;
+  overflow: hidden;
+  border-radius: 1px;
+}
+.preloader-line {
+  width: 100%;
+  height: 100%;
+  background: var(--book-brass);
+  transform: translateX(-100%);
+  animation: preloaderLine 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes preloaderLine {
+  to { transform: translateX(0%); }
+}
+.preloader-text {
+  font-size: 0.82rem;
+  font-family: var(--font-serif);
+  letter-spacing: 0.08em;
+  color: var(--ink-secondary);
+}
+
+/* Custom Ink Cursor */
+.cursor-dot {
+  position: fixed;
+  width: 7px;
+  height: 7px;
+  background: var(--page-ink);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: opacity 200ms ease, transform 80ms ease;
+  display: none;
+}
+.cursor-ring {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid var(--book-brass);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99998;
+  transform: translate(-50%, -50%);
+  transition: width 200ms ease, height 200ms ease, border-color 200ms ease, opacity 200ms ease;
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .cursor-dot, .cursor-ring {
+    display: block;
+  }
+  .cursor-ring.hover {
+    width: 44px;
+    height: 44px;
+    border-color: var(--book-cover);
+    background: rgba(35, 74, 82, 0.06);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cursor-dot, .cursor-ring {
+    display: none !important;
+  }
 }

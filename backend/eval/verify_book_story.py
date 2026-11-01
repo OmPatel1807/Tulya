@@ -343,3 +343,4 @@ def run_book_story_verification() -> Dict[str, Any]:
 if __name__ == "__main__":
     res = run_book_story_verification()
     sys.exit(0 if res["all_passed"] else 1)
+
