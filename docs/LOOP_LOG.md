@@ -590,6 +590,107 @@ Following strict compliance with Rule R6, the held-out evaluation was run **ONCE
 - `backend/app/pipeline/`: Production runner (`runner.py`), models (`models.py`), and correlation merger (`merge.py`).
 - `backend/tests/test_pipeline.py`: Comprehensive test suite (84 tests passing across project).
 
+---
+
+## Phase Loop 7: API and Frontend (Part A & Part B)
+
+### Context & Goal
+Provide production-ready REST API endpoints for asynchronous pipeline execution and report exports, paired with an immersive 3D scroll narrative (`/`) and a high-contrast glassmorphic workspace (`/app`) for side-by-side bilingual statutory discrepancy review.
+
+---
+
+### Part A: REST API Loop
+
+#### Iteration 1 - API Endpoints, Job Manager & Failure Handling
+- **PLAN**:
+  - Implement Pydantic API models (`JobProgress`, `JobStage`, `AuditReportResponse`, `SampleItem`, `LEGAL_DISCLAIMER`) in `backend/app/api/models.py`.
+  - Implement asynchronous background execution in `backend/app/api/jobs.py` tracking stages (`QUEUED` $\to$ `INGESTION` $\to$ `SEGMENTATION` $\to$ `ALIGNMENT` $\to$ `FACTS` $\to$ `SEMANTIC` $\to$ `MERGE` $\to$ `COMPLETE`).
+  - Implement format exporters (`json`, `csv`, `markdown`) in `backend/app/api/export.py` ensuring mandatory legal disclaimer inclusion.
+  - Implement endpoints `/analyze`, `/jobs/{id}`, `/jobs/{id}/report`, `/jobs/{id}/export`, `/samples`, `/samples/{id}/analyze` in `backend/app/api/routes.py`.
+  - Mount frontend routes (`/`, `/app`, `/static`) in `backend/app/api/main.py`.
+  - Create pytest API test suite (`backend/tests/test_api.py`) and verifier script (`backend/eval/verify_api.py`).
+- **ACT**: Created API models, jobs engine, export formatting, routing, tests, and verifier.
+- **VERIFY**:
+  - `pytest backend/tests/test_api.py`: 6 passed in 1.17s.
+  - `python3 backend/eval/verify_api.py`:
+    - Bundled sample runs (`environment_protection_1986`, `domestic_violence_2005`, `right_to_information_2005`): all succeeded with stage tracking and report schemas.
+    - JSON, CSV, and Markdown exports verified with mandatory disclaimer.
+    - Empty file rejection (HTTP 400): PASS.
+    - Legacy 8-bit font detection (KrutiDev/ShreeLipi): PASS (cleanly rejected with helpful Unicode guidance).
+    - Deterministic-only fallback (`force_deterministic=True`): PASS.
+- **DECIDE**: Part A exit criteria met. Proceed to Part B Frontend Loop.
+
+---
+
+### Part B: Frontend Loop
+
+#### Iteration 1 - 3D Scroll Story, Glass Workspace & Measurable Verifier
+- **PLAN**:
+  - Implement `frontend/static/style.css`: High-contrast dark glassmorphic system (WCAG AA $\ge 4.5:1$), Devanagari typography stack, `@media (prefers-reduced-motion: reduce)`.
+  - Implement `frontend/static/story.js` & `frontend/index.html`: WebGL Three.js interactive cracked scale and statutory tablet driven by real sample report metrics, 6 narrative scroll milestones (`0.0, 0.15, 0.40, 0.60, 0.80, 1.0`), hardware tier scalability (Tier 1-3), and "Skip intro" button.
+  - Implement `frontend/static/app.js` & `frontend/app.html`: Synchronized dual bilingual reader (English & Hindi), discrepancy findings drawer with category filters, dynamic quote highlighting, SVG connector line curve bridging quotes, and `localStorage` persistence for Confirm/Dismiss decisions.
+  - Implement automated Playwright verifier `backend/eval/verify_frontend.py`.
+- **ACT**: Created frontend assets, vendored local `three.min.js`, and developed `verify_frontend.py`.
+- **VERIFY**: Ran `python3 backend/eval/verify_frontend.py`:
+  - 3D Story scroll points captured: `story_p0.png`, `story_p15.png`, `story_p40.png`, `story_p60.png`, `story_p80.png`, `story_p100.png`.
+  - Measured framerate: Tier 3 = 60.0 FPS ($\ge 55$), Tier 1 = 60.0 FPS ($\ge 30$).
+  - Contrast ratios: 8.10:1 to 17.90:1 (all $\ge 4.5:1$).
+  - Assertion failed in functional test: first finding had empty `quote_en` (an omission present in Hindi but absent in English) causing highlight selector lookup failure.
+
+#### Iteration 2 - Statutory Omission Highlighting & Visual Bridging
+- **PLAN**: Enhance `applyTextHighlight` in `frontend/static/app.js` to render a visual statutory omission marker (`<mark class="highlight-en">[Statutory Omission: Not present in this text]</mark>`) when a finding represents an omitted clause/fact, guaranteeing both sides highlight and the SVG connector line renders seamlessly.
+- **ACT**: Updated `frontend/static/app.js` with omission handling and cleanup of previous highlight marks.
+- **VERIFY**: Ran `backend/eval/verify_frontend.py`:
+  - Highlights successfully rendered on both sides (`EN='[Statutory Omission: Not present in this...', HI='1...'`).
+  - SVG connector line rendered with curved path.
+  - Finding marked `CONFIRMED`.
+  - Assertion failed on `page.reload()` persistence: findings had random `uuid` IDs on each pipeline run, so reloaded finding cards had different IDs.
+
+#### Iteration 3 - Deterministic Content-Addressed Finding IDs & Provision Paths
+- **PLAN**:
+  - Replace random `uuid.uuid4().hex[:8]` in `backend/app/pipeline/merge.py` with deterministic content-addressed hash `_make_finding_id(case_id, category, quote_en, quote_hi, index)`.
+  - Enrich finding metadata in `backend/app/pipeline/runner.py` with exact provision hierarchy paths (`provision_en`, `provision_hi`).
+  - Update `verify_frontend.py` to wait for specific finding card on reload.
+- **ACT**: Edited `merge.py`, `runner.py`, and `verify_frontend.py`.
+- **VERIFY**: Ran `backend/eval/verify_frontend.py`:
+  - `[+] Scrolled to progress 0.00 -> Captured story_p0.png`
+  - `[+] Scrolled to progress 0.15 -> Captured story_p15.png`
+  - `[+] Scrolled to progress 0.40 -> Captured story_p40.png`
+  - `[+] Scrolled to progress 0.60 -> Captured story_p60.png`
+  - `[+] Scrolled to progress 0.80 -> Captured story_p80.png`
+  - `[+] Scrolled to progress 1.00 -> Captured story_p100.png`
+  - `[+] Tier 3 Measured FPS: 60.0 (Threshold: >= 55 fps)`
+  - `[+] Tier 1 Measured FPS: 60.0 (Threshold: >= 30 fps)`
+  - `[+] 'Skip intro' successfully routed to /app`
+  - `[+] Contrast Checks: 8.10:1 to 17.90:1 (all >= 4.5:1)`
+  - `[+] Both quotes highlighted and SVG connector line drawn`
+  - `[+] Finding confirmed and LocalStorage persistence verified across reload`
+  - `[+] Hindi Devanagari Conjunct Typography: All 5 test words verified`
+  - `[+] Reduced-motion verified: particle drift and rotations disabled`
+  - `[+] Zero browser console errors`
+  - **Result: ALL TESTS PASSED**.
+
+---
+
+### Visual Critique Rubric (5 Lines)
+1. **Legibility**: Text over glass strictly adheres to WCAG AA contrast (14.1:1 to 17.9:1 on primary/secondary copy), and Devanagari typography renders complex consonant conjuncts (`दृष्टि`, `स्थिति`, `निर्दिष्ट`, `सम्बन्ध`, `प्राधिकृत`) with pristine glyph boundaries.
+2. **Hierarchy**: High visual clarity separating the top navigation/action bar, the split synchronized bilingual comparative reader (60% width), and the discrepancy inspector drawer with category badges and actions (40% width).
+3. **Motion Smoothness**: Three.js WebGL canvas consistently maintains 60.0 FPS on both Tier 3 and Tier 1 on the test machine, cleanly disabling particle drift and camera sway when `prefers-reduced-motion` is requested.
+4. **Glass Consistency**: Frosted glassmorphism (`rgba(18, 26, 42, 0.82)` with `backdrop-filter: blur(16px)`, `1px solid rgba(255, 255, 255, 0.14)`, and glowing amber/cyan accents) is uniformly maintained across story cards, workspace panes, and modals.
+5. **Sense of Story**: The narrative progression intuitively connects constitutional equality (Article 348) to silent statutory divergence (ten times tax vs ten times penalty) to automated resolution via Tulya.
+
+### Single Worst Problem & Fix Applied
+- **Problem**: Finding cards initially displayed generic fallback `"Clause Reference"` when provision metadata was not explicitly attached.
+- **Fix**: Enriched `runner.py` to auto-propagate provision tree paths (`en_paths` / `hi_paths` e.g. `Section 2 > Clause (k)`) into finding metadata and displayed them prominently in the drawer citation chips.
+
+---
+
+### Exit Criteria Summary
+- **Part A Exit**: All 6 API tests pass; end-to-end runs succeed on all bundled samples; failure paths cleanly handled (HTTP 400 for empty files, legacy non-Unicode font error); deterministic fallback operational.
+- **Part B Exit**: Zero console errors; 60.0 FPS on Tier 3 ($\ge 55$) and Tier 1 ($\ge 30$); contrast $\ge 4.5:1$ across all text samples; dual quote highlights and SVG connector verified; Confirm/Dismiss persists across reload; Hindi conjunct rendering verified; reduced-motion verified; "Skip intro" works.
+- **Total Iterations**: 4 outer iterations across Part A and Part B (well under maximum of 12).
+- **Status**: PASSED.
+
 
 
 

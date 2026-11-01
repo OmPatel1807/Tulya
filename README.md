@@ -16,7 +16,22 @@ Tulya serves as a **Reviewer's Assistant**:
 
 ---
 
-## Current Status: Phase Loop 6 Complete (End-to-End Evaluation & Improvement)
+## Current Status: Phase Loop 7 Complete (API & Frontend Workspace)
+Tulya has completed its production REST API and interactive Glassmorphic UI:
+- **Part A (REST API Engine)**:
+  - Asynchronous background job manager (`backend/app/api/jobs.py`) tracking progress across 7 stages (`QUEUED` $\to$ `INGESTION` $\to$ `SEGMENTATION` $\to$ `ALIGNMENT` $\to$ `FACTS` $\to$ `SEMANTIC` $\to$ `MERGE` $\to$ `COMPLETE`).
+  - Endpoints for job execution (`POST /analyze`, `POST /samples/{id}/analyze`), status polling (`GET /jobs/{id}`), audit scorecard retrieval (`GET /jobs/{id}/report`), and multi-format exports (`GET /jobs/{id}/export?format=json|csv|md`).
+  - Strict input validation rejecting empty/corrupted PDFs (HTTP 400) and legacy non-Unicode fonts (KrutiDev/ShreeLipi) with clear guidance.
+  - Automated deterministic-only fallback (`force_deterministic=True`) ensuring zero outages during upstream LLM unavailability.
+- **Part B (Frontend UI & 3D Story)**:
+  - **Immersive 3D Scroll Story** (`/`): Three.js WebGL visual of the cracked balance scales and central statutory tablet driven by real sample discrepancy numbers, with hardware tier scalability (Tier 1-3), live FPS monitoring, reduced-motion accessibility, and "Skip intro" direct navigation.
+  - **Glass Workspace** (`/app`): Synchronized side-by-side comparative bilingual reader (English & Hindi), dynamic finding cards with category filtering (`NUMERIC`, `MODALITY`, `OMISSION`, `ADDITION`, `SCOPE`), dual quote highlighting (`.highlight-en` and `.highlight-hi`), animated SVG connector line bridging quotes across languages, and `localStorage` review persistence (`Confirm` / `Dismiss`).
+  - **Devanagari Fidelity**: Verified rendering of complex consonant conjuncts (`दृष्टि`, `स्थिति`, `निर्दिष्ट`, `सम्बन्ध`, `प्राधिकृत`).
+  - **Mandatory Legal Disclaimer**: Prominently presented across reports, exports, and UI views: *"Tulya flags differences for human review. It does not decide or imply which version is legally authoritative, nor does it provide legal advice."*
+
+---
+
+## Phase Loop 6 Summary (End-to-End Evaluation & Improvement)
 Tulya has completed its end-to-end evaluation harness and outer improvement loop:
 - **Harness & Error Injector** (`backend/eval/inject.py`): Programmatically verified single-error injections into Hindi text across `NUMERIC`, `OMISSION`, `ADDITION`, `MODALITY`, and `SCOPE`, strictly partitioned by document.
 - **Regression Suite** (`data/eval/dev/real_inspired_synthetic/cases.jsonl`): Synthetic reproductions of reported public statutory discrepancies (tax penalties, dropped qualifications, acreage differences).
@@ -44,9 +59,27 @@ Tulya has completed its end-to-end evaluation harness and outer improvement loop
 
 ---
 
-## Running the Pipeline & Verifiers
+## Running the Application & Verifiers
 
-### 1. Run End-to-End Pipeline Verifier (Phase Loop 6 Exit Verifier)
+### 1. Launch Tulya Application Server (API + Frontend UI)
+```bash
+uvicorn backend.app.api.main:app --host 0.0.0.0 --port 8000 --reload
+```
+Navigate to:
+- `http://localhost:8000/` : Immersive 3D Scroll Story
+- `http://localhost:8000/app` : Glass Workspace (Bilingual Reader + Discrepancy Drawer)
+- `http://localhost:8000/docs` : Swagger OpenAPI Documentation
+
+### 2. Run Phase Loop 7 Verifiers (API & Frontend)
+```bash
+# Part A: REST API Verifier
+python3 backend/eval/verify_api.py
+
+# Part B: Playwright Visual, Performance & Functional Verifier
+python3 backend/eval/verify_frontend.py
+```
+
+### 3. Run End-to-End Pipeline Verifier (Phase Loop 6 Exit Verifier)
 ```bash
 python3 backend/eval/verify_pipeline.py
 ```

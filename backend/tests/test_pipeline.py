@@ -139,3 +139,4 @@ def test_regression_cases_all_flagged():
     reg_eval = evaluate_regression_cases()
     assert reg_eval["all_flagged"] is True
     assert reg_eval["flagged_count"] == 6
+

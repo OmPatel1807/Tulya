@@ -69,8 +69,17 @@ class PipelineRunner:
             fact_res=fact_res,
             semantic_res=semantic_res,
             en_text=en_text,
-            hi_text=hi_text
+            hi_text=hi_text,
+            case_id=case_id
         )
+
+        for f in valid_findings:
+            f.metadata.setdefault("en_paths", en_paths)
+            f.metadata.setdefault("hi_paths", hi_paths)
+            if "provision_en" not in f.metadata or not f.metadata["provision_en"]:
+                f.metadata["provision_en"] = " > ".join(en_paths) if en_paths else case_id
+            if "provision_hi" not in f.metadata or not f.metadata["provision_hi"]:
+                f.metadata["provision_hi"] = " > ".join(hi_paths) if hi_paths else case_id
 
         latency_ms = (time.perf_counter() - t0) * 1000.0
 

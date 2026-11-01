@@ -11,11 +11,19 @@ Performs:
 
 from typing import List, Tuple, Optional, Set
 import uuid
+import hashlib
 
 from backend.app.facts.models import FactComparisonResult, FactDifference
 from backend.app.semantic.models import SemanticComparisonResult, SemanticFinding, SemanticCategory
 from backend.app.semantic.grounding import is_substring_grounded
 from backend.app.pipeline.models import AuditFinding, AuditCategory, AuditSeverity, AuditSource
+
+
+def _make_finding_id(case_id: str, cat_val: str, quote_en: Optional[str], quote_hi: Optional[str], idx: int) -> str:
+    """Generates a stable, deterministic finding ID based on clause ID, category, quotes and index."""
+    key = f"{case_id}:{cat_val}:{quote_en or ''}:{quote_hi or ''}:{idx}"
+    h = hashlib.sha256(key.encode("utf-8")).hexdigest()[:10]
+    return f"audit_{h}"
 
 
 def _normalize_category(cat_str: str) -> AuditCategory:
@@ -50,7 +58,8 @@ def merge_clause_findings(
     fact_res: Optional[FactComparisonResult],
     semantic_res: Optional[SemanticComparisonResult],
     en_text: str,
-    hi_text: str
+    hi_text: str,
+    case_id: str = "clause"
 ) -> Tuple[List[AuditFinding], List[AuditFinding]]:
     """
     Reconciles deterministic fact differences with LLM semantic findings.
@@ -110,7 +119,7 @@ def merge_clause_findings(
             break
 
     # Process paired complementary facts
-    for h_idx, e_idx in paired_fact_pairs:
+    for pair_idx, (h_idx, e_idx) in enumerate(paired_fact_pairs):
         fd_h = raw_fact_diffs[h_idx]
         fd_e = raw_fact_diffs[e_idx]
         q_en = fd_h.evidence_en
@@ -129,7 +138,7 @@ def merge_clause_findings(
             consumed_sem_indices.add(matched_s_idx)
             sf = sem_findings[matched_s_idx]
             finding = AuditFinding(
-                finding_id=f"audit_{uuid.uuid4().hex[:8]}",
+                finding_id=_make_finding_id(case_id, "NUMERIC", q_en, q_hi, pair_idx),
                 category=AuditCategory.NUMERIC,
                 source=AuditSource.BOTH,
                 severity=AuditSeverity.HIGH,
@@ -142,7 +151,7 @@ def merge_clause_findings(
             )
         else:
             finding = AuditFinding(
-                finding_id=f"audit_{uuid.uuid4().hex[:8]}",
+                finding_id=_make_finding_id(case_id, "NUMERIC", q_en, q_hi, pair_idx),
                 category=AuditCategory.NUMERIC,
                 source=AuditSource.DETERMINISTIC,
                 severity=AuditSeverity.HIGH,
@@ -192,7 +201,7 @@ def merge_clause_findings(
         source = AuditSource.BOTH if subsumed_fact_indices else AuditSource.LLM
 
         sem_finding = AuditFinding(
-            finding_id=f"audit_{uuid.uuid4().hex[:8]}",
+            finding_id=_make_finding_id(case_id, sf.category.value, sf.quote_en, sf.quote_hi, s_idx),
             category=_normalize_category(sf.category.value),
             source=source,
             severity=AuditSeverity(sf.severity.value),
@@ -240,7 +249,7 @@ def merge_clause_findings(
             f_cat = AuditCategory.NUMERIC if fd.fact_type.name in ["NUMBER", "PERCENT", "MONEY", "DURATION", "AREA_LENGTH", "SECTION_REF"] else AuditCategory.OMISSION
 
         det_finding = AuditFinding(
-            finding_id=f"audit_{uuid.uuid4().hex[:8]}",
+            finding_id=_make_finding_id(case_id, f_cat.value, f_q_en, f_q_hi, f_idx),
             category=f_cat,
             source=AuditSource.DETERMINISTIC,
             severity=AuditSeverity.HIGH,
@@ -259,9 +268,9 @@ def merge_clause_findings(
 
     # 4. Include findings discarded by Grounding Guard in semantic stage
     if semantic_res and semantic_res.discarded_findings:
-        for d in semantic_res.discarded_findings:
+        for d_idx, d in enumerate(semantic_res.discarded_findings):
             discarded_findings.append(AuditFinding(
-                finding_id=f"audit_{uuid.uuid4().hex[:8]}",
+                finding_id=_make_finding_id(case_id, d.category.value, d.quote_en, d.quote_hi, d_idx + 1000),
                 category=_normalize_category(d.category.value),
                 source=AuditSource.LLM,
                 severity=AuditSeverity(d.severity.value),

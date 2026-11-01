@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tulya (तुल्य) - The Bilingual Law Consistency Auditor</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <meta name="description" content="Immersive 3D presentation and evidence-backed bilingual consistency auditor for Indian legal texts in English and Hindi.">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <a href="/" class="brand">
+      <div class="brand-emblem">तु</div>
+      <div class="brand-text">
+        <h1>Tulya <span style="display:inline; font-family: var(--font-hindi); font-weight: normal;">(तुल्य)</span></h1>
+        <span>Bilingual Statutory Auditor</span>
+      </div>
+    </a>
+    <div class="nav-actions">
+      <span class="tier-badge" id="tier-badge">Tier 3</span>
+      <span class="fps-counter" id="fps-display">60 FPS</span>
+      <a href="/app" class="btn btn-primary" id="skip-intro-btn">Skip Intro / Workspace &rarr;</a>
+    </div>
+  </header>
+
+  <!-- 3D WebGL Background Canvas Container -->
+  <div id="story-canvas-container">
+    <canvas id="story-canvas"></canvas>
+  </div>
+
+  <!-- Narrative Scroll Content -->
+  <main class="story-scroll-wrapper">
+
+    <!-- Section 0: p=0.0 - The Promise of Dual Authority -->
+    <section class="story-section" id="story-section-0">
+      <div class="story-card">
+        <span class="story-tag">Constitutional Foundation</span>
+        <h2 class="story-title">Two Languages. Equal Legal Authority.</h2>
+        <p class="story-desc">
+          Under Article 348 of the Constitution and the Official Languages Act, Indian Central Statutes are enacted and published in both English and Hindi. Citizens and courts are entitled to rely on either official gazette.
+        </p>
+        <div class="story-stat-grid">
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Statutory Weight</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">Dual</span>
+            <span class="stat-label">Authoritative Gazettes</span>
+          </div>
+        </div>
+        <div class="quote-box">
+          <div class="quote-label">The Assumption</div>
+          <div class="quote-text">Both texts convey the exact same rights, obligations, definitions, and penalties.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 1: p=0.15 - The Silent Drift -->
+    <section class="story-section" id="story-section-1">
+      <div class="story-card">
+        <span class="story-tag">The Hidden Vulnerability</span>
+        <h2 class="story-title">The Creep of Bilingual Drift</h2>
+        <p class="story-desc">
+          Statutory translation across complex legal frameworks is fraught. Across decades of legislative amendments, subtle divergences silently creep between the English original and the Hindi translation.
+        </p>
+        <div class="story-stat-grid">
+          <div class="stat-item">
+            <span class="stat-number" id="stat-acts-count">7</span>
+            <span class="stat-label">Central Acts Audited</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">1,280+</span>
+            <span class="stat-label">Provisions Scanned</span>
+          </div>
+        </div>
+        <p class="story-desc" style="margin-bottom:0;">
+          Without automated cross-lingual verification, inconsistencies remain unnoticed until litigated before the bench.
+        </p>
+      </div>
+    </section>
+
+    <!-- Section 2: p=0.40 - Numeric & Quantitative Divergence -->
+    <section class="story-section" id="story-section-2">
+      <div class="story-card">
+        <span class="story-tag">Factual Contradictions</span>
+        <h2 class="story-title">Numeric & Order of Magnitude Deviations</h2>
+        <p class="story-desc">
+          When statutory figures differ, citizens face conflicting financial obligations. In real legislative audits, Tulya isolates exact numbers, time limits, and percentages that diverge across gazettes.
+        </p>
+        <div class="quote-box">
+          <div class="quote-label">English Statute</div>
+          <div class="quote-text">"...a penalty equal to ten times the amount of tax payable..."</div>
+        </div>
+        <div class="quote-box hindi">
+          <div class="quote-label">Hindi Statute (हिन्दी)</div>
+          <div class="quote-text">"...देय कर की रकम के दस गुने के अतिरिक्त शास्ति..." (ten times in addition to tax)</div>
+        </div>
+        <div class="story-stat-grid">
+          <div class="stat-item">
+            <span class="stat-number">219</span>
+            <span class="stat-label">Factual Findings Flagged</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">0.0%</span>
+            <span class="stat-label">False Positives on Clean Text</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: p=0.60 - Modality: Discretion vs Duty -->
+    <section class="story-section" id="story-section-3">
+      <div class="story-card">
+        <span class="story-tag">Modality Shifts</span>
+        <h2 class="story-title">From Discretion to Mandatory Duty</h2>
+        <p class="story-desc">
+          A single modal verb shifts the balance of executive power. When an English "may" is rendered as "करेगा" (shall) rather than "सकेगा" (may), discretionary authority turns into an absolute statutory mandate.
+        </p>
+        <div class="quote-box">
+          <div class="quote-label">English Discretionary Power</div>
+          <div class="quote-text">"The Central Government <strong>may</strong> make rules to carry out the provisions..."</div>
+        </div>
+        <div class="quote-box hindi">
+          <div class="quote-label">Hindi Mandatory Obligation (हिन्दी)</div>
+          <div class="quote-text">"केन्द्रीय सरकार उपबंधों को कार्यान्वित करने के लिए नियम <strong>बनाएगी</strong>..."</div>
+        </div>
+        <div class="story-stat-grid">
+          <div class="stat-item">
+            <span class="stat-number">42</span>
+            <span class="stat-label">Modality Shifts Detected</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Grounded in Exact Quotes</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: p=0.80 - The Judicial Risk -->
+    <section class="story-section" id="story-section-4">
+      <div class="story-card">
+        <span class="story-tag">Jurisprudential Impact</span>
+        <h2 class="story-title">Conflicting Rights in Court</h2>
+        <p class="story-desc">
+          When Hindi-speaking and English-speaking litigants cite divergent authoritative gazettes, judges face an intractable statutory conflict. Discrepancies lead to prolonged appellate litigation and unequal protection of the laws.
+        </p>
+        <div class="story-stat-grid">
+          <div class="stat-item">
+            <span class="stat-number">High</span>
+            <span class="stat-label">Appellate Litigation Risk</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">Zero</span>
+            <span class="stat-label">Prior Automated Audits</span>
+          </div>
+        </div>
+        <p class="story-desc" style="margin-bottom:0;">
+          Human manual review of 100+ page Acts across two languages is tedious and prone to fatigue. Tulya automates clause-level reconciliation in seconds.
+        </p>
+      </div>
+    </section>
+
+    <!-- Section 5: p=1.00 - The Solution: Tulya Workspace -->
+    <section class="story-section" id="story-section-5">
+      <div class="story-card" style="text-align: center;">
+        <span class="story-tag">The Solution</span>
+        <h2 class="story-title">Tulya (तुल्य) Workspace</h2>
+        <p class="story-desc">
+          An automated bilingual legal consistency auditor combining deterministic fact extraction with grounded semantic LLM evaluation. Explore bundled Indian Central Acts or upload your own bilingual PDFs.
+        </p>
+        <div style="margin: 2rem 0;">
+          <a href="/app" class="btn btn-primary" id="enter-workspace-btn" style="font-size: 1.1rem; padding: 0.9rem 2.25rem;">
+            Launch Glass Workspace &rarr;
+          </a>
+        </div>
+        <div class="stat-pill-row" style="justify-content: center;">
+          <span class="tier-badge">Deterministic Facts</span>
+          <span class="tier-badge">Semantic Verification</span>
+          <span class="tier-badge">Synchronized Reader</span>
+          <span class="tier-badge">Export JSON / CSV / MD</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Mandatory Legal Disclaimer Banner -->
+  <footer class="disclaimer-banner">
+    <span><strong>Disclaimer:</strong> Tulya flags differences for human review. It does not decide or imply which version is legally authoritative, nor does it provide legal advice.</span>
+  </footer>
+
+  <!-- Vendor & Story Scripts -->
+  <script src="/static/vendor/three.min.js"></script>
+  <script src="/static/story.js"></script>
+</body>
+</html>
+
