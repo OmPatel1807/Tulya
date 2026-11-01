@@ -113,7 +113,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
 }
 
 /* ==========================================================================
-   Navigation Header
+   Navigation Header (Smart Header: slides out on scroll down, slides in on scroll up)
    ========================================================================== */
 .navbar {
   position: fixed;
@@ -128,6 +128,80 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   background: #FBF8F1; /* Solid fill without expensive backdrop-filter compositing */
   border-bottom: 1px solid var(--surface-border);
   box-shadow: 0 1px 8px rgba(35, 74, 82, 0.04);
+}
+
+/* Landing story smart slide transition (Story route only, /app stays steady) */
+.story-navbar {
+  transform: translateY(0);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.story-navbar.is-hidden {
+  transform: translateY(-100%);
+}
+
+/* Persistent Floating Minimal Controls (Visible only when story-navbar slides out) */
+.story-minimal-nav {
+  position: fixed;
+  top: 1.25rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.story-minimal-nav.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.minimal-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--book-cover);
+  color: #F3ECDD;
+  border-radius: 6px;
+  font-family: var(--font-hindi);
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-decoration: none;
+  opacity: 0.75;
+  box-shadow: 0 2px 8px rgba(26, 27, 30, 0.15);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.minimal-brand:hover {
+  opacity: 1.0;
+  transform: scale(1.06);
+}
+
+.minimal-skip {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink-secondary);
+  text-decoration: none;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background: rgba(251, 248, 241, 0.65);
+  border: 1px solid rgba(43, 58, 63, 0.08);
+  opacity: 0.75;
+  transition: opacity 200ms ease, color 200ms ease, background 200ms ease;
+}
+
+.minimal-skip:hover {
+  opacity: 1.0;
+  color: var(--ink-primary);
+  background: #FBF8F1;
 }
 
 .brand {
@@ -233,17 +307,217 @@ body.debug-mode .fps-counter {
 /* ==========================================================================
    Constitution Book 3D Scroll Story
    ========================================================================== */
+/* ==========================================================================
+   Full-Bleed Alive Stage (FIX 2: Layers L0 - L3, Ink and Clay Palette)
+   ========================================================================== */
+.story-stage {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: var(--mist-light);
+}
+
+.stage-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* L0: Base Mist Gradient + Subtle Paper Grain */
+.stage-layer-l0 {
+  z-index: 1;
+  background: linear-gradient(180deg, #E8ECE8 0%, #DCE3DF 45%, #D3DCDB 100%);
+}
+
+.stage-grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.045;
+  background-image: radial-gradient(rgba(43, 58, 63, 0.5) 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+
+/* L1: Original Architectural Colonnade Line-Art Silhouette (Hairline SVG) */
+.stage-layer-l1 {
+  z-index: 2;
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stage-colonnade-svg {
+  width: 100%;
+  height: 100%;
+  opacity: 0.85;
+}
+
+/* L2: Ghost Typography (Latin Slate Left, Devanagari Clay Right) */
+.stage-layer-l2 {
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4vw;
+  will-change: transform;
+}
+
+.ghost-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 44vw;
+  user-select: none;
+  will-change: transform;
+  transition: opacity 600ms ease;
+}
+
+.ghost-col-left {
+  text-align: left;
+  color: #5B7C99;
+}
+
+.ghost-col-right {
+  text-align: right;
+  color: #C0805F;
+}
+
+.ghost-word-cover {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 7vw, 8rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.05;
+  opacity: 0.065;
+  transition: opacity 600ms ease;
+}
+
+.ghost-col-right .ghost-word-cover {
+  font-family: var(--font-hindi);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.ghost-word-sub {
+  font-family: var(--font-serif);
+  font-size: clamp(0.85rem, 1.4vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  margin-top: 0.5rem;
+  opacity: 0.045;
+}
+
+.ghost-col-right .ghost-word-sub {
+  font-family: var(--font-hindi);
+  letter-spacing: 0.06em;
+}
+
+.ghost-clauses-strip {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  font-family: var(--font-mono);
+  font-size: clamp(1.2rem, 2.5vw, 2.8rem);
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.ghost-col-right .ghost-clauses-strip {
+  justify-content: flex-end;
+  font-family: var(--font-hindi);
+}
+
+/* Segmentation Scene: Ghost Typography breaks into Clause numbers */
+.stage-scene-segmentation .ghost-word-cover,
+.stage-scene-segmentation .ghost-word-sub {
+  opacity: 0.02;
+}
+
+.stage-scene-segmentation .ghost-clauses-strip {
+  opacity: 0.08;
+}
+
+/* Alignment Scene: Two-column grid appears */
+.stage-alignment-grid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  background-image: linear-gradient(to right, rgba(127, 160, 138, 0.08) 1px, transparent 1px);
+  background-size: 50% 100%;
+  transition: opacity 600ms ease;
+}
+
+.stage-scene-alignment .stage-alignment-grid {
+  opacity: 1;
+}
+
+/* L3: Soft Diagonal Sunbeam */
+.stage-layer-l3 {
+  z-index: 4;
+}
+
+.sunbeam-band {
+  position: absolute;
+  top: -40%;
+  left: -20%;
+  width: 140%;
+  height: 180%;
+  background: linear-gradient(125deg,
+    transparent 28%,
+    rgba(255, 255, 255, 0.03) 40%,
+    rgba(255, 252, 245, 0.12) 50%,
+    rgba(255, 255, 255, 0.04) 60%,
+    transparent 74%
+  );
+  transform: rotate(-14deg);
+  pointer-events: none;
+  transition: background 600ms ease, opacity 600ms ease;
+}
+
+/* Synthetic Mismatch Scene: Sunbeam shifts a hair warmer */
+.stage-scene-mismatch .sunbeam-band {
+  background: linear-gradient(125deg,
+    transparent 28%,
+    rgba(224, 185, 120, 0.04) 40%,
+    rgba(224, 185, 120, 0.14) 50%,
+    rgba(224, 185, 120, 0.05) 60%,
+    transparent 74%
+  );
+}
+
+/* ==========================================================================
+   Constitution Book 3D Scroll Story & Viewport
+   ========================================================================== */
 #story-canvas-container {
   position: fixed;
   inset: 0;
-  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 5;
   pointer-events: none;
 }
 
 #story-canvas {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   display: block;
+  z-index: 5;
 }
 
 /* 600vh scroll container for smooth, unhurried progression */
@@ -253,27 +527,67 @@ body.debug-mode .fps-counter {
   min-height: 600vh;
 }
 
+/* FIX 3: Story Checkpoint Cards placed in Side Thirds (Never Overlapping Book) */
 .story-checkpoint-panel {
   position: fixed;
-  bottom: 1.25rem;
-  left: 50%;
-  transform: translateX(-50%) translateY(8px);
-  max-width: 660px;
-  width: 90%;
-  background: #FBF8F1; /* Solid fill without backdrop-filter for 60fps compositor speed */
+  z-index: 20;
+  background: #FBF8F1; /* Solid fill without expensive backdrop-filter */
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-lg);
-  padding: 1.35rem 2rem;
+  padding: 1.35rem 1.85rem;
   box-shadow: var(--surface-shadow);
   opacity: 0;
   pointer-events: none;
-  z-index: 20;
+  transition: opacity 350ms ease, transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.story-checkpoint-panel.active {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
+/* Wide screens (Desktop): Placed in Left or Right Thirds, Vertically Centered */
+@media (min-width: 1025px) {
+  .story-checkpoint-panel {
+    top: 50%;
+    bottom: auto;
+    width: 24vw;
+    max-width: 360px;
+    min-width: 290px;
+    padding: 1.25rem 1.65rem;
+    transform: translateY(-50%) scale(0.96);
+  }
+
+  .story-checkpoint-panel.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) scale(1.0);
+  }
+
+  /* Left-Third Placement */
+  .story-checkpoint-panel.panel-side-left {
+    left: 2.25rem;
+    right: auto;
+  }
+
+  /* Right-Third Placement */
+  .story-checkpoint-panel.panel-side-right {
+    right: 2.25rem;
+    left: auto;
+  }
+}
+
+/* Narrow screens (Tablet / Mobile): Bottom 30% area */
+@media (max-width: 1024px) {
+  .story-checkpoint-panel {
+    bottom: 1.25rem;
+    top: auto;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    width: 90%;
+    max-width: 520px;
+  }
+
+  .story-checkpoint-panel.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 /* Active transform will-change only applied during scrolling, removed when idle */

@@ -1030,11 +1030,78 @@ User provided three direct visual feedback items with reference screenshots:
 5. **DoubleSide Leaf Materials & Visibility**:
    - Set `leafMatFront` and `leafMatBack` to `THREE.DoubleSide` and hid `turnLeafPivot` once the turn is settled ($p \in [0.36, 0.88]$).
 
-### Verification
-- **Automated Verifier**: `backend/eval/verify_book_and_demo.py` passed all 6 checks.
-- **Pixel Inspection**:
-  - `docs/checkpoints/fixed_clause_pairing_p48.png`: English card row 500 contains 482 ink text pixels, continuous card background across full width $X \in [400, 880]$.
-  - `docs/checkpoints/fixed_semantic_review_p78.png`: Synthetic demo sheet and spread span continuously from $X = 460$ to $1420$ with zero truncation.
+## [2026-11-01] Layout Overhaul: Smart Header, Full-Bleed Alive Stage & Zero-Overlap Side Cards
+
+### Problem Statement & User Feedback
+1. **Header Obscuring Scene Space**: The static opaque top navbar was always present, reducing the vertical viewport and causing the 3D book to feel cramped and offset downward.
+2. **Empty Skewed Grey Square**: The 3D baked contact shadow plane underneath the book (`shadowMesh`) was a hard-edged tilted rectangular polygon (`PlaneGeometry(6.4, 4.4)`), creating a visible grey skewed parallelogram behind the volume and giving an empty, unfinished look to the background.
+3. **Card Overlap & Layout Shift**: Cards centered at the bottom partially occluded the lower edges of the book or spread on certain screen sizes.
+
+### Architectural Decisions & Implementations
+
+#### FIX 1 — Smart Header (Zero Scene Space Cost)
+- **Transform-Only Slide Animation**: Added `.story-navbar` with `transform: translateY(0)` and `transform: translateY(-100%)` (300ms cubic-bezier transition, GPU composited layer).
+- **Intelligent Visibility Triggers**:
+  - Visible at scroll $p \le 0.015$ (top of page).
+  - Slides up and hides when scrolling down ($p > lastP + 0.001$).
+  - Slides back into view when scrolling up ($p < lastP - 0.002$) or when cursor enters the top 60px (`clientY <= 60`).
+  - `/app` workspace maintains its standard persistent header; smart sliding applies only to the landing story route.
+- **Persistent Minimal Nav (`#story-minimal-nav`)**:
+  - When the main navbar is hidden, a clean floating minimal nav fades in with `opacity: 1`, containing only a 32px square brand mark ("तु") in the top-left and a translucent "Skip intro &rarr;" link in the top-right. Zero background bar, zero visual clutter.
+- **Full Viewport Centering**: Scene viewport is set to 100dvh (`#story-canvas-container`), centering the book across the full height of the display.
+
+#### FIX 2 — Full-Bleed Alive Stage (Replaces Skewed Square)
+- **Eliminated Hard Polygon Borders**: Replaced the flat rectangular `shadowMesh` with a procedural radial elliptical gradient texture (`createContactShadowTexture()`). Major radius is scaled to 220px in X and 105px in Y, smoothly dropping opacity to 0.0 at 92% of radius, guaranteeing zero hard edges or cut-offs.
+- **Transparent WebGL Compositing**: Set `renderer` with `alpha: true` and cleared `scene.background = null`, allowing the underlying HTML/SVG stage to shine through.
+- **5-Layer Full-Bleed Stage (`#story-stage`)**:
+  - **L0 Base**: Vertical mist gradient (`#E8ECE8` to `#D3DCDB`) with 4.5% radial paper-grain texture.
+  - **L1 Architecture**: Original line-art silhouette of an arched colonnade (SVG hairline strokes, 7.5% opacity) drifting 12-15px in hardware-accelerated parallax (`translate3d`).
+  - **L2 Ghost Typography**: Faint (5-7% opacity) typography with Latin "CONSTITUTION" / "JUSTICE · LIBERTY · EQUALITY" in slate blue on the left and Devanagari "भारत का संविधान" / "न्याय · स्वतंत्रता · समता" in terracotta clay on the right. Both columns slide slowly in opposite directions with scroll.
+  - **L3 Light**: Soft diagonal sunbeam band (12% opacity, $125^\circ$) with 120 gentle drifting dust motes.
+  - **L4 Ground**: Soft elliptical contact shadow in Three.js grounding the volume on the table.
+- **Stage Crossfades (600ms)**: Seamless CSS class transitions across scenes (`stage-scene-cover`, `stage-scene-segmentation`, `stage-scene-alignment`, `stage-scene-mismatch`, `stage-scene-closing`). In the segmentation scene, ghost typography transitions to faint section numbers; in the alignment scene, a subtle 2-column grid appears; in the synthetic mismatch scene, the sunbeam warms delicately.
+
+#### FIX 3 — Side-Third Floating Cards & Zero Overlap
+- **Desktop (Wide Screens $\ge 1025$px)**:
+  - Checkpoint cards float in side thirds vertically centered (`top: 50%; transform: translateY(-50%)`), strictly alternating sides per checkpoint:
+    - Panel 0: Left third
+    - Panel 1: Right third
+    - Panel 2: Left third
+    - Panel 3: Right third
+    - Panel 4: Left third
+    - Panel 5: Right third
+    - Panel 6: Left third
+    - Panel 7: Right third
+  - **Dynamic Book Side-Offset (`getSideOffset(p)`)**: On desktop, the 3D book smoothly shifts horizontally to the opposite side of the active panel (+1.35 units right when card is on the left; -1.35 units left when card is on the right) using cubic ease-in-out interpolation.
+  - **Zero Overlap Guarantee**: Verified mathematically and via automated tests: all 8 checkpoints maintain $>80\text{px}$ to $193\text{px}$ clean separation between book bounding box and active card bounding box.
+- **Narrow Screens ($< 1025$px)**:
+  - Cards dock at the bottom 30% (`bottom: 1.25rem`).
+  - Book dynamically scales down (`targetScale = 0.54`) and shifts up (`narrowShiftY = 0.35`) to comfortably fill the upper 70% of the screen, leaving a clean 119px vertical gap above the cards.
+
+---
+
+### Verification Results
+1. **`backend/eval/verify_layout_and_stage.py`**:
+   - Smart header: Visible at $p=0$, hidden at $p=0.20$, revealed on cursor hovering top 30px.
+   - Separation check at 1440x900:
+     - $p=0.00$ (panel-0, left): Overlap=False, Separation=147.8px
+     - $p=0.18$ (panel-1, right): Overlap=False, Separation=193.2px
+     - $p=0.35$ (panel-2, left): Overlap=False, Separation=114.2px
+     - $p=0.50$ (panel-3, right): Overlap=False, Separation=94.9px
+     - $p=0.68$ (panel-4, left): Overlap=False, Separation=117.2px
+     - $p=0.82$ (panel-5, right): Overlap=False, Separation=132.3px
+     - $p=0.91$ (panel-6, left): Overlap=False, Separation=81.4px
+     - $p=0.98$ (panel-7, right): Overlap=False, Separation=158.6px
+   - Parallax: Colonnade drifting +12px, English ghost col +19.2px, Hindi ghost col -19.2px via `translate3d`.
+   - Full HD 1920x1080 check: All 8 checkpoints pass with zero overlap.
+   - Narrow screen 800x1024 check: Book bottom = 596.9px, Panel top = 716.0px (Gap = +119.1px).
+   - Frame compute time p95: 16.80 ms.
+2. **`backend/eval/verify_book_and_demo.py`**:
+   - Opening arc ($0^\circ \to 170^\circ$) & closing arc ($170^\circ \to 0^\circ$): PASSED.
+   - Synthetic demo clean check: 0 overlay elements intersect quoted text boxes.
+   - Maximum idle shake diff: 0.968% (threshold < 2.0%).
+   - Console errors: 0.
+3. **Unit Tests**: All 90 pytest tests pass.
 - **Status: PASSED**.
 
 

@@ -22,8 +22,8 @@
   <div id="cursor-dot" class="cursor-dot" aria-hidden="true"></div>
   <div id="cursor-ring" class="cursor-ring" aria-hidden="true"></div>
 
-  <!-- Top Navigation Header -->
-  <header class="navbar" role="banner">
+  <!-- Top Navigation Header (Smart Header: slides out on scroll down, slides in on scroll up) -->
+  <header class="navbar story-navbar" id="story-navbar" role="banner">
     <a href="/" class="brand" aria-label="Tulya Home">
       <div class="brand-emblem" aria-hidden="true">तु</div>
       <div class="brand-text">
@@ -40,6 +40,14 @@
     </div>
   </header>
 
+  <!-- Persistent Floating Minimal Controls (Visible when navbar slides out) -->
+  <nav class="story-minimal-nav" id="story-minimal-nav" aria-label="Quick Navigation">
+    <a href="/" class="minimal-brand" aria-label="Tulya Home">
+      <span class="minimal-emblem" aria-hidden="true">तु</span>
+    </a>
+    <a href="/app" class="minimal-skip" id="minimal-skip-btn">Skip intro &rarr;</a>
+  </nav>
+
   <!-- Performance HUD Dev Overlay (toggled with backtick ` key) -->
   <div id="dev-overlay" class="dev-overlay" aria-hidden="true">
     <div class="dev-overlay-header">Tulya Performance HUD <span class="dev-key">[`]</span></div>
@@ -50,16 +58,67 @@
     <div class="dev-metric-row"><span>Hardware Tier:</span> <strong id="dev-tier">Tier 3</strong></div>
   </div>
 
-  <!-- 3D Background Canvas ("The Book of Two Languages") -->
+  <!-- 3D Stage & Background Canvas ("The Book of Two Languages", 100dvh full viewport) -->
   <div id="story-canvas-container" aria-hidden="true">
+    <!-- Full-Bleed Alive Stage Background (Layers L0 - L3, Ink and Clay Palette) -->
+    <div id="story-stage" class="story-stage stage-scene-cover" aria-hidden="true">
+      <!-- L0: Base Mist Vertical Gradient + Subtle Paper Grain -->
+      <div class="stage-layer stage-layer-l0" id="stage-l0">
+        <div class="stage-grain"></div>
+      </div>
+
+      <!-- L1: Original Architectural Colonnade Line-Art Silhouette (Hairline SVG) -->
+      <div class="stage-layer stage-layer-l1" id="stage-l1">
+        <svg class="stage-colonnade-svg" viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid slice" fill="none">
+          <path d="M0,70 L1440,70 M0,86 L1440,86" stroke="#234A52" stroke-width="1.2" opacity="0.08"/>
+          <path d="
+            M 50,420 L 50,220 A 75,75 0 0,1 200,220 L 200,420
+            M 215,420 L 215,220 A 75,75 0 0,1 365,220 L 365,420
+            M 380,420 L 380,220 A 75,75 0 0,1 530,220 L 530,420
+            M 545,420 L 545,220 A 75,75 0 0,1 695,220 L 695,420
+            M 745,420 L 745,220 A 75,75 0 0,1 895,220 L 895,420
+            M 910,420 L 910,220 A 75,75 0 0,1 1060,220 L 1060,420
+            M 1075,420 L 1075,220 A 75,75 0 0,1 1225,220 L 1225,420
+            M 1240,420 L 1240,220 A 75,75 0 0,1 1390,220 L 1390,420
+          " stroke="#234A52" stroke-width="1.0" opacity="0.075"/>
+          <path d="M20,420 L1420,420 M10,436 L1430,436" stroke="#234A52" stroke-width="1.2" opacity="0.08"/>
+        </svg>
+      </div>
+
+      <!-- L2: Ghost Typography (Latin Slate Left, Devanagari Clay Right) -->
+      <div class="stage-layer stage-layer-l2" id="stage-l2">
+        <div class="ghost-column ghost-col-left" id="ghost-col-en">
+          <div class="ghost-word ghost-word-cover">CONSTITUTION</div>
+          <div class="ghost-word ghost-word-sub">JUSTICE · LIBERTY · EQUALITY</div>
+          <div class="ghost-clauses-strip" id="ghost-clauses-en">
+            <span>§ 1</span><span>§ 2</span><span>§ 3</span><span>§ 12(3)</span>
+          </div>
+        </div>
+        <div class="ghost-column ghost-col-right" id="ghost-col-hi">
+          <div class="ghost-word ghost-word-cover" lang="hi">भारत का संविधान</div>
+          <div class="ghost-word ghost-word-sub" lang="hi">न्याय · स्वतंत्रता · समता</div>
+          <div class="ghost-clauses-strip" id="ghost-clauses-hi" lang="hi">
+            <span>खंड १</span><span>खंड २</span><span>खंड ३</span><span>खंड १२(३)</span>
+          </div>
+        </div>
+        <div class="stage-alignment-grid" id="stage-grid"></div>
+      </div>
+
+      <!-- L3: Soft Diagonal Sunbeam -->
+      <div class="stage-layer stage-layer-l3" id="stage-l3">
+        <div class="sunbeam-band" id="sunbeam-band"></div>
+      </div>
+    </div>
+
+    <!-- 3D Book WebGL Canvas -->
     <canvas id="story-canvas"></canvas>
   </div>
 
   <!-- Narrative Scroll Content (600vh scroll container) -->
   <main class="story-scroll-wrapper" id="main-content">
 
-    <!-- Checkpoint Panel 0: p = 0.00 - 0.10 (Closed Book Hero) -->
-    <section class="story-checkpoint-panel active" id="panel-0" aria-labelledby="title-p0">
+    <!-- Checkpoint Panel 0: p = 0.00 - 0.10 (Closed Book Hero, Left Third) -->
+    <section class="story-checkpoint-panel panel-side-left active" id="panel-0" aria-labelledby="title-p0">
       <span class="story-tag">Constitutional Framework</span>
       <h2 class="story-title" id="title-p0">Two official versions. One law. Do they agree?</h2>
       <p class="story-desc">
@@ -72,8 +131,8 @@
       </div>
     </section>
 
-    <!-- Checkpoint Panel 1: p = 0.10 - 0.28 (Cover Opens & Leaves Turn) -->
-    <section class="story-checkpoint-panel" id="panel-1" aria-labelledby="title-p1">
+    <!-- Checkpoint Panel 1: p = 0.10 - 0.28 (Cover Opens, Right Third) -->
+    <section class="story-checkpoint-panel panel-side-right" id="panel-1" aria-labelledby="title-p1">
       <span class="story-tag">Official Spread</span>
       <h2 class="story-title" id="title-p1">Opening the Constitution (भारत का संविधान)</h2>
       <p class="story-desc">
@@ -85,8 +144,8 @@
       </div>
     </section>
 
-    <!-- Checkpoint Panel 2: p = 0.28 - 0.42 (Text Lift-off & Reflow into Cards) -->
-    <section class="story-checkpoint-panel" id="panel-2" aria-labelledby="title-p2">
+    <!-- Checkpoint Panel 2: p = 0.28 - 0.42 (Text Lift-off, Left Third) -->
+    <section class="story-checkpoint-panel panel-side-left" id="panel-2" aria-labelledby="title-p2">
       <span class="story-tag">Structural Segmentation</span>
       <h2 class="story-title" id="title-p2">Glyphs Lift Off into Clause Coordinates</h2>
       <p class="story-desc">
@@ -97,8 +156,8 @@
       </p>
     </section>
 
-    <!-- Checkpoint Panel 3: p = 0.42 - 0.58 (Bilingual Provision Pairing) -->
-    <section class="story-checkpoint-panel" id="panel-3" aria-labelledby="title-p3">
+    <!-- Checkpoint Panel 3: p = 0.42 - 0.58 (Bilingual Provision Pairing, Right Third) -->
+    <section class="story-checkpoint-panel panel-side-right" id="panel-3" aria-labelledby="title-p3">
       <span class="story-tag">Bilingual Pairing</span>
       <h2 class="story-title" id="title-p3">Bilingual Clauses Paired Across Languages</h2>
       <p class="story-desc">
@@ -109,8 +168,8 @@
       </div>
     </section>
 
-    <!-- Checkpoint Panel 4: p = 0.58 - 0.74 (Facts & Synthetic Discrepancy Test) -->
-    <section class="story-checkpoint-panel" id="panel-4" aria-labelledby="title-p4">
+    <!-- Checkpoint Panel 4: p = 0.58 - 0.74 (Facts & Synthetic Discrepancy Test, Left Third) -->
+    <section class="story-checkpoint-panel panel-side-left" id="panel-4" aria-labelledby="title-p4">
       <div class="synthetic-header-row" style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.65rem;">
         <span class="synthetic-tag" data-synthetic="true">SYNTHETIC DEMO</span>
         <span class="synthetic-sub">Section 12(3) divergence, illustrative only</span>
@@ -133,8 +192,8 @@
       </div>
     </section>
 
-    <!-- Checkpoint Panel 5: p = 0.74 - 0.88 (Substantive Review & Finding Pinning) -->
-    <section class="story-checkpoint-panel" id="panel-5" aria-labelledby="title-p5">
+    <!-- Checkpoint Panel 5: p = 0.74 - 0.88 (Substantive Review & Finding Pinning, Right Third) -->
+    <section class="story-checkpoint-panel panel-side-right" id="panel-5" aria-labelledby="title-p5">
       <span class="story-tag">Semantic Review</span>
       <h2 class="story-title" id="title-p5">Substantive Penalty & Obligation Review</h2>
       <p class="story-desc">
@@ -146,8 +205,8 @@
       </div>
     </section>
 
-    <!-- Checkpoint Panel 6: p = 0.88 - 0.95 (Evidence-Backed Audit Summary) -->
-    <section class="story-checkpoint-panel" id="panel-6" aria-labelledby="title-p6">
+    <!-- Checkpoint Panel 6: p = 0.88 - 0.95 (Evidence-Backed Audit Summary, Left Third) -->
+    <section class="story-checkpoint-panel panel-side-left" id="panel-6" aria-labelledby="title-p6">
       <span class="story-tag">Verification Summary</span>
       <h2 class="story-title" id="title-p6">Evidence-Backed Audit Summary</h2>
       <p class="story-desc">
@@ -173,8 +232,8 @@
       </div>
     </section>
 
-    <!-- Checkpoint Panel 7: p = 0.95 - 1.00 (Closing & Workspace CTA) -->
-    <section class="story-checkpoint-panel" id="panel-7" aria-labelledby="title-p7" style="text-align: center;">
+    <!-- Checkpoint Panel 7: p = 0.95 - 1.00 (Closing & Workspace CTA, Right Third) -->
+    <section class="story-checkpoint-panel panel-side-right" id="panel-7" aria-labelledby="title-p7" style="text-align: left;">
       <span class="story-tag">Review Workspace</span>
       <h2 class="story-title" id="title-p7">Begin Verification</h2>
       <p class="story-desc">

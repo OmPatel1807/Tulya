@@ -107,7 +107,8 @@
   const THREE = window.THREE;
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(COLOR_BG);
+  // Transparent scene background to reveal #story-stage (L0-L3) underneath
+  scene.background = null;
 
   const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 50);
   camera.position.set(0, 0.65, 7.8);
@@ -115,9 +116,10 @@
   const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
     antialias: tier >= 2,
-    alpha: false,
+    alpha: true,
     powerPreference: 'high-performance'
   });
+  renderer.setClearColor(0x000000, 0);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -549,12 +551,41 @@
   const endpaperTex = createEndpaperTexture();
   const pageEdgeTex = createPageEdgeTexture();
 
-  // Soft Baked Contact Shadow Plane directly underneath book on table
-  const shadowGeo = new THREE.PlaneGeometry(6.4, 4.4);
+  // FIX 2 (L4 Ground): Soft Elliptical Contact Shadow Texture (zero polygon edges, pure radial fade)
+  function createContactShadowTexture() {
+    const cvs = document.createElement('canvas');
+    cvs.width = 512;
+    cvs.height = 256;
+    const ctx = cvs.getContext('2d');
+    ctx.clearRect(0, 0, 512, 256);
+
+    ctx.save();
+    ctx.translate(256, 128);
+    ctx.scale(1.0, 0.48);
+    const grad = ctx.createRadialGradient(0, 0, 10, 0, 0, 220);
+    grad.addColorStop(0, 'rgba(20, 40, 43, 0.45)');
+    grad.addColorStop(0.30, 'rgba(20, 40, 43, 0.22)');
+    grad.addColorStop(0.65, 'rgba(20, 40, 43, 0.05)');
+    grad.addColorStop(0.92, 'rgba(20, 40, 43, 0.0)');
+    grad.addColorStop(1.0, 'rgba(20, 40, 43, 0.0)');
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(0, 0, 240, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    const tex = new THREE.CanvasTexture(cvs);
+    return tex;
+  }
+
+  const shadowTex = createContactShadowTexture();
+  const shadowGeo = new THREE.PlaneGeometry(7.2, 4.2);
   const shadowMat = new THREE.MeshBasicMaterial({
-    color: 0x14282B,
+    map: shadowTex,
     transparent: true,
-    opacity: 0.14
+    opacity: 0.85,
+    depthWrite: false
   });
   const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
   shadowMesh.position.set(0, -0.05, -BOOK_T / 2 - 0.02);
@@ -1126,6 +1157,70 @@
     };
   }
 
+  // DOM references for Smart Header and Stage Parallax
+  const storyNavbar = document.getElementById('story-navbar');
+  const minimalNav = document.getElementById('story-minimal-nav');
+  const stageEl = document.getElementById('story-stage');
+  const stageColonnadeEl = document.getElementById('stage-l1');
+  const ghostColEnEl = document.getElementById('ghost-col-en');
+  const ghostColHiEl = document.getElementById('ghost-col-hi');
+
+  // FIX 1 (Item 3): Full 100dvh Viewport Scaling for 3D Book
+  function updateViewportScale() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    let targetScale = 1.0;
+    if (width >= 1025) {
+      const hScale = Math.min(1.10, Math.max(0.85, height / 900));
+      const wScale = Math.min(1.10, Math.max(0.85, width / 1440));
+      targetScale = Math.min(hScale, wScale);
+    } else {
+      // Narrow screens (Tablet / Mobile): Scale book to comfortably fit upper 70% of viewport
+      targetScale = Math.min(0.56, Math.max(0.42, (width / 800) * 0.52));
+    }
+    bookGroup.scale.set(targetScale, targetScale, targetScale);
+    return targetScale;
+  }
+
+  // FIX 3: Desktop Side Offset (Book balances opposite side card with zero bounding box overlap)
+  const SIDE_KEYPOINTS = [
+    { p: 0.00, offset:  0.40 },
+    { p: 0.08, offset:  0.40 },
+    { p: 0.13, offset: -1.35 },
+    { p: 0.26, offset: -1.35 },
+    { p: 0.30, offset:  1.35 },
+    { p: 0.40, offset:  1.35 },
+    { p: 0.44, offset: -1.35 },
+    { p: 0.56, offset: -1.35 },
+    { p: 0.60, offset:  1.35 },
+    { p: 0.72, offset:  1.35 },
+    { p: 0.76, offset: -1.35 },
+    { p: 0.86, offset: -1.35 },
+    { p: 0.90, offset:  1.35 },
+    { p: 0.93, offset:  1.35 },
+    { p: 0.97, offset: -0.50 },
+    { p: 1.00, offset: -0.50 }
+  ];
+
+  function getSideOffset(p) {
+    if (window.innerWidth < 1025) return 0.0;
+    if (p <= SIDE_KEYPOINTS[0].p) return SIDE_KEYPOINTS[0].offset;
+    if (p >= SIDE_KEYPOINTS[SIDE_KEYPOINTS.length - 1].p) {
+      return SIDE_KEYPOINTS[SIDE_KEYPOINTS.length - 1].offset;
+    }
+    for (let i = 0; i < SIDE_KEYPOINTS.length - 1; i++) {
+      const k0 = SIDE_KEYPOINTS[i];
+      const k1 = SIDE_KEYPOINTS[i + 1];
+      if (p >= k0.p && p <= k1.p) {
+        const u = (p - k0.p) / (k1.p - k0.p);
+        const eu = easeInOutCubic(u);
+        return k0.offset + (k1.offset - k0.offset) * eu;
+      }
+    }
+    return 0.0;
+  }
+
   // --- Apply State to 3D Scene ---
   let latestState = calcBookState(0.0);
 
@@ -1133,12 +1228,29 @@
     const state = calcBookState(p);
     latestState = state;
 
-    // Shift book position to keep open spread or closed cover centered in viewport
-    bookGroup.position.x = state.bookShiftX;
-    bookGroup.position.y = state.bookShiftY;
+    // Shift book position to keep open spread or closed cover centered in viewport,
+    // offset horizontally on wide screens to balance opposite active narrative card,
+    // offset vertically on narrow screens to fit upper 70% viewport above bottom cards
+    const isNarrow = window.innerWidth < 1025;
+    const narrowShiftY = isNarrow ? 0.35 : 0.0;
+    const sideOffset = getSideOffset(p);
+    bookGroup.position.x = state.bookShiftX + sideOffset;
+    bookGroup.position.y = state.bookShiftY + narrowShiftY;
     bookGroup.rotation.x = state.bookRotX;
     bookGroup.rotation.y = state.bookRotY;
     bookGroup.rotation.z = state.bookRotZ;
+    bookGroup.updateMatrixWorld(true);
+
+    // Stage parallax transforms (composite-only translate3d)
+    if (stageColonnadeEl) {
+      stageColonnadeEl.style.transform = `translate3d(0, ${(p * 15).toFixed(1)}px, 0)`;
+    }
+    if (ghostColEnEl) {
+      ghostColEnEl.style.transform = `translate3d(0, ${(p * 24).toFixed(1)}px, 0)`;
+    }
+    if (ghostColHiEl) {
+      ghostColHiEl.style.transform = `translate3d(0, ${(-p * 24).toFixed(1)}px, 0)`;
+    }
 
     // Contact shadow mathematically centered directly under closed volume or open spread
     shadowMat.opacity = state.shadowOpacity;
@@ -1187,7 +1299,7 @@
     camera.lookAt(0, lookTargetY, 0);
   }
 
-  // --- Optimized Narrative Overlay Panels Update (Zero DOM Thrashing) ---
+  // --- Optimized Narrative Overlay Panels Update (Zero DOM Thrashing) & Stage Crossfade ---
   let currentActivePanel = 0;
 
   function updatePanels(p) {
@@ -1207,6 +1319,23 @@
         if (idx === activeIndex) panel.classList.add('active');
         else panel.classList.remove('active');
       });
+    }
+
+    // FIX 2: Stage scene crossfade (600ms CSS transition across narrative acts)
+    let sceneClass = 'stage-scene-cover';
+    if (p < 0.28) {
+      sceneClass = 'stage-scene-cover';
+    } else if (p < 0.44) {
+      sceneClass = 'stage-scene-segmentation';
+    } else if (p < 0.60) {
+      sceneClass = 'stage-scene-alignment';
+    } else if (p < 0.86) {
+      sceneClass = 'stage-scene-mismatch';
+    } else {
+      sceneClass = 'stage-scene-closing';
+    }
+    if (stageEl && !stageEl.classList.contains(sceneClass)) {
+      stageEl.className = 'story-stage ' + sceneClass;
     }
   }
 
@@ -1280,9 +1409,56 @@
   let frameTickerCount = 0;
   let scrollIdleTimer = null;
 
+  // FIX 1: Smart Header (Visible at scroll 0, slides up on scroll down, slides down on scroll up or hover <= 60px)
+  let lastScrollProgress = 0.0;
+  let isHeaderHidden = false;
+
+  function updateSmartHeader(p, cursorY) {
+    if (!storyNavbar) return;
+
+    if (cursorY !== undefined && cursorY <= 60) {
+      if (isHeaderHidden) {
+        isHeaderHidden = false;
+        storyNavbar.classList.remove('is-hidden');
+        if (minimalNav) minimalNav.classList.remove('is-active');
+      }
+      return;
+    }
+
+    if (p <= 0.015) {
+      if (isHeaderHidden) {
+        isHeaderHidden = false;
+        storyNavbar.classList.remove('is-hidden');
+        if (minimalNav) minimalNav.classList.remove('is-active');
+      }
+    } else if (p > lastScrollProgress + 0.001) {
+      // Scrolling down
+      if (!isHeaderHidden) {
+        isHeaderHidden = true;
+        storyNavbar.classList.add('is-hidden');
+        if (minimalNav) minimalNav.classList.add('is-active');
+      }
+    } else if (p < lastScrollProgress - 0.002) {
+      // Scrolling up
+      if (isHeaderHidden) {
+        isHeaderHidden = false;
+        storyNavbar.classList.remove('is-hidden');
+        if (minimalNav) minimalNav.classList.remove('is-active');
+      }
+    }
+    lastScrollProgress = p;
+  }
+
+  window.addEventListener('mousemove', (e) => {
+    if (e.clientY <= 60) {
+      updateSmartHeader(storyStore.getState().scrollProgress, e.clientY);
+    }
+  }, { passive: true });
+
   function handleScrollProgress(progress) {
     storyStore.setState({ scrollProgress: progress });
     updatePanels(progress);
+    updateSmartHeader(progress);
 
     document.body.classList.add('is-scrolling');
     clearTimeout(scrollIdleTimer);
@@ -1336,9 +1512,11 @@
     applyBookState(state.scrollProgress);
 
     // Idle life: slow float & dust drift (B4)
+    const isNarrow = window.innerWidth < 1025;
+    const narrowShiftY = isNarrow ? 0.35 : 0.0;
     if (!isReducedMotion) {
       // Gentle float: ~3-5mm vertical sway over 6s (frequency ~0.00105)
-      const floatY = 0.65 + Math.sin(now * 0.00105) * 0.006;
+      const floatY = (latestState ? latestState.bookShiftY : 0.65) + narrowShiftY + Math.sin(now * 0.00105) * 0.006;
       bookGroup.position.y = floatY;
 
       // Dust motes gentle drift
@@ -1348,7 +1526,7 @@
       // Gentle breathing of light (0.85 .. 0.95 over 8s)
       dirLight.intensity = 0.90 + Math.sin(now * 0.000785) * 0.05;
     } else {
-      bookGroup.position.y = 0.65;
+      bookGroup.position.y = (latestState ? latestState.bookShiftY : 0.65) + narrowShiftY;
     }
 
     renderer.render(scene, camera);
@@ -1410,16 +1588,20 @@
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    updateViewportScale();
     if (lenisInstance) lenisInstance.resize();
   });
 
-  // Initial render
+  // Initial sizing and render
+  updateViewportScale();
   applyBookState(0.0);
 
   // --- Global Diagnostics API for Playwright Verifiers ---
   window.__tulya = {
     scene: scene,
+    camera: camera,
     bookGroup: bookGroup,
+    getSideOffset: getSideOffset,
     get debug() {
       return {
         coverAngle: latestState.coverAngle,
@@ -1429,6 +1611,60 @@
         progress: storyStore.getState().scrollProgress,
         tier: tier,
         fps: storyStore.getState().fps
+      };
+    },
+    getBookBoundingBox: function() {
+      // Calculate 2D bounding box of all visually rendered meshes of the book
+      // Excludes ground shadow plane and objects with opacity == 0 (such as idle synthetic sheet or idle cards)
+      bookGroup.updateMatrixWorld(true);
+      const box = new THREE.Box3();
+      bookGroup.traverse((o) => {
+        if (o.isMesh && o.visible && o !== shadowMesh) {
+          const mat = Array.isArray(o.material) ? o.material[0] : o.material;
+          const op = (mat && mat.opacity !== undefined) ? mat.opacity : 1.0;
+          if (op > 0.08) {
+            box.expandByObject(o);
+          }
+        }
+      });
+
+      if (box.isEmpty()) {
+        box.setFromObject(frontCoverMesh);
+      }
+
+      const min = box.min;
+      const max = box.max;
+      const corners = [
+        new THREE.Vector3(min.x, min.y, min.z),
+        new THREE.Vector3(min.x, min.y, max.z),
+        new THREE.Vector3(min.x, max.y, min.z),
+        new THREE.Vector3(min.x, max.y, max.z),
+        new THREE.Vector3(max.x, min.y, min.z),
+        new THREE.Vector3(max.x, min.y, max.z),
+        new THREE.Vector3(max.x, max.y, min.z),
+        new THREE.Vector3(max.x, max.y, max.z)
+      ];
+
+      let minX = Infinity, maxX = -Infinity;
+      let minY = Infinity, maxY = -Infinity;
+
+      corners.forEach((c) => {
+        const p = c.clone().project(camera);
+        const sx = (p.x * 0.5 + 0.5) * window.innerWidth;
+        const sy = (-(p.y * 0.5) + 0.5) * window.innerHeight;
+        if (sx < minX) minX = sx;
+        if (sx > maxX) maxX = sx;
+        if (sy < minY) minY = sy;
+        if (sy > maxY) maxY = sy;
+      });
+
+      return {
+        left: minX,
+        right: maxX,
+        top: minY,
+        bottom: maxY,
+        width: maxX - minX,
+        height: maxY - minY
       };
     },
     scrollToProgress: function (p) {
@@ -1444,6 +1680,7 @@
       }
       applyBookState(p);
       updatePanels(p);
+      updateSmartHeader(p);
       renderer.render(scene, camera);
     },
     get currentFPS() {
