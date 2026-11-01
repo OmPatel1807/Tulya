@@ -642,7 +642,7 @@
 
   // --- 3D Procedural Book Hierarchy (Hardcover on Table with Spine Hinge) ---
   const bookGroup = new THREE.Group();
-  bookGroup.position.set(-0.905, 0.70, 0); // Centered vertically in panel with equal space above/below (FIX 2)
+  bookGroup.position.set(-0.815, 0.70, 0); // Centered vertically in panel with equal space above/below (FIX 2)
   scene.add(bookGroup);
 
   const BOOK_W = 2.4;
@@ -1068,14 +1068,14 @@
     // 1. Front Cover Angle (0 to 170 deg), Flex, and Centering Shift (Fixed Center Layout)
     let coverAngle = 0.0;
     let coverFlex = 0.0;
-    let bookShiftX = -0.905;
+    let bookShiftX = -0.815;
     let bookShiftY = 0.70;
     let coverPivotZ = BOOK_T / 2;
 
     if (p < 0.08) {
       coverAngle = 0.0;
       coverFlex = 0.0;
-      bookShiftX = -0.905;
+      bookShiftX = -0.815;
       bookShiftY = 0.70;
       coverPivotZ = BOOK_T / 2;
     } else if (p >= 0.08 && p < 0.28) {
@@ -1091,7 +1091,7 @@
       coverFlex = Math.sin(Math.min(Math.PI, (coverAngle / 170.0) * Math.PI));
       const wLeft = ang > 90 ? -2.4 * Math.sin((ang - 90) * Math.PI / 180.0) : 0.0;
       const localCenter = (wLeft + 2.4) / 2;
-      bookShiftX = -0.905 * (localCenter / 1.2);
+      bookShiftX = -0.815 * (localCenter / 1.2);
       bookShiftY = 0.70 - 0.12 * eu;
       coverPivotZ = (BOOK_T / 2) * (1.0 - eu) + (-BOOK_T / 2) * eu;
     } else if (p >= 0.28 && p < 0.93) {
@@ -1112,7 +1112,7 @@
       coverFlex = Math.sin(Math.min(Math.PI, (coverAngle / 170.0) * Math.PI));
       const wLeft = ang > 90 ? -2.4 * Math.sin((ang - 90) * Math.PI / 180.0) : 0.0;
       const localCenter = (wLeft + 2.4) / 2;
-      bookShiftX = -0.905 * (localCenter / 1.2);
+      bookShiftX = -0.815 * (localCenter / 1.2);
       bookShiftY = 0.58 + 0.12 * (1.0 - ev);
       coverPivotZ = (BOOK_T / 2) * (1.0 - ev) + (-BOOK_T / 2) * ev;
     }
@@ -1284,11 +1284,11 @@
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    let targetScale = 0.82;
+    let targetScale = 0.76;
     if (width >= 1600) {
-      targetScale = 0.84;
+      targetScale = 0.78;
     } else if (width >= 1025) {
-      targetScale = 0.80;
+      targetScale = 0.72;
     } else {
       // Narrow screens (Tablet / Mobile): Scale book to comfortably fit upper 70% of viewport
       targetScale = Math.min(0.56, Math.max(0.42, (width / 800) * 0.50));

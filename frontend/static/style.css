@@ -7,9 +7,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Canvas Background: Soft mist gradient from #E8ECE8 to #D3DCDB with faint vignette */
-  --bg-scene-top: #E8ECE8;
-  --bg-scene-bottom: #D3DCDB;
+  /* Canvas Background: Clean plain white backdrop */
+  --bg-scene-top: #FFFFFF;
+  --bg-scene-bottom: #FFFFFF;
   
   /* Book Materials: Ink-teal & brass foil */
   --book-cover: #234A52;
@@ -67,14 +67,14 @@
 html {
   font-size: 16px;
   scroll-behavior: auto;
-  background-color: var(--bg-scene-top);
+  background-color: #FFFFFF;
   color: var(--ink-primary);
   font-family: var(--font-sans);
 }
 
 body {
   min-height: 100vh;
-  background: radial-gradient(circle at 50% 30%, var(--bg-scene-top) 0%, var(--bg-scene-bottom) 100%);
+  background: #FFFFFF;
   overflow-x: hidden;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
@@ -125,7 +125,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   align-items: center;
   justify-content: space-between;
   padding: 0.85rem 2.25rem;
-  background: #FBF8F1; /* Solid fill without expensive backdrop-filter compositing */
+  background: #FFFFFF; /* Clean plain white header */
   border-bottom: 1px solid var(--surface-border);
   box-shadow: 0 1px 8px rgba(35, 74, 82, 0.04);
 }
@@ -326,9 +326,9 @@ body.debug-mode .fps-counter {
   position: relative;
   width: min(84vw, 980px);
   height: min(84vh, 760px);
-  background: linear-gradient(180deg, #EFF4F1 0%, #E2EAE7 50%, #D4DDDA 100%);
+  background: #FFFFFF;
   border-radius: 20px;
-  box-shadow: 0 16px 44px rgba(35, 74, 82, 0.09), 0 2px 10px rgba(35, 74, 82, 0.04);
+  box-shadow: 0 16px 44px rgba(35, 74, 82, 0.05), 0 2px 10px rgba(35, 74, 82, 0.02);
   transform: rotate(-1.5deg);
   overflow: hidden;
   pointer-events: none;
@@ -342,10 +342,10 @@ body.debug-mode .fps-counter {
   pointer-events: none;
 }
 
-/* Layer a: Soft Mist Gradient + Faint Paper Grain (4 to 6 percent) */
+/* Layer a: Plain White Base + Faint Paper Grain (4 to 6 percent) */
 .stage-layer-base {
   z-index: 1;
-  background: linear-gradient(180deg, #F0F5F2 0%, #DDE6E3 100%);
+  background: #FFFFFF;
 }
 
 .stage-grain {
@@ -575,48 +575,67 @@ body.debug-mode .fps-counter {
   min-height: 600vh;
 }
 
-/* FIX 3: Story Checkpoint Cards placed in Side Thirds (Never Overlapping Book) */
-/* Story Checkpoint Cards: Docked at Bottom Center (Fixed Center Layout) */
+/* Story Checkpoint Cards: Left and Right Side Alternating on Desktop */
 .story-checkpoint-panel {
   position: fixed;
   z-index: 20;
-  bottom: 1.5rem;
-  top: auto;
-  left: 50%;
-  transform: translateX(-50%) translateY(8px);
-  width: min(90vw, 560px);
-  max-width: 560px;
-  background: #FBF8F1; /* Solid fill without expensive backdrop-filter */
+  background: #FFFFFF; /* Plain white card surface */
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-lg);
-  padding: 1.25rem 1.75rem;
-  box-shadow: var(--surface-shadow);
+  padding: 1.15rem 1.45rem;
+  box-shadow: 0 14px 36px rgba(35, 74, 82, 0.08), 0 2px 8px rgba(35, 74, 82, 0.03);
   opacity: 0;
   pointer-events: none;
   transition: opacity 350ms ease, transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.story-checkpoint-panel.active {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
-}
-
+/* Wide screens (Desktop): Placed in Left or Right Sides Alternatively, Vertically Centered */
 @media (min-width: 1025px) {
   .story-checkpoint-panel {
-    bottom: 2rem;
-    padding: 1.35rem 1.85rem;
-    width: min(85vw, 580px);
-    max-width: 580px;
+    top: 50%;
+    bottom: auto;
+    width: 20vw;
+    max-width: 280px;
+    min-width: 250px;
+    padding: 1.15rem 1.45rem;
+    transform: translateY(-50%) scale(0.96);
+  }
+
+  .story-checkpoint-panel.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) scale(1.0);
+  }
+
+  /* Left-Side Placement */
+  .story-checkpoint-panel.panel-side-left {
+    left: 1.5rem;
+    right: auto;
+  }
+
+  /* Right-Side Placement */
+  .story-checkpoint-panel.panel-side-right {
+    right: 1.5rem;
+    left: auto;
   }
 }
 
+/* Narrow screens (Tablet / Mobile): Bottom Area */
 @media (max-width: 1024px) {
   .story-checkpoint-panel {
     bottom: 1.25rem;
-    padding: 1.15rem 1.4rem;
+    top: auto;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
     width: 90%;
     max-width: 520px;
+    padding: 1.15rem 1.4rem;
+  }
+
+  .story-checkpoint-panel.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
   }
 }
 
