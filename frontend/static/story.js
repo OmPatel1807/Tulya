@@ -634,6 +634,14 @@
   hiSpreadMesh.position.set((BOOK_W - 0.1) / 2 + 0.05, 0, (BOOK_T - 0.06) / 2 + 0.002);
   bookGroup.add(hiSpreadMesh);
 
+  // Base Left Spread (English Preamble text on left page - full symmetrical page)
+  const enSpreadGeo = new THREE.PlaneGeometry(BOOK_W - 0.1, BOOK_H - 0.1);
+  const enSpreadMat = new THREE.MeshBasicMaterial({ map: createPreambleEnTexture() });
+  const enSpreadMesh = new THREE.Mesh(enSpreadGeo, enSpreadMat);
+  enSpreadMesh.position.set(-((BOOK_W - 0.1) / 2 + 0.05), 0, (BOOK_T - 0.06) / 2 + 0.002);
+  enSpreadMesh.visible = false;
+  bookGroup.add(enSpreadMesh);
+
   // Front Cover Pivot: Hinged STRICTLY at the spine edge (X = 0, Y = 0, Z = BOOK_T / 2)
   const coverPivot = new THREE.Group();
   coverPivot.position.set(0, 0, BOOK_T / 2);
@@ -719,8 +727,8 @@
   const turnLeafCurlUniform = { value: 0.0 };
   const enSpreadTex = createPreambleEnTexture();
 
-  const leafMatFront = new THREE.MeshBasicMaterial({ map: enSpreadTex, side: THREE.FrontSide });
-  const leafMatBack = new THREE.MeshBasicMaterial({ map: enSpreadTex, side: THREE.BackSide });
+  const leafMatFront = new THREE.MeshBasicMaterial({ map: enSpreadTex, side: THREE.DoubleSide });
+  const leafMatBack = new THREE.MeshBasicMaterial({ map: enSpreadTex, side: THREE.DoubleSide });
 
   [leafMatFront, leafMatBack].forEach((mat) => {
     mat.onBeforeCompile = (shader) => {
@@ -822,7 +830,7 @@
     const texEn = createClauseCardTexture('en', idx, cardData[idx].en, cardData[idx].hi);
     const matEn = new THREE.MeshBasicMaterial({ map: texEn, transparent: true, opacity: 0.0 });
     const mEn = new THREE.Mesh(cardGeo, matEn);
-    mEn.position.set(-1.18, yPos, 0.08);
+    mEn.position.set(-1.20, yPos, 0.14);
     clauseCardsGroup.add(mEn);
     cardsEn.push(mEn);
     cardMats.push(matEn);
@@ -830,7 +838,7 @@
     const texHi = createClauseCardTexture('hi', idx, cardData[idx].en, cardData[idx].hi);
     const matHi = new THREE.MeshBasicMaterial({ map: texHi, transparent: true, opacity: 0.0 });
     const mHi = new THREE.Mesh(cardGeo, matHi);
-    mHi.position.set(1.18, yPos, 0.08);
+    mHi.position.set(1.20, yPos, 0.14);
     clauseCardsGroup.add(mHi);
     cardsHi.push(mHi);
     cardMats.push(matHi);
@@ -921,12 +929,14 @@
     let coverFlex = 0.0;
     let bookShiftX = -1.2;
     let bookShiftY = 1.05;
+    let coverPivotZ = BOOK_T / 2;
 
     if (p < 0.08) {
       coverAngle = 0.0;
       coverFlex = 0.0;
       bookShiftX = -1.2;
       bookShiftY = 1.05;
+      coverPivotZ = BOOK_T / 2;
     } else if (p >= 0.08 && p < 0.28) {
       const u = (p - 0.08) / 0.20;
       const eu = easeInOutCubic(u);
@@ -940,11 +950,13 @@
       coverFlex = Math.sin(Math.min(Math.PI, (coverAngle / 170.0) * Math.PI));
       bookShiftX = -1.2 * (1.0 - eu);
       bookShiftY = 1.05 - 0.40 * eu;
+      coverPivotZ = (BOOK_T / 2) * (1.0 - eu) + (-BOOK_T / 2) * eu;
     } else if (p >= 0.28 && p < 0.93) {
       coverAngle = 170.0;
       coverFlex = 0.0;
       bookShiftX = 0.0;
       bookShiftY = 0.65;
+      coverPivotZ = -BOOK_T / 2;
     } else if (p >= 0.93 && p <= 1.00) {
       const v = (p - 0.93) / 0.07;
       const ev = easeInOutCubic(1.0 - v);
@@ -957,6 +969,7 @@
       coverFlex = Math.sin(Math.min(Math.PI, (coverAngle / 170.0) * Math.PI));
       bookShiftX = -1.2 * (1.0 - ev);
       bookShiftY = 0.65 + 0.40 * (1.0 - ev);
+      coverPivotZ = (BOOK_T / 2) * (1.0 - ev) + (-BOOK_T / 2) * ev;
     }
 
     // 2. Turning Leaf (p in [0.28, 0.36] opening, [0.88, 0.93] closing)
@@ -1091,6 +1104,7 @@
     return {
       coverAngle,
       coverFlex,
+      coverPivotZ,
       turnLeafAngle,
       turnLeafCurl,
       bookShiftX,
@@ -1132,12 +1146,15 @@
     shadowMesh.scale.x = 0.5 + openFrac * 0.5;
     shadowMesh.position.x = 1.2 * (1.0 - openFrac);
 
-    // Cover Rotation & Flex (Negative rotation around Y lifts cover UP towards viewer from frontside)
-    coverPivot.rotation.y = THREE.MathUtils.degToRad(-state.coverAngle);
+    // Cover Rotation, Depth & Flex:
+    // Moves pivot from +BOOK_T/2 (closed top) to -BOOK_T/2 (table plane) and rotates to 180 deg (flat on table)
+    coverPivot.position.z = state.coverPivotZ;
+    const coverRotDeg = state.coverAngle * (180.0 / 170.0);
+    coverPivot.rotation.y = THREE.MathUtils.degToRad(-coverRotDeg);
     coverFlexUniform.value = state.coverFlex;
 
-    // Turning Leaf Rotation & Curl (Negative rotation around Y lifts leaf UP and turns it to the left spread)
-    turnLeafPivot.visible = (p >= 0.08 && p <= 0.93);
+    // Turning Leaf Rotation & Curl (Only active during actual leaf-turn transitions)
+    turnLeafPivot.visible = (p >= 0.08 && p < 0.36) || (p >= 0.88 && p <= 0.93);
     turnLeafPivot.rotation.y = THREE.MathUtils.degToRad(-state.turnLeafAngle);
     turnLeafCurlUniform.value = state.turnLeafCurl;
 
@@ -1146,14 +1163,17 @@
     leftPageBlock.scale.z = state.leftBlockScaleZ;
     rightPageBlock.scale.z = state.rightBlockScaleZ;
 
+    // Base Left Spread (English Preamble) Visibility
+    enSpreadMesh.visible = (p >= 0.28 && p < 0.93);
+
     // Glyph Particles
     glyphMat.opacity = state.glyphAlpha * 0.85;
     glyphPoints.position.z = state.glyphLift;
 
-    // Clause Cards
+    // Clause Cards: Positioned cleanly in front of page spread, fully visible without occlusion
     cardMats.forEach((mat) => { mat.opacity = state.cardAlpha * 0.95; });
-    cardsEn.forEach((c) => { c.position.z = 0.08 + state.cardLift; });
-    cardsHi.forEach((c) => { c.position.z = 0.08 + state.cardLift; });
+    cardsEn.forEach((c) => { c.position.z = 0.14 + state.cardLift; });
+    cardsHi.forEach((c) => { c.position.z = 0.14 + state.cardLift; });
 
     // Synthetic Demo Sheet
     syntheticSheetGroup.position.y = state.sheetY;
@@ -1398,6 +1418,8 @@
 
   // --- Global Diagnostics API for Playwright Verifiers ---
   window.__tulya = {
+    scene: scene,
+    bookGroup: bookGroup,
     get debug() {
       return {
         coverAngle: latestState.coverAngle,

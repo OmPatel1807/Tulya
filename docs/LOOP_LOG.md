@@ -1006,6 +1006,37 @@ User provided three direct visual feedback items with reference screenshots:
    - `docs/checkpoints/user_fix_clause_pairing.png`: Clause gutter mean RGB [251.45, 249.11, 241.56] confirms **zero** green lines; text is 100% unobstructed.
 - **Status: PASSED**.
 
+---
+
+## [2026-11-01] Visual Bug Fix: Left Page Occlusion & Half-Cut Clause Cards Resolved
+
+### Diagnosis
+- **The Issue**: In the open book spread (`media_1793523141229_46493528.jpg`), the left page appeared half-cut with a static white rectangular slab covering 75% of the page and occluding the left half of the English clause cards.
+- **Root Cause**:
+  1. `coverPivot` was pinned at $Z = +BOOK_T / 2 = +0.14$ (top of closed book) rather than descending to table level ($Z = -BOOK_T / 2 = -0.14$).
+  2. The cover angle stopped at $170^\circ$, leaving the front cover slab angled $10^\circ$ up into the air reaching $Z \in [0.14, 0.56]$, directly in front of the English clause cards ($Z = 0.24$) and left page ($Z = 0.11$).
+  3. The static white rectangle was the inside endpaper of `frontCoverMesh` hovering over the page.
+  4. The base left spread (`enSpreadMesh`) was missing from the scene hierarchy, relying solely on `turnLeafPivot` which had back-face culling.
+
+### Resolution
+1. **Dynamic Pivot Depth (`coverPivotZ`)**:
+   - `coverPivot.position.z` interpolates smoothly from $+0.14$ (closed book top) down to $-0.14$ (table plane) during opening ($p \in [0.08, 0.28]$) and reverses on closing ($p \in [0.93, 1.00]$).
+2. **True Flat Landing ($-180^\circ$)**:
+   - `coverRotDeg = state.coverAngle * (180.0 / 170.0)`. In 3D space, the cover rotates to $-180^\circ$, resting completely flat on the table plane at $Z = -0.165$ (leather) to $-0.115$ (endpaper), strictly behind the page stack.
+3. **Base Left Spread (`enSpreadMesh`)**:
+   - Added permanent `enSpreadMesh` at $X = -1.20, Z = 0.112$, perfectly matching `hiSpreadMesh` on the right.
+4. **Clause Card Elevation**:
+   - Elevated `cardsEn` and `cardsHi` to $Z = 0.14 + state.cardLift$ ($Z = 0.30$ at lift-off). Both English and Hindi cards have 100% full width, zero occlusion, and animate in perfect synchronization.
+5. **DoubleSide Leaf Materials & Visibility**:
+   - Set `leafMatFront` and `leafMatBack` to `THREE.DoubleSide` and hid `turnLeafPivot` once the turn is settled ($p \in [0.36, 0.88]$).
+
+### Verification
+- **Automated Verifier**: `backend/eval/verify_book_and_demo.py` passed all 6 checks.
+- **Pixel Inspection**:
+  - `docs/checkpoints/fixed_clause_pairing_p48.png`: English card row 500 contains 482 ink text pixels, continuous card background across full width $X \in [400, 880]$.
+  - `docs/checkpoints/fixed_semantic_review_p78.png`: Synthetic demo sheet and spread span continuously from $X = 460$ to $1420$ with zero truncation.
+- **Status: PASSED**.
+
 
 
 
