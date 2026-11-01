@@ -16,34 +16,52 @@ Tulya serves as a **Reviewer's Assistant**:
 
 ---
 
-## Current Status: Phase Loop 5 Complete (Grounded Semantic Stage)
-Bilingual English and Hindi clauses are compared semantically for substantive differences in legal effect, backed by strict grounding and deterministic safety guards:
-- **Data Models** (`backend/app/semantic/models.py`): Pydantic models for `SemanticFinding` (`category`, `severity`, `explanation`, `quote_en`, `quote_hi`, `confidence`) across categories: `MODALITY`, `OMISSION`, `ADDITION`, `SCOPE`, `DEFINITION`, `REORDERED` / `MISPLACED`.
-- **Grounding Guard (Rule R2)** (`backend/app/semantic/grounding.py`): Every finding requires exact verbatim substring quotes from both versions (or null when content is genuinely missing) after Unicode NFKC and whitespace normalization. Hallucinated or non-verbatim quotes are discarded and tracked.
-- **Modality Lexicon & Deontic Pre-screening** (`backend/app/semantic/modality.py`): Detects statutory shifts between mandatory obligations (`shall`, `must` / `करेगा`, `होगी`) and permissive discretions (`may`, `entitled to` / `कर सकेगा`, `हो सकेगी`).
-- **Persistent Disk Caching** (`backend/app/semantic/cache.py`): SQLite cache (`semantic_responses.sqlite`) keyed by `SHA-256(provider:model:prompt_version:content_hash)` ensuring determinism, instant replay, and strict budget adherence.
-- **Cross-Section Misplaced Clause Lookup** (`backend/app/semantic/reorder_lookup.py`): Scans candidate clauses across opposing statutory trees using RapidFuzz and cross-lingual LaBSE embeddings to distinguish cross-section relocations from true omissions.
-- **Semantic Comparator Client** (`backend/app/semantic/client.py`): Modular provider architecture supporting Gemini (`google-genai`), Anthropic (`anthropic`), and offline high-fidelity mock inference; handles JSON validation with single retry and ThreadPool concurrency.
-- **Evaluation Dev Set** (`data/eval/dev/semantic_cases.jsonl`): 80 cases (40 clean pairs, 40 injected synthetic errors across modality, omission, addition, scope, and definition).
-- **Frozen Held-Out Set** (`data/eval/heldout/semantic_cases.jsonl`): 40 cases kept strictly untouched for evaluation.
-- **Semantic Verifier** (`backend/eval/verify_semantic.py`): 100% recall on MODALITY, OMISSION, ADDITION, SCOPE; 97.6% precision; 0.0 clean false positive rate; 0.0% JSON failure rate; 19,568 tokens used (well within 300,000 budget).
+## Current Status: Phase Loop 6 Complete (End-to-End Evaluation & Improvement)
+Tulya has completed its end-to-end evaluation harness and outer improvement loop:
+- **Harness & Error Injector** (`backend/eval/inject.py`): Programmatically verified single-error injections into Hindi text across `NUMERIC`, `OMISSION`, `ADDITION`, `MODALITY`, and `SCOPE`, strictly partitioned by document.
+- **Regression Suite** (`data/eval/dev/real_inspired_synthetic/cases.jsonl`): Synthetic reproductions of reported public statutory discrepancies (tax penalties, dropped qualifications, acreage differences).
+- **Pipeline Runner & Merger** (`backend/app/pipeline/`): Reconciles deterministic fact differences and LLM semantic findings into unified `AuditFinding` records with verbatim Rule R2 quote verification.
+- **Scorecard (Dev Set)**:
+  - Injected Error Recall: **100.0%** (50 / 50)
+  - Overall Precision: **87.7%** (50 TP / 7 FP)
+  - Overall F1 Score: **0.935**
+  - Clean False Positive Rate: **0.00** per 100 clauses (0 clean false positives)
+  - Regression Cases Flagged: **6 / 6 (100.0%)**
+- **Single Held-Out Evaluation (Rule R6)**: Evaluated once on frozen Acts (`contract_act_1872`, `insolvency_bankruptcy_2016`) with full distribution shift analysis in [`eval/report.md`](eval/report.md) and [`eval/results.json`](eval/results.json).
 
-### Verified Corpus (`data/raw/`)
-1. **The Environment (Protection) Act, 1986** (Act 29 of 1986) — *Short Act* (13 EN / 7 HI pages)
-2. **The Protection of Women from Domestic Violence Act, 2005** (Act 43 of 2005) — *Short Act* (15 EN / 12 HI pages)
-3. **The Right of Children to Free and Compulsory Education Act, 2009** (Act 35 of 2009) — *Short Act* (20 EN / 15 HI pages)
-4. **The Right to Information Act, 2005** (Act 22 of 2005) — *Medium Act* (25 EN / 20 HI pages)
-5. **The National Green Tribunal Act, 2010** (Act 19 of 2010) — *Medium Act* (23 EN / 19 HI pages)
-6. **The Indian Contract Act, 1872** (Act 9 of 1872) — *Medium Act* (53 EN / 41 HI pages) [Frozen Held-Out]
-7. **The Insolvency and Bankruptcy Code, 2016** (Act 31 of 2016) — *Long Act* (174 EN / 106 HI pages) [Frozen Held-Out]
+---
 
-Full provenance and direct bitstream URLs are documented in [`data/raw/SOURCES.md`](data/raw/SOURCES.md).
+## Python Interpreter & Environment Requirements
+
+- **Python Version**: `Python >= 3.10` (tested on `Python 3.14.6`)
+- **Active Interpreter**: `/opt/anaconda3/bin/python3`
+- **Core Dependencies** ([`requirements.txt`](requirements.txt)):
+  - `pydantic` (v2 data modeling)
+  - `pymupdf` & `pdfplumber` (text and PDF stream ingestion)
+  - `sentence-transformers` & `torch` (LaBSE multilingual clause embeddings)
+  - `rapidfuzz` (lexical alignment & misplaced clause screening)
+  - `pytest` (test harness)
 
 ---
 
 ## Running the Pipeline & Verifiers
 
-### 1. Run Semantic Stage Verifier (Phase Loop 5 Exit Verifier)
+### 1. Run End-to-End Pipeline Verifier (Phase Loop 6 Exit Verifier)
+```bash
+python3 backend/eval/verify_pipeline.py
+```
+
+To run on the frozen held-out dataset:
+```bash
+python3 backend/eval/verify_pipeline.py --heldout
+```
+
+### 2. Generate Full Evaluation Artifacts (report.md & results.json)
+```bash
+python3 backend/eval/generate_report.py
+```
+
+### 3. Run Semantic Stage Verifier (Phase Loop 5 Exit Verifier)
 ```bash
 PYTHONPATH=. python3 backend/eval/verify_semantic.py
 ```
