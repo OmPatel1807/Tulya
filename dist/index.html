@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tulya (तुल्य) - Bilingual Statutory Verification</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <meta name="description" content="A calm, evidence-backed bilingual consistency reviewer for official Indian legal texts in English and Hindi.">
+  <!-- API base URL injected at runtime; empty = same origin (works on Render full-stack and local) -->
+  <script>window.TULYA_API_BASE = '';</script>
+</head>
+<body class="story-landing-page">
+
+  <!-- Preloader: Calm 1.5s brass line loader -->
+  <div id="preloader" class="preloader" aria-hidden="true">
+    <div class="preloader-content">
+      <div class="preloader-emblem">तु</div>
+      <div class="preloader-bar"><div class="preloader-line"></div></div>
+      <div class="preloader-text">Loading Legal Architecture...</div>
+    </div>
+  </div>
+
+  <!-- Custom Ink Dot Cursor -->
+  <div id="cursor-dot" class="cursor-dot" aria-hidden="true"></div>
+  <div id="cursor-ring" class="cursor-ring" aria-hidden="true"></div>
+
+  <!-- Top Navigation Header (Smart Header: slides out on scroll down, slides in on scroll up) -->
+  <header class="navbar story-navbar" id="story-navbar" role="banner">
+    <a href="/" class="brand" aria-label="Tulya Home">
+      <div class="brand-emblem" aria-hidden="true">तु</div>
+      <div class="brand-text">
+        <h1>Tulya <span lang="hi" style="display:inline; font-family: var(--font-hindi); font-weight: normal;">(तुल्य)</span></h1>
+        <span>Bilingual Statutory Verification</span>
+      </div>
+    </a>
+    <div class="nav-actions">
+      <!-- Debug elements: Hidden by default, toggled with 'd' or backtick ` key -->
+      <span class="tier-badge" id="tier-badge" aria-hidden="true">Tier 3</span>
+      <span class="fps-counter" id="fps-display" aria-hidden="true">60 FPS</span>
+
+      <a href="/app" class="btn btn-primary" id="skip-intro-btn">Review Workspace &rarr;</a>
+    </div>
+  </header>
+
+  <!-- Persistent Floating Minimal Controls (Visible when navbar slides out) -->
+  <nav class="story-minimal-nav" id="story-minimal-nav" aria-label="Quick Navigation">
+    <a href="/" class="minimal-brand" aria-label="Tulya Home">
+      <span class="minimal-emblem" aria-hidden="true">तु</span>
+    </a>
+    <a href="/app" class="minimal-skip" id="minimal-skip-btn">Skip intro &rarr;</a>
+  </nav>
+
+  <!-- Performance HUD Dev Overlay (toggled with backtick ` key) -->
+  <div id="dev-overlay" class="dev-overlay" aria-hidden="true">
+    <div class="dev-overlay-header">Tulya Performance HUD <span class="dev-key">[`]</span></div>
+    <div class="dev-metric-row"><span>FPS:</span> <strong id="dev-fps">60</strong></div>
+    <div class="dev-metric-row"><span>Frame Time (p95):</span> <strong id="dev-p95">16.6 ms</strong></div>
+    <div class="dev-metric-row"><span>Long Tasks:</span> <strong id="dev-longtasks">0</strong></div>
+    <div class="dev-metric-row"><span>Scroll Progress:</span> <strong id="dev-progress">0.000</strong></div>
+    <div class="dev-metric-row"><span>Hardware Tier:</span> <strong id="dev-tier">Tier 3</strong></div>
+  </div>
+
+  <!-- 3D Stage & Background Canvas ("The Book of Two Languages", 100dvh full viewport) -->
+  <div id="story-canvas-container" aria-hidden="true">
+    <!-- FIX 1: Restored Framed Stage Panel (slightly tilted rounded panel behind the book, straight clean edges) -->
+    <div class="stage-frame-wrapper" aria-hidden="true">
+      <div id="story-stage" class="stage-panel stage-scene-cover">
+        <!-- Layer a: Soft Mist Gradient + Faint Paper Grain (4-6%) -->
+        <div class="stage-layer stage-layer-base" id="stage-l0">
+          <div class="stage-grain"></div>
+        </div>
+
+        <!-- Layer b: Arch Silhouette (Original SVG line art, 14% opacity, clipped) -->
+        <div class="stage-layer stage-layer-arch" id="stage-l1">
+          <svg class="stage-colonnade-svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice" fill="none">
+            <path d="M0,60 L1000,60 M0,74 L1000,74" stroke="#234A52" stroke-width="1.2" opacity="0.14"/>
+            <path d="
+              M 40,400 L 40,210 A 65,65 0 0,1 170,210 L 170,400
+              M 185,400 L 185,210 A 65,65 0 0,1 315,210 L 315,400
+              M 330,400 L 330,210 A 65,65 0 0,1 460,210 L 460,400
+              M 540,400 L 540,210 A 65,65 0 0,1 670,210 L 670,400
+              M 685,400 L 685,210 A 65,65 0 0,1 815,210 L 815,400
+              M 830,400 L 830,210 A 65,65 0 0,1 960,210 L 960,400
+            " stroke="#234A52" stroke-width="1.1" opacity="0.14"/>
+            <path d="M10,400 L990,400 M0,414 L1000,414" stroke="#234A52" stroke-width="1.2" opacity="0.14"/>
+          </svg>
+        </div>
+
+        <!-- Layer c: Ghost Typography (Constitution slate, संविधान clay, 8-10% opacity, clipped) -->
+        <div class="stage-layer stage-layer-typography" id="stage-l2">
+          <div class="ghost-column ghost-col-left" id="ghost-col-en">
+            <div class="ghost-word ghost-word-cover">Constitution</div>
+            <div class="ghost-word ghost-word-sub">JUSTICE · LIBERTY · EQUALITY</div>
+            <div class="ghost-clauses-strip" id="ghost-clauses-en">
+              <span>§ 1</span><span>§ 2</span><span>§ 3</span><span>§ 12(3)</span>
+            </div>
+          </div>
+          <div class="ghost-column ghost-col-right" id="ghost-col-hi">
+            <div class="ghost-word ghost-word-cover" lang="hi">संविधान</div>
+            <div class="ghost-word ghost-word-sub" lang="hi">न्याय · स्वतंत्रता · समता</div>
+            <div class="ghost-clauses-strip" id="ghost-clauses-hi" lang="hi">
+              <span>खंड १</span><span>खंड २</span><span>खंड ३</span><span>खंड १२(३)</span>
+            </div>
+          </div>
+          <div class="stage-alignment-grid" id="stage-grid"></div>
+        </div>
+
+        <!-- Layer d: Soft Warm Light Beam from Top-Right -->
+        <div class="stage-layer stage-layer-light" id="stage-l3">
+          <div class="sunbeam-top-right" id="sunbeam-band"></div>
+        </div>
+
+        <!-- Layer e: Matte Table Surface (Darker mist ellipse + contact shadow + reflection) -->
+        <div class="stage-layer stage-layer-table" id="stage-table">
+          <div class="table-ellipse"></div>
+          <div class="table-reflection"></div>
+        </div>
+
+        <!-- Layer f: Thin Brass Hairline Frame (1px, 40% opacity, 16px inset) -->
+        <div class="stage-hairline-frame" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <!-- 3D Book WebGL Canvas -->
+    <canvas id="story-canvas"></canvas>
+  </div>
+
+  <!-- Narrative Scroll Content (600vh scroll container) -->
+  <main class="story-scroll-wrapper" id="main-content">
+
+    <!-- Checkpoint Panel 0: p = 0.00 - 0.10 (Closed Book Hero, Left Third) -->
+    <section class="story-checkpoint-panel panel-side-left active" id="panel-0" aria-labelledby="title-p0">
+      <span class="story-tag">Constitutional Framework</span>
+      <h2 class="story-title" id="title-p0">Two official versions. One law. Do they agree?</h2>
+      <p class="story-desc">
+        Under Article 348 and the Official Languages Act, Indian statutes are published in both English and Hindi. Citizens and courts reference both texts. Differences between official language versions can alter statutory interpretation.
+      </p>
+      <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 1rem;">
+        <span style="font-size: 0.85rem; color: var(--ink-secondary);">Scroll or use Space/Arrows to explore</span>
+        <span style="color: var(--ink-muted);">·</span>
+        <a href="/app" class="btn btn-secondary btn-sm" id="skip-intro-link">Skip intro &rarr;</a>
+      </div>
+    </section>
+
+    <!-- Checkpoint Panel 1: p = 0.10 - 0.28 (Cover Opens, Right Third) -->
+    <section class="story-checkpoint-panel panel-side-right" id="panel-1" aria-labelledby="title-p1">
+      <span class="story-tag">Official Spread</span>
+      <h2 class="story-title" id="title-p1">Opening the Constitution (भारत का संविधान)</h2>
+      <p class="story-desc">
+        The front cover opens to reveal the parallel enactments across languages. 14 leaves curl smoothly across the spine to reveal the official Preamble spread (प्राधिकृत पाठ).
+      </p>
+      <div style="display: flex; gap: 1rem; margin-top: 0.75rem;">
+        <span style="font-size: 0.82rem; font-weight: 600; color: var(--accent-en-text);">Left: English Gazette</span>
+        <span style="font-size: 0.82rem; font-weight: 600; color: var(--accent-hi-text);">Right: Hindi Gazette (हिन्दी)</span>
+      </div>
+    </section>
+
+    <!-- Checkpoint Panel 2: p = 0.28 - 0.42 (Text Lift-off, Left Third) -->
+    <section class="story-checkpoint-panel panel-side-left" id="panel-2" aria-labelledby="title-p2">
+      <span class="story-tag">Structural Segmentation</span>
+      <h2 class="story-title" id="title-p2">Glyphs Lift Off into Clause Coordinates</h2>
+      <p class="story-desc">
+        Text lines lift off the parchment in 3D particles and assemble into two parallel columns of auditable clause cards: English in slate blue, Hindi in terracotta clay.
+      </p>
+      <p class="story-desc" style="margin-bottom: 0;">
+        Each statutory provision (निर्दिष्ट उपबंध) is anchored to a persistent tree coordinate before linguistic review begins.
+      </p>
+    </section>
+
+    <!-- Checkpoint Panel 3: p = 0.42 - 0.58 (Bilingual Provision Pairing, Right Third) -->
+    <section class="story-checkpoint-panel panel-side-right" id="panel-3" aria-labelledby="title-p3">
+      <span class="story-tag">Bilingual Pairing</span>
+      <h2 class="story-title" id="title-p3">Bilingual Clauses Paired Across Languages</h2>
+      <p class="story-desc">
+        Clause cards elevate cleanly from the pages, pairing corresponding English and Hindi statutory provisions side by side with crystal clarity.
+      </p>
+      <div style="margin-top: 1rem;">
+        <span class="status-chip chip-consistent">Consistent in this excerpt</span>
+      </div>
+    </section>
+
+    <!-- Checkpoint Panel 4: p = 0.58 - 0.74 (Facts & Synthetic Discrepancy Test, Left Third) -->
+    <section class="story-checkpoint-panel panel-side-left" id="panel-4" aria-labelledby="title-p4">
+      <div class="synthetic-header-row" style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.65rem;">
+        <span class="synthetic-tag" data-synthetic="true">SYNTHETIC DEMO</span>
+        <span class="synthetic-sub">Section 12(3) divergence, illustrative only</span>
+      </div>
+      <span class="story-tag">Audit Methodology</span>
+      <h2 class="story-title" id="title-p4">Isolating Divergence: The Test</h2>
+      <p class="story-desc">
+        To demonstrate how discrepancies are detected, a synthetic case is introduced on a loose sheet. The Constitution itself has no known divergence shown here; this demonstrates pipeline sensitivity on reported statutory divergence patterns.
+      </p>
+      <div class="quote-box">
+        <div class="quote-label">English Statutory Provision</div>
+        <div class="quote-text" id="quote-en-text">"...a penalty equal to ten times the tax..."</div>
+      </div>
+      <div class="quote-box hindi" lang="hi">
+        <div class="quote-label">Hindi Statutory Provision (हिन्दी)</div>
+        <div class="quote-text" id="quote-hi-text">"...कर के अतिरिक्त दस गुना शास्ति..."</div>
+      </div>
+      <div style="margin-top: 0.75rem;">
+        <span class="status-chip chip-divergence">Discrepancy: 'कर के अतिरिक्त' alters liability threshold</span>
+      </div>
+    </section>
+
+    <!-- Checkpoint Panel 5: p = 0.74 - 0.88 (Substantive Review & Finding Pinning, Right Third) -->
+    <section class="story-checkpoint-panel panel-side-right" id="panel-5" aria-labelledby="title-p5">
+      <span class="story-tag">Semantic Review</span>
+      <h2 class="story-title" id="title-p5">Substantive Penalty & Obligation Review</h2>
+      <p class="story-desc">
+        Cross-lingual analysis isolates how "in addition to tax" modifies liability compared to "ten times the tax". Finding chips pin with explicit category and severity labels.
+      </p>
+      <div style="margin-top: 1rem; display: flex; gap: 0.75rem; align-items: center;">
+        <span class="status-chip chip-divergence">ADDITION · HIGH SEVERITY</span>
+        <span style="font-size: 0.85rem; color: var(--ink-secondary);">10x penalty vs 10x in addition to tax</span>
+      </div>
+    </section>
+
+    <!-- Checkpoint Panel 6: p = 0.88 - 0.95 (Evidence-Backed Audit Summary, Left Third) -->
+    <section class="story-checkpoint-panel panel-side-left" id="panel-6" aria-labelledby="title-p6">
+      <span class="story-tag">Verification Summary</span>
+      <h2 class="story-title" id="title-p6">Evidence-Backed Audit Summary</h2>
+      <p class="story-desc">
+        The cards fold back onto the pages as the volume prepares to close. Real metrics computed from verified pipeline runs across Central Acts (द्वितीय अनुसूची):
+      </p>
+      <div class="story-stat-grid" aria-label="Audited Central Acts">
+        <div class="stat-item">
+          <span class="stat-number" id="stat-acts-count">—</span>
+          <span class="stat-label">Central Acts Audited</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" id="stat-clauses-count">—</span>
+          <span class="stat-label">Aligned Provisions</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" id="stat-findings-count">—</span>
+          <span class="stat-label">Discrepancies Flagged</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" id="stat-grounding-rate">—</span>
+          <span class="stat-label">Quote Grounding Verified</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Checkpoint Panel 7: p = 0.95 - 1.00 (Closing & Workspace CTA, Right Third) -->
+    <section class="story-checkpoint-panel panel-side-right" id="panel-7" aria-labelledby="title-p7" style="text-align: left;">
+      <span class="story-tag">Review Workspace</span>
+      <h2 class="story-title" id="title-p7">Begin Verification</h2>
+      <p class="story-desc">
+        The Constitution closes. Step into the auditor to inspect bundled Central Acts, evaluate alignments, or upload custom gazette PDFs.
+      </p>
+      <div style="margin: 1.5rem 0 0.5rem 0;">
+        <a href="/app" class="btn btn-primary" id="open-auditor-btn" style="padding: 0.75rem 2.25rem; font-size: 1rem;">
+          Open the auditor &rarr;
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Mandatory Government Trust & Clarity Footer Notice -->
+  <footer class="footer-notice" role="contentinfo">
+    <span>Tulya is an independent prototype for reviewing differences between official language versions. It is not an official government service and does not determine which version is legally authoritative.</span>
+  </footer>
+
+  <!-- Scripts (Vendored locally for 100% offline self-containment) -->
+  <script src="/static/vendor/three.min.js"></script>
+  <script src="/static/vendor/gsap.min.js"></script>
+  <script src="/static/vendor/ScrollTrigger.min.js"></script>
+  <script src="/static/vendor/lenis.min.js"></script>
+  <script src="/static/story.js"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tulya (तुल्य) - Review Workspace</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <meta name="description" content="Calm, minimalist bilingual legal review workspace with side-by-side comparative clauses and grounded discrepancy highlights.">
+  <!-- API base URL injected at runtime; empty = same origin -->
+  <script>window.TULYA_API_BASE = '';</script>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="navbar" role="banner">
+    <a href="/app" class="brand" aria-label="Tulya Workspace">
+      <div class="brand-emblem" aria-hidden="true">तु</div>
+      <div class="brand-text">
+        <h1>Tulya <span lang="hi" style="display:inline; font-family: var(--font-hindi); font-weight: normal;">(तुल्य)</span></h1>
+        <span>Review Workspace</span>
+      </div>
+    </a>
+    <div class="nav-actions">
+      <select id="sample-select" class="select-custom" aria-label="Select Bundled Central Act">
+        <option value="">Loading sample acts...</option>
+      </select>
+      <button class="btn btn-primary" id="btn-run-analysis">Audit Act</button>
+      <button class="btn btn-secondary" id="btn-open-upload">Upload PDF</button>
+
+      <div style="display: flex; gap: 0.35rem;" role="group" aria-label="Export Options">
+        <button class="btn btn-secondary btn-sm" id="export-json">JSON</button>
+        <button class="btn btn-secondary btn-sm" id="export-csv">CSV</button>
+        <button class="btn btn-secondary btn-sm" id="export-md">MD</button>
+      </div>
+
+      <a href="/" class="btn btn-secondary btn-sm">&larr; Story</a>
+    </div>
+  </header>
+
+  <!-- Stage Progress Panel -->
+  <div id="progress-panel" class="progress-panel" role="status" aria-live="polite">
+    <div class="progress-header">
+      <span id="progress-stage-msg" style="color: var(--ink-primary); font-weight: 500;">Processing legislation...</span>
+      <span id="progress-percent" style="font-family: var(--font-mono); color: var(--ink-secondary);">0%</span>
+    </div>
+    <div class="progress-track">
+      <div id="progress-fill" class="progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- Main Workspace Layout -->
+  <div class="workspace-container">
+    <div class="workspace-grid">
+
+      <!-- Left / Center: Bilingual Dual Reader with SVG Connector Bridge -->
+      <main class="reader-container" id="reader-container" role="main">
+        <!-- SVG Connector Line Overlay -->
+        <svg id="connector-svg" aria-hidden="true"></svg>
+
+        <!-- English Column -->
+        <div class="reader-column" id="reader-en" aria-label="English Gazette Column">
+          <div class="reader-col-header">
+            <h2>English Gazette (Authoritative)</h2>
+            <span class="badge-lang en">English</span>
+          </div>
+          <div class="clause-block" style="text-align: center; color: var(--ink-muted); padding: 3rem 1rem;">
+            Select an Act sample above or upload bilingual PDFs to view aligned statutory provisions.
+          </div>
+        </div>
+
+        <!-- Hindi Column -->
+        <div class="reader-column" id="reader-hi" aria-label="Hindi Gazette Column" lang="hi">
+          <div class="reader-col-header">
+            <h2>Hindi Gazette (प्राधिकृत पाठ)</h2>
+            <span class="badge-lang hi">हिन्दी</span>
+          </div>
+          <div class="clause-block" style="text-align: center; color: var(--ink-muted); padding: 3rem 1rem;">
+            संरेखित कानूनी उपबंधों को देखने के लिए ऊपर दिए गए नमूने का चयन करें।
+          </div>
+        </div>
+      </main>
+
+      <!-- Right: Discrepancy Findings Inspector Drawer -->
+      <aside class="drawer-container" id="drawer-container" aria-label="Discrepancy Findings Inspector">
+        <div class="drawer-header">
+          <div class="drawer-title-row">
+            <h2 class="drawer-title">Findings for Review</h2>
+            <span class="findings-count-badge" id="findings-count-badge">0 Flagged</span>
+          </div>
+
+          <!-- Category Filter Chips -->
+          <div class="filter-row" role="tablist" aria-label="Filter findings by category">
+            <button class="filter-chip active" data-filter="ALL" role="tab" aria-selected="true">All</button>
+            <button class="filter-chip" data-filter="NUMERIC" role="tab" aria-selected="false">Numeric</button>
+            <button class="filter-chip" data-filter="MODALITY" role="tab" aria-selected="false">Modality</button>
+            <button class="filter-chip" data-filter="OMISSION" role="tab" aria-selected="false">Omission</button>
+            <button class="filter-chip" data-filter="ADDITION" role="tab" aria-selected="false">Addition</button>
+            <button class="filter-chip" data-filter="SCOPE" role="tab" aria-selected="false">Scope</button>
+          </div>
+        </div>
+
+        <!-- Findings List -->
+        <div class="findings-list" id="findings-list" role="region" aria-label="Findings List">
+          <div style="text-align: center; color: var(--ink-muted); padding: 2rem 1rem;">
+            No discrepancies loaded yet.
+          </div>
+        </div>
+
+        <!-- Hindi Conjunct Rendering Benchmark Card -->
+        <div class="hindi-benchmark-card" id="hindi-benchmark-section">
+          <div class="hindi-benchmark-title">Hindi Typography (Devanagari Conjuncts)</div>
+          <div class="hindi-test-words" id="hindi-conjunct-container" lang="hi">
+            <span class="hindi-conjunct-word" id="conjunct-1">दृष्टि</span>
+            <span class="hindi-conjunct-word" id="conjunct-2">स्थिति</span>
+            <span class="hindi-conjunct-word" id="conjunct-3">निर्दिष्ट</span>
+            <span class="hindi-conjunct-word" id="conjunct-4">सम्बन्ध</span>
+            <span class="hindi-conjunct-word" id="conjunct-5">प्राधिकृत</span>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- Upload Modal -->
+  <div class="modal-overlay" id="upload-modal" role="dialog" aria-modal="true" aria-labelledby="upload-modal-title">
+    <div class="modal-dialog">
+      <h3 id="upload-modal-title" style="font-size: 1.15rem; font-weight: 600; margin-bottom: 0.65rem; color: var(--ink-primary);">
+        Upload Custom Bilingual PDFs
+      </h3>
+      <p style="font-size: 0.85rem; color: var(--ink-secondary); margin-bottom: 1.25rem;">
+        Provide the official English and Hindi PDF files for an Indian statute. Ensure the Hindi document is in modern Unicode Devanagari format (UTF-8).
+      </p>
+
+      <form id="upload-form">
+        <div style="margin-bottom: 1rem;">
+          <label for="upload-en-file" style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--accent-en-text); margin-bottom: 0.35rem;">
+            English PDF Document
+          </label>
+          <input type="file" id="upload-en-file" accept="application/pdf" class="select-custom" style="width: 100%;" required>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <label for="upload-hi-file" style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--accent-hi-text); margin-bottom: 0.35rem;">
+            Hindi PDF Document (देवनागरी)
+          </label>
+          <input type="file" id="upload-hi-file" accept="application/pdf" class="select-custom" style="width: 100%;" required>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+          <button type="button" class="btn btn-secondary" id="btn-close-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-upload">Start Audit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Mandatory Trust & Clarity Notice Footer -->
+  <footer class="footer-notice" role="contentinfo">
+    <span>Tulya is an independent prototype for reviewing differences between official language versions. It is not an official government service and does not determine which version is legally authoritative.</span>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

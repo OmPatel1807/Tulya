@@ -19,7 +19,6 @@ venv/
 htmlcov/
 
 # Build artefacts
-dist/
 build/
 
 # OS
