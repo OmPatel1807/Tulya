@@ -83,7 +83,7 @@ body {
 /* Landing Story Full-Bleed Supreme Court Background Image */
 body.story-landing-page,
 body:has(#story-canvas-container) {
-  background: #FFFFFF url('/public/assets/supreme_court_bg.webp') center center / cover no-repeat fixed;
+  background: #FFFFFF url('/public/assets/supreme_court_bench_bg.webp') center center / cover no-repeat fixed;
 }
 
 /* Accessible Focus States */
@@ -332,11 +332,11 @@ body.debug-mode .fps-counter {
   position: relative;
   width: min(84vw, 980px);
   height: min(84vh, 760px);
-  background: rgba(255, 255, 255, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.50);
-  border-radius: 20px;
-  box-shadow: 0 16px 48px rgba(35, 74, 82, 0.12), 0 2px 10px rgba(35, 74, 82, 0.04);
-  transform: rotate(-1.5deg);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
   overflow: hidden;
   pointer-events: none;
 }
@@ -356,27 +356,16 @@ body.debug-mode .fps-counter {
 }
 
 .stage-grain {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.05; /* 5% faint grain */
-  background-image: radial-gradient(rgba(43, 58, 63, 0.5) 1px, transparent 1px);
-  background-size: 8px 8px;
+  display: none;
 }
 
-/* Layer b: Arch Silhouette (SVG Line Art, 14% Opacity, Clipped inside panel) */
+/* Layer b: Arch Silhouette (Removed per user request: "door type shape ... remove that also") */
 .stage-layer-arch {
-  z-index: 2;
-  will-change: transform;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: none !important;
 }
 
 .stage-colonnade-svg {
-  width: 100%;
-  height: 100%;
+  display: none !important;
 }
 
 /* Layer c: Ghost Typography ("Constitution" slate, "संविधान" clay, 8-10% opacity, clipped) */
@@ -519,38 +508,20 @@ body.debug-mode .fps-counter {
 
 /* Layer e: Matte Table Surface at bottom of panel */
 .stage-layer-table {
-  z-index: 5;
-  pointer-events: none;
+  display: none;
 }
 
 .table-ellipse {
-  position: absolute;
-  bottom: -12%;
-  left: 6%;
-  right: 6%;
-  height: 45%;
-  background: radial-gradient(ellipse 65% 42% at 50% 80%, rgba(35, 74, 82, 0.16) 0%, rgba(35, 74, 82, 0.05) 50%, transparent 80%);
-  border-radius: 50%;
+  display: none;
 }
 
 .table-reflection {
-  position: absolute;
-  bottom: 2%;
-  left: 20%;
-  right: 20%;
-  height: 20%;
-  background: radial-gradient(ellipse 50% 30% at 50% 75%, rgba(35, 74, 82, 0.06) 0%, transparent 70%);
-  opacity: 0.85;
+  display: none;
 }
 
-/* Layer f: Thin Brass Hairline Frame (1px, 40% opacity, 16px inset) */
+/* Layer f: Thin Brass Hairline Frame (Removed per user request: "some black line ... remove that also") */
 .stage-hairline-frame {
-  position: absolute;
-  inset: 16px;
-  border: 1px solid rgba(184, 155, 94, 0.40); /* 1px, 40% opacity, 16px inset */
-  border-radius: 12px;
-  pointer-events: none;
-  z-index: 8;
+  display: none !important;
 }
 
 /* ==========================================================================
@@ -596,21 +567,15 @@ body.debug-mode .fps-counter {
   transition: opacity 350ms ease, transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Wide screens (Desktop): Book to Left, Tabs to Right (User Request) */
+/* Wide screens (Desktop): Tabs Alternatively Left & Right, Centered Book (User Request) */
 @media (min-width: 1025px) {
-  .stage-panel {
-    transform: translateX(-100px) rotate(-1.5deg);
-  }
-
   .story-checkpoint-panel {
     top: 50%;
     bottom: auto;
-    right: 2.5rem;
-    left: auto;
-    width: 24vw;
-    max-width: 360px;
-    min-width: 270px;
-    padding: 1.25rem 1.55rem;
+    width: 20vw;
+    max-width: 280px;
+    min-width: 240px;
+    padding: 1.15rem 1.45rem;
     transform: translateY(-50%) scale(0.96);
   }
 
@@ -620,10 +585,15 @@ body.debug-mode .fps-counter {
     transform: translateY(-50%) scale(1.0);
   }
 
-  /* All panels positioned on right side */
-  .story-checkpoint-panel.panel-side-left,
+  /* Left-Side Placement */
+  .story-checkpoint-panel.panel-side-left {
+    left: 1.5rem;
+    right: auto;
+  }
+
+  /* Right-Side Placement */
   .story-checkpoint-panel.panel-side-right {
-    right: 2.5rem;
+    right: 1.5rem;
     left: auto;
   }
 }

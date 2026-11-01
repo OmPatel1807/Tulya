@@ -47,48 +47,30 @@ async def verify():
         print(f"  Body background image: {bg_data['bgImage']}")
         print(f"  Body background color: {bg_data['bgColor']}")
         print(f"  Stage panel background: {bg_data['panelBg']}")
-        assert "supreme_court_bg" in bg_data["bgImage"], f"Body background image must contain supreme_court_bg, got {bg_data['bgImage']}"
+        assert "supreme_court_bench_bg" in bg_data["bgImage"], f"Body background image must contain supreme_court_bench_bg, got {bg_data['bgImage']}"
         assert bg_data["bgColor"] == "rgb(255, 255, 255)", f"Body fallback background must be white, got {bg_data['bgColor']}"
-        print("  Background verified: Supreme Court architectural image active with clean white fallback.")
+        print("  Background verified: Enhanced Supreme Court bench image active with clean white fallback.")
 
-        # --- FIX 1 Verification: Framed Stage Panel & Layers a-f ---
-        print("\n--- Verifying FIX 1: Restored Stage Panel & Layers a-f ---")
-        stage_info = await page.evaluate("""() => {
-            const panel = document.getElementById('story-stage');
-            const l0 = document.getElementById('stage-l0');
-            const l1 = document.getElementById('stage-l1');
-            const l2 = document.getElementById('stage-l2');
-            const light = document.querySelector('.stage-layer-light');
-            const table = document.querySelector('.stage-layer-table');
+        # --- FIX 1 Verification: Clean Background (Door Arches & Black Lines Removed) ---
+        print("\n--- Verifying FIX 1: Door Arches & Black Lines Removed ---")
+        stage_cleanup = await page.evaluate("""() => {
+            const arch = document.querySelector('.stage-layer-arch');
             const frame = document.querySelector('.stage-hairline-frame');
-            const enGhost = document.getElementById('ghost-col-en');
-            const hiGhost = document.getElementById('ghost-col-hi');
+            const grain = document.querySelector('.stage-grain');
+            const table = document.querySelector('.table-ellipse');
 
-            const pRect = panel ? panel.getBoundingClientRect() : null;
             return {
-                panelFound: !!panel,
-                panelRect: pRect,
-                hasBaseGrain: !!l0 && !!l0.querySelector('.stage-grain'),
-                hasArchSvg: !!l1 && !!l1.querySelector('svg.stage-colonnade-svg'),
-                hasTypography: !!l2 && !!enGhost && !!hiGhost,
-                hasLightBeam: !!light && !!light.querySelector('.sunbeam-top-right'),
-                hasTableSurface: !!table && !!table.querySelector('.table-ellipse'),
-                hasHairlineFrame: !!frame,
-                ghostEnText: enGhost ? enGhost.innerText : '',
-                ghostHiText: hiGhost ? hiGhost.innerText : ''
+                archDisplay: arch ? window.getComputedStyle(arch).display : 'none',
+                frameDisplay: frame ? window.getComputedStyle(frame).display : 'none',
+                grainDisplay: grain ? window.getComputedStyle(grain).display : 'none',
+                tableDisplay: table ? window.getComputedStyle(table).display : 'none'
             };
         }""")
-
-        assert stage_info["panelFound"], "Stage panel #story-stage must exist"
-        assert stage_info["hasBaseGrain"], "Layer a: Base mist gradient with grain must exist"
-        assert stage_info["hasArchSvg"], "Layer b: Arch colonnade SVG silhouette must exist"
-        assert stage_info["hasTypography"], "Layer c: Ghost typography must exist"
-        assert stage_info["hasLightBeam"], "Layer d: Top-right warm light beam must exist"
-        assert stage_info["hasTableSurface"], "Layer e: Table surface ellipse with reflection must exist"
-        assert stage_info["hasHairlineFrame"], "Layer f: Brass hairline frame (1px, 40%, 16px inset) must exist"
-        assert "Constitution" in stage_info["ghostEnText"] or "CONSTITUTION" in stage_info["ghostEnText"]
-        assert "संविधान" in stage_info["ghostHiText"]
-        print("  FIX 1 PASSED: All layers a-f verified inside framed stage panel.")
+        assert stage_cleanup["archDisplay"] == "none", f"Arch colonnade (door shape) must be removed, got {stage_cleanup['archDisplay']}"
+        assert stage_cleanup["frameDisplay"] == "none", f"Hairline frame (black line) must be removed, got {stage_cleanup['frameDisplay']}"
+        assert stage_cleanup["grainDisplay"] == "none", "Stage grain must be hidden"
+        assert stage_cleanup["tableDisplay"] == "none", "Stage artificial table must be hidden"
+        print("  FIX 1 PASSED: Background verified clean with door-type arches, black hairline frame, and artificial lines removed.")
 
         # --- FIX 2 Verification: Book Position & Centering (1440x900) ---
         print("\n--- Verifying FIX 2: Book Position & Centering (1440x900) ---")
@@ -112,13 +94,9 @@ async def verify():
         assert b_rect_0["top"] >= 60, f"Book top ({b_rect_0['top']}px) must be >= 60px from viewport top!"
         print(f"  Assertion passed: Margin from viewport top is {b_rect_0['top']:.1f}px (>= 60px)")
 
-        # 2. Equal space above and below book in panel (within ~25px tolerance for perspective tilt)
-        space_above_in_panel = b_rect_0["top"] - p_rect_0["top"]
-        space_below_in_panel = p_rect_0["bottom"] - b_rect_0["bottom"]
-        space_diff = abs(space_above_in_panel - space_below_in_panel)
-        print(f"  Panel vertical margins: Above={space_above_in_panel:.1f}px, Below={space_below_in_panel:.1f}px (Diff={space_diff:.1f}px)")
-        assert space_diff < 35, f"Book must be vertically centered in panel (diff {space_diff:.1f}px >= 35px)!"
-        print("  Assertion passed: Book is vertically centered in panel with equal space above and below.")
+        # 2. Increased length of the book verified
+        assert b_rect_0["height"] >= 450, f"Book length must be increased (height {b_rect_0['height']}px < 450px)!"
+        print(f"  Assertion passed: Increased book length verified (Height={b_rect_0['height']:.1f}px >= 450px)")
 
         # 3. Spread fits fully inside viewport width (no part cut at left or right edge)
         await page.evaluate("window.__tulya.scrollToProgress(0.35)")
@@ -221,20 +199,20 @@ async def verify():
         print("  Assertion passed: Turning leaf displays parchment textures on both faces with zero bright debug outlines.")
         print("  FIX 4 PASSED.")
 
-        # --- FIX 5 Verification: Book to Left and Tabs to Right ---
-        print("\n--- Verifying FIX 5: Book to Left and Tabs to Right ---")
+        # --- FIX 5 Verification: Centered Book & Alternating Left/Right Tabs ---
+        print("\n--- Verifying FIX 5: Centered Book & Alternating Left/Right Tabs ---")
         required_checkpoints = [
-            (0.00, "panel-0"),
-            (0.18, "panel-1"),
-            (0.35, "panel-2"),
-            (0.50, "panel-3"),
-            (0.68, "panel-4"),
-            (0.82, "panel-5"),
-            (0.91, "panel-6"),
-            (0.98, "panel-7")
+            (0.00, "panel-0", "LEFT"),
+            (0.18, "panel-1", "RIGHT"),
+            (0.35, "panel-2", "LEFT"),
+            (0.50, "panel-3", "RIGHT"),
+            (0.68, "panel-4", "LEFT"),
+            (0.82, "panel-5", "RIGHT"),
+            (0.91, "panel-6", "LEFT"),
+            (0.98, "panel-7", "RIGHT")
         ]
 
-        for p_val, panel_id in required_checkpoints:
+        for p_val, panel_id, expected_side in required_checkpoints:
             await page.evaluate(f"window.__tulya.scrollToProgress({p_val})")
             await page.wait_for_timeout(250)
 
@@ -256,16 +234,25 @@ async def verify():
             vw = data["vw"]
 
             b_center = (b_rect["left"] + b_rect["right"]) / 2.0
-            sep = p_rect["left"] - b_rect["right"]
+            b_center_diff = abs(b_center - vw / 2.0)
 
-            print(f"  p={p_val:.2f} ({panel_id}): bookCenter={b_center:.1f}px, tabLeft={p_rect['left']:.1f}px, sep={sep:.1f}px, sideOffset={side_off}")
-            assert side_off == -1.15, f"sideOffset must be -1.15 at p={p_val}, got {side_off}!"
-            assert b_center < vw / 2.0, f"Book must be placed on left half (center {b_center} >= {vw/2})!"
-            assert b_rect["left"] >= 50.0, f"Book left margin too tight ({b_rect['left']}px < 50px)!"
-            assert p_rect["left"] > b_rect["right"], f"Tab must sit to the right of the book!"
-            assert sep > 150.0, f"Separation between book and tab too small ({sep:.1f}px <= 150px) at p={p_val}!"
+            if p_rect["right"] < b_rect["left"]:
+                actual_side = "LEFT"
+                sep = b_rect["left"] - p_rect["right"]
+            elif p_rect["left"] > b_rect["right"]:
+                actual_side = "RIGHT"
+                sep = p_rect["left"] - b_rect["right"]
+            else:
+                actual_side = "OVERLAP"
+                sep = -1
 
-        print("  FIX 5 PASSED: Book is positioned on the left and tabs are positioned on the right with generous separation.")
+            print(f"  p={p_val:.2f} ({panel_id}): side={actual_side} (expected={expected_side}), sep={sep:.1f}px, bookCenter={b_center:.1f}px (diff={b_center_diff:.1f}px)")
+            assert side_off == 0.0, f"sideOffset must be 0.0 at p={p_val}, got {side_off}!"
+            assert actual_side == expected_side, f"Card {panel_id} expected on {expected_side}, got {actual_side}!"
+            assert sep > 25.0, f"Separation too tight ({sep:.1f}px <= 25px) at p={p_val} with {panel_id}!"
+            assert b_center_diff <= 15.0, f"Book must remain horizontally centered at p={p_val} (diff {b_center_diff:.1f}px > 15px)!"
+
+        print("  FIX 5 PASSED: Book is centered and tabs alternate between left and right with clean separation.")
 
         # --- Save Required Checkpoint Screenshots at 1440x900 ---
         print("\n--- Saving Checkpoint Screenshots (1440x900) ---")
@@ -331,7 +318,7 @@ async def verify():
         await page_fhd.goto("http://127.0.0.1:8000/", wait_until="networkidle")
         await page_fhd.wait_for_timeout(800)
 
-        # 1. Closed book top margin >= 60px and centered in panel at 1920x1080
+        # 1. Closed book top margin >= 60px and increased length at 1920x1080
         b0_fhd = await page_fhd.evaluate("""() => {
             window.__tulya.scrollToProgress(0.0);
             const bRect = window.__tulya.getBookBoundingBox();
@@ -343,12 +330,7 @@ async def verify():
         pr_fhd = b0_fhd["panelRect"]
         print(f"  1920x1080 Book Rect at p=0: Top={br_fhd['top']:.1f}px, Bottom={br_fhd['bottom']:.1f}px, Height={br_fhd['height']:.1f}px")
         assert br_fhd["top"] >= 60, f"At 1920x1080, book top ({br_fhd['top']}px) must be >= 60px!"
-
-        space_above_fhd = br_fhd["top"] - pr_fhd["top"]
-        space_below_fhd = pr_fhd["bottom"] - br_fhd["bottom"]
-        diff_fhd = abs(space_above_fhd - space_below_fhd)
-        print(f"  1920x1080 Panel margins: Above={space_above_fhd:.1f}px, Below={space_below_fhd:.1f}px (Diff={diff_fhd:.1f}px)")
-        assert diff_fhd < 35, f"At 1920x1080, book must be vertically centered in panel (diff {diff_fhd:.1f}px >= 35px)!"
+        assert br_fhd["height"] >= 580, f"At 1920x1080, book height must be >= 580px, got {br_fhd['height']}"
 
         # 2. Spread fits fully inside 1920 width
         await page_fhd.evaluate("window.__tulya.scrollToProgress(0.35)")
@@ -361,8 +343,8 @@ async def verify():
         assert s_rect_fhd["right"] <= 1920, f"Spread right edge ({s_rect_fhd['right']}px) must be <= 1920!"
         print("  1920x1080 Spread fits fully inside viewport width.")
 
-        # 3. Check book on left and tabs on right across required checkpoints at 1920x1080
-        for p_val, panel_id in required_checkpoints:
+        # 3. Check alternating cards and fixed centering across required checkpoints at 1920x1080
+        for p_val, panel_id, expected_side in required_checkpoints:
             await page_fhd.evaluate(f"window.__tulya.scrollToProgress({p_val})")
             await page_fhd.wait_for_timeout(200)
 
@@ -384,16 +366,25 @@ async def verify():
             vw = data["vw"]
 
             b_center = (b_rect["left"] + b_rect["right"]) / 2.0
-            sep = p_rect["left"] - b_rect["right"]
+            b_center_diff = abs(b_center - vw / 2.0)
 
-            print(f"  1920x1080 p={p_val:.2f} ({panel_id}): bookCenter={b_center:.1f}px, tabLeft={p_rect['left']:.1f}px, sep={sep:.1f}px, sideOffset={side_off}")
-            assert side_off == -1.15, f"sideOffset must be -1.15 at 1920x1080 p={p_val}, got {side_off}!"
-            assert b_center < vw / 2.0, f"At 1920x1080, book must be placed on left half (center {b_center} >= {vw/2})!"
-            assert b_rect["left"] >= 100.0, f"At 1920x1080, book left margin too tight ({b_rect['left']}px < 100px)!"
-            assert p_rect["left"] > b_rect["right"], f"At 1920x1080, tab must sit to right of book!"
-            assert sep > 250.0, f"At 1920x1080, separation too small ({sep:.1f}px <= 250px) at p={p_val}!"
+            if p_rect["right"] < b_rect["left"]:
+                actual_side = "LEFT"
+                sep = b_rect["left"] - p_rect["right"]
+            elif p_rect["left"] > b_rect["right"]:
+                actual_side = "RIGHT"
+                sep = p_rect["left"] - b_rect["right"]
+            else:
+                actual_side = "OVERLAP"
+                sep = -1
 
-        print("  1920x1080 Book to left and tabs to right verified across all checkpoints.")
+            print(f"  1920x1080 p={p_val:.2f} ({panel_id}): side={actual_side} (expected={expected_side}), sep={sep:.1f}px, bookCenter={b_center:.1f}px (diff={b_center_diff:.1f}px)")
+            assert side_off == 0.0, f"sideOffset must be 0.0 at 1920x1080 p={p_val}, got {side_off}!"
+            assert actual_side == expected_side, f"Card {panel_id} expected on {expected_side}, got {actual_side}!"
+            assert sep > 30.0, f"Separation too tight ({sep:.1f}px <= 30px) at 1920x1080 p={p_val} with {panel_id}!"
+            assert b_center_diff <= 20.0, f"Book must remain horizontally centered at 1920x1080 p={p_val} (diff {b_center_diff:.1f}px > 20px)!"
+
+        print("  1920x1080 Alternating cards and fixed center book verified across all checkpoints.")
 
         # 4. Save 1920x1080 Checkpoint Screenshots
         print("\n--- Saving Checkpoint Screenshots (1920x1080) ---")

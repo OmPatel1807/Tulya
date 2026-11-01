@@ -646,7 +646,7 @@
   scene.add(bookGroup);
 
   const BOOK_W = 2.4;
-  const BOOK_H = 3.4;
+  const BOOK_H = 3.85; // Increased book length (User request: "increase length of the book")
   const BOOK_T = 0.28;
   const COVER_T = 0.05;
 
@@ -1279,28 +1279,27 @@
   const ghostColEnEl = document.getElementById('ghost-col-en');
   const ghostColHiEl = document.getElementById('ghost-col-hi');
 
-  // FIX 1 (Item 3): Full 100dvh Viewport Scaling for 3D Book
+  // Viewport Scaling for 3D Book with increased length
   function updateViewportScale() {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    let targetScale = 0.76;
+    let targetScale = 0.74;
     if (width >= 1600) {
-      targetScale = 0.78;
+      targetScale = 0.76;
     } else if (width >= 1025) {
-      targetScale = 0.72;
+      targetScale = 0.70;
     } else {
       // Narrow screens (Tablet / Mobile): Scale book to comfortably fit upper 70% of viewport
-      targetScale = Math.min(0.56, Math.max(0.42, (width / 800) * 0.50));
+      targetScale = Math.min(0.54, Math.max(0.40, (width / 800) * 0.48));
     }
     bookGroup.scale.set(targetScale, targetScale, targetScale);
     return targetScale;
   }
 
-  // Book to Left Layout: Book shifted to left on wide desktop screens (User request)
+  // Book Centered Layout: Book visual center stays strictly centered at X = 0 (User request)
   function getSideOffset(p) {
-    if (window.innerWidth < 1025) return 0.0;
-    return -1.15;
+    return 0.0;
   }
 
   // --- Apply State to 3D Scene ---
