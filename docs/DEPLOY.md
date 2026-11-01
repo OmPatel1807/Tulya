@@ -175,3 +175,4 @@ To roll back to a previous deployment:
 **Free-plan cold start** is the main UX risk. Render free services spin down after inactivity. The first request takes ~30 seconds. Mitigation: ping `/healthz` before a demo, or upgrade to a Starter plan (\$7/month) which has no sleep.
 
 **Second risk**: `data/raw/` PDF files (14 MB) are committed to the repo. If you move to Git LFS or remove them, the precomputed pipeline will fail to re-run. The precomputed JSON files in `data/processed/` are the only thing needed in hosted mode.
+

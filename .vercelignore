@@ -1,0 +1,11 @@
+# Ignore Python backend and data from Vercel static deployment
+backend/
+data/
+requirements.txt
+requirements-live.txt
+runtime.txt
+render.yaml
+Procfile
+pytest.ini
+.env
+.env.example
