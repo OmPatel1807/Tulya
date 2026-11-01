@@ -596,15 +596,21 @@ body.debug-mode .fps-counter {
   transition: opacity 350ms ease, transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Wide screens (Desktop): Placed in Left or Right Sides Alternatively, Vertically Centered */
+/* Wide screens (Desktop): Book to Left, Tabs to Right (User Request) */
 @media (min-width: 1025px) {
+  .stage-panel {
+    transform: translateX(-100px) rotate(-1.5deg);
+  }
+
   .story-checkpoint-panel {
     top: 50%;
     bottom: auto;
-    width: 20vw;
-    max-width: 280px;
-    min-width: 250px;
-    padding: 1.15rem 1.45rem;
+    right: 2.5rem;
+    left: auto;
+    width: 24vw;
+    max-width: 360px;
+    min-width: 270px;
+    padding: 1.25rem 1.55rem;
     transform: translateY(-50%) scale(0.96);
   }
 
@@ -614,15 +620,10 @@ body.debug-mode .fps-counter {
     transform: translateY(-50%) scale(1.0);
   }
 
-  /* Left-Side Placement */
-  .story-checkpoint-panel.panel-side-left {
-    left: 1.5rem;
-    right: auto;
-  }
-
-  /* Right-Side Placement */
+  /* All panels positioned on right side */
+  .story-checkpoint-panel.panel-side-left,
   .story-checkpoint-panel.panel-side-right {
-    right: 1.5rem;
+    right: 2.5rem;
     left: auto;
   }
 }

@@ -221,20 +221,20 @@ async def verify():
         print("  Assertion passed: Turning leaf displays parchment textures on both faces with zero bright debug outlines.")
         print("  FIX 4 PASSED.")
 
-        # --- FIX 5 Verification: Alternating Left and Right Side Cards with Fixed Center Book ---
-        print("\n--- Verifying FIX 5: Alternating Left and Right Side Cards & Fixed Center Book ---")
+        # --- FIX 5 Verification: Book to Left and Tabs to Right ---
+        print("\n--- Verifying FIX 5: Book to Left and Tabs to Right ---")
         required_checkpoints = [
-            (0.00, "panel-0", "LEFT"),
-            (0.18, "panel-1", "RIGHT"),
-            (0.35, "panel-2", "LEFT"),
-            (0.50, "panel-3", "RIGHT"),
-            (0.68, "panel-4", "LEFT"),
-            (0.82, "panel-5", "RIGHT"),
-            (0.91, "panel-6", "LEFT"),
-            (0.98, "panel-7", "RIGHT")
+            (0.00, "panel-0"),
+            (0.18, "panel-1"),
+            (0.35, "panel-2"),
+            (0.50, "panel-3"),
+            (0.68, "panel-4"),
+            (0.82, "panel-5"),
+            (0.91, "panel-6"),
+            (0.98, "panel-7")
         ]
 
-        for p_val, panel_id, expected_side in required_checkpoints:
+        for p_val, panel_id in required_checkpoints:
             await page.evaluate(f"window.__tulya.scrollToProgress({p_val})")
             await page.wait_for_timeout(250)
 
@@ -256,25 +256,16 @@ async def verify():
             vw = data["vw"]
 
             b_center = (b_rect["left"] + b_rect["right"]) / 2.0
-            b_center_diff = abs(b_center - vw / 2.0)
+            sep = p_rect["left"] - b_rect["right"]
 
-            if p_rect["right"] < b_rect["left"]:
-                actual_side = "LEFT"
-                sep = b_rect["left"] - p_rect["right"]
-            elif p_rect["left"] > b_rect["right"]:
-                actual_side = "RIGHT"
-                sep = p_rect["left"] - b_rect["right"]
-            else:
-                actual_side = "OVERLAP"
-                sep = -1
+            print(f"  p={p_val:.2f} ({panel_id}): bookCenter={b_center:.1f}px, tabLeft={p_rect['left']:.1f}px, sep={sep:.1f}px, sideOffset={side_off}")
+            assert side_off == -1.15, f"sideOffset must be -1.15 at p={p_val}, got {side_off}!"
+            assert b_center < vw / 2.0, f"Book must be placed on left half (center {b_center} >= {vw/2})!"
+            assert b_rect["left"] >= 50.0, f"Book left margin too tight ({b_rect['left']}px < 50px)!"
+            assert p_rect["left"] > b_rect["right"], f"Tab must sit to the right of the book!"
+            assert sep > 150.0, f"Separation between book and tab too small ({sep:.1f}px <= 150px) at p={p_val}!"
 
-            print(f"  p={p_val:.2f} ({panel_id}): side={actual_side} (expected={expected_side}), sep={sep:.1f}px, bookCenter={b_center:.1f}px (diff={b_center_diff:.1f}px), sideOffset={side_off}")
-            assert side_off == 0.0, f"sideOffset must be 0.0 at p={p_val}, got {side_off}!"
-            assert actual_side == expected_side, f"Card {panel_id} expected on {expected_side}, got {actual_side}!"
-            assert sep > 20.0, f"Separation too tight ({sep:.1f}px <= 20px) at p={p_val} with {panel_id}!"
-            assert b_center_diff <= 15.0, f"Book must remain horizontally centered at p={p_val} (diff {b_center_diff:.1f}px > 15px)!"
-
-        print("  FIX 5 PASSED: Cards alternate left and right sides with clean separation and fixed center book.")
+        print("  FIX 5 PASSED: Book is positioned on the left and tabs are positioned on the right with generous separation.")
 
         # --- Save Required Checkpoint Screenshots at 1440x900 ---
         print("\n--- Saving Checkpoint Screenshots (1440x900) ---")
@@ -370,8 +361,8 @@ async def verify():
         assert s_rect_fhd["right"] <= 1920, f"Spread right edge ({s_rect_fhd['right']}px) must be <= 1920!"
         print("  1920x1080 Spread fits fully inside viewport width.")
 
-        # 3. Check alternating cards and fixed centering across required checkpoints at 1920x1080
-        for p_val, panel_id, expected_side in required_checkpoints:
+        # 3. Check book on left and tabs on right across required checkpoints at 1920x1080
+        for p_val, panel_id in required_checkpoints:
             await page_fhd.evaluate(f"window.__tulya.scrollToProgress({p_val})")
             await page_fhd.wait_for_timeout(200)
 
@@ -393,25 +384,16 @@ async def verify():
             vw = data["vw"]
 
             b_center = (b_rect["left"] + b_rect["right"]) / 2.0
-            b_center_diff = abs(b_center - vw / 2.0)
+            sep = p_rect["left"] - b_rect["right"]
 
-            if p_rect["right"] < b_rect["left"]:
-                actual_side = "LEFT"
-                sep = b_rect["left"] - p_rect["right"]
-            elif p_rect["left"] > b_rect["right"]:
-                actual_side = "RIGHT"
-                sep = p_rect["left"] - b_rect["right"]
-            else:
-                actual_side = "OVERLAP"
-                sep = -1
+            print(f"  1920x1080 p={p_val:.2f} ({panel_id}): bookCenter={b_center:.1f}px, tabLeft={p_rect['left']:.1f}px, sep={sep:.1f}px, sideOffset={side_off}")
+            assert side_off == -1.15, f"sideOffset must be -1.15 at 1920x1080 p={p_val}, got {side_off}!"
+            assert b_center < vw / 2.0, f"At 1920x1080, book must be placed on left half (center {b_center} >= {vw/2})!"
+            assert b_rect["left"] >= 100.0, f"At 1920x1080, book left margin too tight ({b_rect['left']}px < 100px)!"
+            assert p_rect["left"] > b_rect["right"], f"At 1920x1080, tab must sit to right of book!"
+            assert sep > 250.0, f"At 1920x1080, separation too small ({sep:.1f}px <= 250px) at p={p_val}!"
 
-            print(f"  1920x1080 p={p_val:.2f} ({panel_id}): side={actual_side} (expected={expected_side}), sep={sep:.1f}px, bookCenter={b_center:.1f}px (diff={b_center_diff:.1f}px), sideOffset={side_off}")
-            assert side_off == 0.0, f"sideOffset must be 0.0 at 1920x1080 p={p_val}, got {side_off}!"
-            assert actual_side == expected_side, f"Card {panel_id} expected on {expected_side}, got {actual_side}!"
-            assert sep > 30.0, f"Separation too tight ({sep:.1f}px <= 30px) at 1920x1080 p={p_val} with {panel_id}!"
-            assert b_center_diff <= 20.0, f"Book must remain horizontally centered at 1920x1080 p={p_val} (diff {b_center_diff:.1f}px > 20px)!"
-
-        print("  1920x1080 Alternating cards and fixed center book verified across all checkpoints.")
+        print("  1920x1080 Book to left and tabs to right verified across all checkpoints.")
 
         # 4. Save 1920x1080 Checkpoint Screenshots
         print("\n--- Saving Checkpoint Screenshots (1920x1080) ---")

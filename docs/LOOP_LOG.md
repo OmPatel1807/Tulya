@@ -1416,6 +1416,63 @@ All requested changes verified: narrative cards alternate left and right sides w
 ### Decide
 The Supreme Court background image is fully integrated with elegant semi-transparent stage framing, maintaining centered 3D book placement and high-contrast alternating text cards. Status: PASSED.
 
+---
+
+## Loop 20 - Book Positioned on Left, Story Tabs Docked on Right
+
+- **Objective**: Implement user request (`"All thing is perfect just one change put book to left and put tab to right. only make that change"`):
+  1. Reposition the 3D Constitution book to the left side of the viewport on desktop screens ($\ge 1025$px) using `getSideOffset = -1.15`.
+  2. Dock all story narrative checkpoint cards (tabs) strictly on the right side of the viewport (`right: 2.5rem; left: auto; max-width: 360px;`).
+  3. Ensure `.stage-panel` shifts gracefully (`transform: translateX(-100px) rotate(-1.5deg)`) to frame the book on the left, keeping the table surface and shadow underneath.
+  4. Maintain generous positive separation ($> 200$px on 1440x900, $> 360$px on 1920x1080) between book and tab across all 8 scroll checkpoints with zero overlap.
+  5. Preserve all existing assets, Supreme Court background image, leather Constitution cover, smart header, and 3D animation timing untouched.
+
+### Plan
+1. **Frontend Scripts (`frontend/static/story.js`)**:
+   - In `getSideOffset(p)`: Return `-1.15` on desktop screens ($\ge 1025$px) and `0.0` on narrow screens ($< 1025$px).
+2. **Frontend Styles (`frontend/static/style.css`)**:
+   - In `.story-checkpoint-panel`: On `@media (min-width: 1025px)`, position at `right: 2.5rem; left: auto; width: 24vw; max-width: 360px; min-width: 270px;`.
+   - Update `.panel-side-left, .panel-side-right` to both dock at `right: 2.5rem; left: auto;`.
+   - In `.stage-panel`: Apply `transform: translateX(-100px) rotate(-1.5deg);` on desktop.
+3. **Verification Script (`backend/eval/verify_layout_and_stage.py`)**:
+   - Update FIX 5 to assert book center is in the left half (`< vw / 2`), tabs sit to the right (`pRect.left > bRect.right`), separation is $> 150$px, and `sideOffset == -1.15`.
+   - Run verification across 1440x900 and 1920x1080, re-saving all 18 checkpoint screenshots.
+   - Run backend test suite (90 passed).
+
+### Act
+- Modified `frontend/static/story.js`, `frontend/static/style.css`, and `backend/eval/verify_layout_and_stage.py`.
+
+### Verify
+1. **`backend/eval/verify_layout_and_stage.py`**:
+   - **Background Image Verification**: Supreme Court image active, stage panel `rgba(255, 255, 255, 0.22)`: PASSED.
+   - **FIX 1 (Stage Panel & Layers a–f)**: PASSED.
+   - **FIX 2 (Book Vertical Centering & Width Fit)**:
+     - 1440x900: Closed book top = 236.4px ($\ge 60$px). Margins: Above = 177.1px, Below = 175.9px. Opened spread width = 713.8px, Left = 125.6px, Right = 839.4px. Zero edge clipping. PASSED.
+     - 1920x1080: Closed book top = 259.7px ($\ge 60$px). Margins: Above = 112.4px, Below = 110.9px. Spread fits fully. PASSED.
+   - **FIX 3 (Spread Content & Devanagari Conjuncts)**: Pure English left, pure Hindi right ('संविधान', 'प्राधिकृत', 'निर्दिष्ट', 'द्वितीय'): PASSED.
+   - **FIX 4 (Turning Leaf Real Parchment Faces)**: White ratio $\le 4.31\%$ ($< 10\%$), yellow debug ratio $= 0.00\%$: PASSED.
+   - **FIX 5 (Book on Left, Tabs on Right)**:
+     - $p = 0.00$ (panel-0): bookCenter = 514.8px, tabLeft = 1054.4px, sep = 362.7px, sideOffset = -1.15.
+     - $p = 0.18$ (panel-1): bookCenter = 440.2px, tabLeft = 1054.4px, sep = 368.7px, sideOffset = -1.15.
+     - $p = 0.35$ (panel-2): bookCenter = 482.5px, tabLeft = 1054.4px, sep = 215.1px, sideOffset = -1.15.
+     - $p = 0.50$ (panel-3): bookCenter = 461.9px, tabLeft = 1058.0px, sep = 208.3px, sideOffset = -1.15.
+     - $p = 0.68$ (panel-4): bookCenter = 486.1px, tabLeft = 1054.4px, sep = 216.9px, sideOffset = -1.15.
+     - $p = 0.82$ (panel-5): bookCenter = 501.8px, tabLeft = 1054.4px, sep = 224.8px, sideOffset = -1.15.
+     - $p = 0.91$ (panel-6): bookCenter = 470.5px, tabLeft = 1054.5px, sep = 209.1px, sideOffset = -1.15.
+     - $p = 0.98$ (panel-7): bookCenter = 502.0px, tabLeft = 1054.5px, sep = 364.9px, sideOffset = -1.15.
+     - At 1920x1080: bookCenter ranges between 625.7px and 723.7px, tabLeft at 1521.4px, separation ranges from 366.8px to 574.2px.
+     - PASSED.
+   - **Idle Shake**: Diff percentage = 0.098% ($< 2.0\%$ threshold). PASSED.
+   - **Performance**: Frame compute time mean = 0.07 ms, p95 = 0.20 ms ($< 20$ ms). PASSED.
+   - **Screenshots**: 18 high-resolution screenshots saved to `docs/checkpoints/` and artifact store.
+2. **Regression Check**:
+   - Backend pytest suite: 90 passed in 1.36s.
+   - Zero console errors during headless test.
+
+### Decide
+The layout now cleanly displays the 3D Constitution book on the left and narrative cards on the right across all story checkpoints, maintaining the background image, cover, and motion without any other changes. Status: PASSED.
+
+
 
 
 

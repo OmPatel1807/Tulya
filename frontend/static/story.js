@@ -1297,9 +1297,10 @@
     return targetScale;
   }
 
-  // Fixed Center Book Layout: Book visual center stays strictly centered at X = 0
+  // Book to Left Layout: Book shifted to left on wide desktop screens (User request)
   function getSideOffset(p) {
-    return 0.0;
+    if (window.innerWidth < 1025) return 0.0;
+    return -1.15;
   }
 
   // --- Apply State to 3D Scene ---
