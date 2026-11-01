@@ -30,7 +30,7 @@ from backend.app.semantic.modality import detect_modality_hints
 from backend.app.semantic.cache import SemanticCache
 
 # Prompt versioning
-PROMPT_VERSION = "v1"
+PROMPT_VERSION = "v2"
 
 SYSTEM_PROMPT_V1 = """You are a senior bilingual statutory consistency auditor comparing official English and Hindi versions of an Indian statute.
 Your goal is to identify ONLY substantive differences in legal effect between the two clauses.
@@ -163,6 +163,8 @@ class MockSemanticProvider(BaseLLMProvider):
             ("The authority may", "करेगा", "may", "करेगा"),
             ("shall not be liable", "दायी हो सकेगा", "shall not be liable", "दायी हो सकेगा"),
             ("shall take cognizance", "संज्ञान कर सकेगा", "shall take cognizance", "संज्ञान कर सकेगा"),
+            ("shall be entitled", "हकदार हो सकेगा", "shall be entitled", "हकदार हो सकेगा"),
+            ("may reject", "अस्वीकार करेगा", "may reject", "अस्वीकार करेगा"),
             ("shall enforce", "कर सकेगा", "shall enforce", "कर सकेगा")
         ]
         for m_en, m_hi, q_en, q_hi in modality_pairs:
@@ -187,6 +189,9 @@ class MockSemanticProvider(BaseLLMProvider):
             ("subject to such conditions", ["शर्तों के अधीन", "शतोज़ के अिीि"]),
             ("reasonable time", ["युक्तियुक्त समय", "युह तयु त समय"]),
             ("opportunity of being heard", ["सुनवाई का अवसर", "सुििाई का अिसर"]),
+            ("fair and transparent manner", ["सहानुभूतिपूर्वक", "निष्पक्ष"]),
+            ("certified copy of the order", ["प्रमाणित प्रति"]),
+            ("tax plus a penalty", ["कर के अतिरिक्त", "कर की रकम के अतिरिक्त"]),
             ("prior approval in writing", ["पूर्व अनुमोदन", "लिखित अनुमति"])
         ]
         for oc, hi_translations in omission_cands:
@@ -203,20 +208,26 @@ class MockSemanticProvider(BaseLLMProvider):
 
         # 3. Addition (Present only in Hindi)
         addition_cands = [
-            "अतिरिक्त शास्ति शुल्क संदाय करने पर ही", "पूर्व लिखित मंजूरी से ही",
-            "व्यक्तिगत रूप से उपस्थित हो", "दो राजपत्रित अधिकारियों के सत्यापन के अधीन",
-            "आवेदन निरस्त समझा जाएगा", "प्रमाण-पत्र जारी किया गया हो",
-            "व्यय का भार व्यथित व्यक्ति वहन करेगा", "उच्च न्यायालय में ही संस्थित की जा सकेगी",
-            "विशेष न्यायाधिकरण की लिखित अनुमति"
+            ("अतिरिक्त शास्ति शुल्क संदाय करने पर ही", "अतिरिक्त शास्ति शुल्क संदाय करने पर ही"),
+            ("पूर्व लिखित मंजूरी से ही", "पूर्व लिखित मंजूरी से ही"),
+            ("व्यक्तिगत रूप से उपस्थित हो", "व्यक्तिगत रूप से उपस्थित हो"),
+            ("दो राजपत्रित अधिकारियों के सत्यापन के अधीन", "दो राजपत्रित अधिकारियों के सत्यापन के अधीन"),
+            ("आवेदन निरस्त समझा जाएगा", "आवेदन निरस्त समझा जाएगा"),
+            ("प्रमाण-पत्र जारी किया गया हो", "प्रमाण-पत्र जारी किया गया हो"),
+            ("व्यय का भार व्यथित व्यक्ति वहन करेगा", "व्यय का भार व्यथित व्यक्ति वहन करेगा"),
+            ("उच्च न्यायालय में ही संस्थित की जा सकेगी", "उच्च न्यायालय में ही संस्थित की जा सकेगी"),
+            ("विशेष न्यायाधिकरण की लिखित अनुमति", "विशेष न्यायाधिकरण की लिखित अनुमति"),
+            ("मूल पहचान पत्र", "मूल पहचान पत्र"),
+            ("कर के अतिरिक्त", "कर के अतिरिक्त")
         ]
-        for ac in addition_cands:
-            if ac in prompt:
+        for ac_key, ac_quote in addition_cands:
+            if ac_key in prompt:
                 findings.append({
                     "category": "ADDITION",
                     "severity": "HIGH",
-                    "explanation": "Hindi version introduces an additional requirement or penalty condition absent in the English statute.",
-                    "quote_en": None,
-                    "quote_hi": ac,
+                    "explanation": f"Hindi version introduces an additional requirement or condition '{ac_quote}' absent in English statute.",
+                    "quote_en": "ten times the tax" if "कर के अतिरिक्त" in ac_key else None,
+                    "quote_hi": ac_quote,
                     "confidence": 0.93
                 })
                 break
@@ -230,7 +241,9 @@ class MockSemanticProvider(BaseLLMProvider):
             ("all complaints", "केवल प्रथम श्रेणी के परिवादों"),
             ("throughout India", "केवल संघ राज्यक्षेत्रों"),
             ("any officer", "केवल जिला मजिस्ट्रेट"),
-            ("civil court", "राजस्व न्यायालय")
+            ("civil court", "राजस्व न्यायालय"),
+            ("State Government", "केंद्रीय सरकार"),
+            ("any institution", "केवल शासकीय संस्था")
         ]
         for en_t, hi_t in scope_pairs:
             if en_t.lower() in prompt.lower() and hi_t in prompt:

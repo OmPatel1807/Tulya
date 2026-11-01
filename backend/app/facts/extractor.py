@@ -40,8 +40,8 @@ ENUMERATION_PREFIX_PATTERN = re.compile(
     r'^\s*(?:\d*\[)?[—–-]*\s*(?:\([०-९\d]+|[a-zA-Z]|[\u0900-\u097F]+\)|\d+[A-Za-z]?[.—–:\-])\s*'
 )
 
-B_START = r'(?:^|[.,:;!?।—–\-(/\s])'
-B_END = r'(?=[.,:;!?।—–\-/\)\s]|$)'
+B_START = r'(?:^|[.,:;!?।—–\-(/\[\s])'
+B_END = r'(?=[.,:;!?।—–\-/\)\]\s]|$)'
 
 
 class IntervalMask:
@@ -248,7 +248,7 @@ def extract_money(text: str, mask: IntervalMask) -> List[FactSpan]:
 
     # 2. Suffix currency unit with digits: e.g. "50,000 rupees", "५०,००० रुपये", "5 lakh rupees", "10 करोड़ रुपये"
     p_suffix_num = re.compile(
-        rf'{B_START}([०-९\d,]+(?:\.[०-९\d]+)?)\s*(crores?|lakhs?|lacs?|million|करोड़|लाख)?\s*(rupees|rupee|रुपये|रुपया){B_END}',
+        rf'{B_START}([०-९\d,]+(?:\.[०-९\d]+)?)\s*(crores?|lakhs?|lacs?|million|करोड़|लाख)?\s*(rupees|rupee|रुपये|रुपया|रुपए){B_END}',
         re.IGNORECASE
     )
     for m in p_suffix_num.finditer(text):
@@ -282,7 +282,7 @@ def extract_money(text: str, mask: IntervalMask) -> List[FactSpan]:
         )
 
     # 3. Suffix currency unit with written words (e.g. "fifty thousand rupees", "पचास हजार रुपये")
-    p_rupee_marker = re.compile(rf'{B_START}(rupees|rupee|रुपये|रुपया){B_END}', re.IGNORECASE)
+    p_rupee_marker = re.compile(rf'{B_START}(rupees|rupee|रुपये|रुपया|रुपए){B_END}', re.IGNORECASE)
     for m in p_rupee_marker.finditer(text):
         u_start = m.start(1)
         u_end = m.end(1)
@@ -290,7 +290,7 @@ def extract_money(text: str, mask: IntervalMask) -> List[FactSpan]:
             continue
 
         marker_str = m.group(1).lower()
-        is_hindi = marker_str in ("रुपये", "रुपया")
+        is_hindi = marker_str in ("रुपये", "रुपया", "रुपए")
 
         val, span, raw_phrase = collect_preceding_number_words(text, u_start, is_hindi=is_hindi)
         if val is not None and span is not None:

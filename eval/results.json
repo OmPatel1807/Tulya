@@ -1,0 +1,3361 @@
+{
+  "dev": {
+    "dataset_name": "dev",
+    "total_cases": 100,
+    "clean_cases_count": 50,
+    "injected_cases_count": 50,
+    "overall": {
+      "precision": 0.8772,
+      "recall": 1.0,
+      "f1": 0.9346,
+      "true_positives": 50,
+      "false_positives": 7,
+      "false_negatives": 0
+    },
+    "per_category": {
+      "ADDITION": {
+        "total_injected": 10,
+        "true_positives": 10,
+        "false_positives": 1,
+        "false_negatives": 0,
+        "precision": 0.9091,
+        "recall": 1.0,
+        "f1": 0.9524
+      },
+      "MODALITY": {
+        "total_injected": 10,
+        "true_positives": 10,
+        "false_positives": 2,
+        "false_negatives": 0,
+        "precision": 0.8333,
+        "recall": 1.0,
+        "f1": 0.9091
+      },
+      "NUMERIC": {
+        "total_injected": 10,
+        "true_positives": 10,
+        "false_positives": 1,
+        "false_negatives": 0,
+        "precision": 0.9091,
+        "recall": 1.0,
+        "f1": 0.9524
+      },
+      "OMISSION": {
+        "total_injected": 10,
+        "true_positives": 10,
+        "false_positives": 0,
+        "false_negatives": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "SCOPE": {
+        "total_injected": 10,
+        "true_positives": 10,
+        "false_positives": 3,
+        "false_negatives": 0,
+        "precision": 0.7692,
+        "recall": 1.0,
+        "f1": 0.8696
+      }
+    },
+    "clean_false_positive_rate_per_100": 0.0,
+    "clean_fp_findings_total": 0,
+    "contribution_breakdown": {
+      "deterministic_only": 16,
+      "llm_only": 35,
+      "both": 6
+    },
+    "ungrounded_discards": {
+      "discarded_count": 0,
+      "valid_count": 57,
+      "discard_rate": 0.0
+    },
+    "efficiency": {
+      "total_latency_seconds": 0.275,
+      "latency_per_100_clauses_seconds": 0.275,
+      "total_cost_usd": 0.003349,
+      "cost_per_100_clauses_usd": 0.0033
+    },
+    "misses": [],
+    "false_positives": [],
+    "case_results": [
+      {
+        "case_id": "dev_clean_01",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_02",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_03",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_04",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_05",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_06",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_07",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_08",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_09",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_10",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_11",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_12",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_13",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_14",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_15",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_16",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_17",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_18",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_19",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_20",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_21",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_22",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_23",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_24",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_25",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_26",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_27",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_28",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_29",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_30",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_31",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_32",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_33",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_34",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_35",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_36",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_37",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_38",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_39",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_40",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_41",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_42",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_43",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_44",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_45",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_46",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_47",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_48",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_49",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_clean_50",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "dev_numeric_01",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_686e56bb",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in DURATION: English has 'thirty days' (30.0 day), Hindi has 'साठ दिन' (60.0 day)",
+            "quote_en": "thirty days",
+            "quote_hi": "साठ दिन",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_numeric_02",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_476c7f2a",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in DURATION: English has '18 years' (18.0 year), Hindi has 'इक्कीस वर्ष' (21.0 year)",
+            "quote_en": "18 years",
+            "quote_hi": "इक्कीस वर्ष",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_numeric_03",
+        "is_synthetic": true,
+        "findings_count": 2,
+        "findings": [
+          {
+            "finding_id": "audit_f76e1326",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Value discrepancy: English has 'thirty days' while Hindi has 'तीस'",
+            "quote_en": "thirty days",
+            "quote_hi": "तीस",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "paired_facts": true
+            }
+          },
+          {
+            "finding_id": "audit_3ff31c28",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in MONEY: English has 'Rs. 500' (500.0 INR), Hindi has 'पाँच हजार रुपये' (5000.0 INR)",
+            "quote_en": "Rs. 500",
+            "quote_hi": "पाँच हजार रुपये",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_numeric_04",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_24a89910",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in DURATION: English has 'one year' (1.0 year), Hindi has 'तीन वर्ष' (3.0 year)",
+            "quote_en": "one year",
+            "quote_hi": "तीन वर्ष",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_numeric_05",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_a3a334e2",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in PERCENT: English has '50 per cent' (50.0 %), Hindi has 'पच्चीस प्रतिशत' (25.0 %)",
+            "quote_en": "50 per cent",
+            "quote_hi": "पच्चीस प्रतिशत",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_numeric_06",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_c38fb1fb",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in MULTIPLIER: English has 'ten times' (10.0 multiplier), Hindi has 'पाँच गुना' (5.0 multiplier)",
+            "quote_en": "ten times",
+            "quote_hi": "पाँच गुना",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_numeric_07",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_808e85df",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in SECTION_REF: English has 'section 22' ({'target_type': 'section', 'target_id': '22'} section_ref), Hindi has 'धारा 25' ({'target_type': 'section', 'target_id': '25'} section_ref)",
+            "quote_en": "section 22",
+            "quote_hi": "धारा 25",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_numeric_08",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_6fe7aa0f",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in AREA_LENGTH: English has '0.3 acre' (0.3 acre), Hindi has '३ एकड़' (3.0 acre)",
+            "quote_en": "0.3 acre",
+            "quote_hi": "३ एकड़",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_numeric_09",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_ffb99aaf",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in NUMBER: English has '10,000' (10000.0 ), Hindi has 'पचास' (50.0 )",
+            "quote_en": "10,000",
+            "quote_hi": "पचास",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_numeric_10",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_bb70d865",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in DURATION: English has 'six months' (6.0 month), Hindi has 'बारह मास' (12.0 month)",
+            "quote_en": "six months",
+            "quote_hi": "बारह मास",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_omission_01",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_4369b4f3",
+            "category": "OMISSION",
+            "source": "BOTH",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'prior notice in writing' present in English is omitted in the Hindi version.",
+            "quote_en": "prior notice in writing",
+            "quote_hi": null,
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": [
+                0
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_omission_02",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_3f322475",
+            "category": "OMISSION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'recording reasons in writing' present in English is omitted in the Hindi version.",
+            "quote_en": "recording reasons in writing",
+            "quote_hi": null,
+            "confidence": 0.94,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_omission_03",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_484f7169",
+            "category": "OMISSION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'prior approval of the Central Government' present in English is omitted in the Hindi version.",
+            "quote_en": "prior approval of the Central Government",
+            "quote_hi": null,
+            "confidence": 0.94,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_omission_04",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_c38421cc",
+            "category": "OMISSION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'opportunity of being heard' present in English is omitted in the Hindi version.",
+            "quote_en": "opportunity of being heard",
+            "quote_hi": null,
+            "confidence": 0.94,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_omission_05",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_d597617a",
+            "category": "OMISSION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'in the prescribed manner' present in English is omitted in the Hindi version.",
+            "quote_en": "in the prescribed manner",
+            "quote_hi": null,
+            "confidence": 0.94,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_omission_06",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_71f5ae7a",
+            "category": "OMISSION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'without prejudice' present in English is omitted in the Hindi version.",
+            "quote_en": "without prejudice",
+            "quote_hi": null,
+            "confidence": 0.94,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_omission_07",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_0a2a0417",
+            "category": "OMISSION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'reasonable time' present in English is omitted in the Hindi version.",
+            "quote_en": "reasonable time",
+            "quote_hi": null,
+            "confidence": 0.94,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_omission_08",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_1443ec4b",
+            "category": "OMISSION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'subject to such conditions' present in English is omitted in the Hindi version.",
+            "quote_en": "subject to such conditions",
+            "quote_hi": null,
+            "confidence": 0.94,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_omission_09",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_be5545a7",
+            "category": "OMISSION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'fair and transparent manner' present in English is omitted in the Hindi version.",
+            "quote_en": "fair and transparent manner",
+            "quote_hi": null,
+            "confidence": 0.94,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_omission_10",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_cc06a3a7",
+            "category": "OMISSION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'certified copy of the order' present in English is omitted in the Hindi version.",
+            "quote_en": "certified copy of the order",
+            "quote_hi": null,
+            "confidence": 0.94,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_addition_01",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_ec79f5d0",
+            "category": "ADDITION",
+            "source": "BOTH",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'अतिरिक्त शास्ति शुल्क संदाय करने पर ही' absent in English statute.",
+            "quote_en": null,
+            "quote_hi": "अतिरिक्त शास्ति शुल्क संदाय करने पर ही",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": [
+                0
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_addition_02",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_902f3e64",
+            "category": "ADDITION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'पूर्व लिखित मंजूरी से ही' absent in English statute.",
+            "quote_en": null,
+            "quote_hi": "पूर्व लिखित मंजूरी से ही",
+            "confidence": 0.93,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_addition_03",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_82ba423d",
+            "category": "ADDITION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'व्यक्तिगत रूप से उपस्थित हो' absent in English statute.",
+            "quote_en": null,
+            "quote_hi": "व्यक्तिगत रूप से उपस्थित हो",
+            "confidence": 0.93,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_addition_04",
+        "is_synthetic": true,
+        "findings_count": 2,
+        "findings": [
+          {
+            "finding_id": "audit_7811dea9",
+            "category": "ADDITION",
+            "source": "BOTH",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'दो राजपत्रित अधिकारियों के सत्यापन के अधीन' absent in English statute.",
+            "quote_en": null,
+            "quote_hi": "दो राजपत्रित अधिकारियों के सत्यापन के अधीन",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": [
+                1
+              ]
+            }
+          },
+          {
+            "finding_id": "audit_79a5517c",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in NUMBER: English has 'twentieth' (20.0 ), Hindi has 'सौ' (100.0 )",
+            "quote_en": "twentieth",
+            "quote_hi": "सौ",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_addition_05",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_47f82988",
+            "category": "ADDITION",
+            "source": "BOTH",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'आवेदन निरस्त समझा जाएगा' absent in English statute.",
+            "quote_en": null,
+            "quote_hi": "आवेदन निरस्त समझा जाएगा",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": [
+                0
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_addition_06",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_6234166c",
+            "category": "ADDITION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'प्रमाण-पत्र जारी किया गया हो' absent in English statute.",
+            "quote_en": null,
+            "quote_hi": "प्रमाण-पत्र जारी किया गया हो",
+            "confidence": 0.93,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_addition_07",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_6ad0e9ee",
+            "category": "ADDITION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'व्यय का भार व्यथित व्यक्ति वहन करेगा' absent in English statute.",
+            "quote_en": null,
+            "quote_hi": "व्यय का भार व्यथित व्यक्ति वहन करेगा",
+            "confidence": 0.93,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_addition_08",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_a60ab761",
+            "category": "ADDITION",
+            "source": "BOTH",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'उच्च न्यायालय में ही संस्थित की जा सकेगी' absent in English statute.",
+            "quote_en": null,
+            "quote_hi": "उच्च न्यायालय में ही संस्थित की जा सकेगी",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": [
+                0
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_addition_09",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_3af6cbd9",
+            "category": "ADDITION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'विशेष न्यायाधिकरण की लिखित अनुमति' absent in English statute.",
+            "quote_en": null,
+            "quote_hi": "विशेष न्यायाधिकरण की लिखित अनुमति",
+            "confidence": 0.93,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_addition_10",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_c8d8e256",
+            "category": "ADDITION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'मूल पहचान पत्र' absent in English statute.",
+            "quote_en": null,
+            "quote_hi": "मूल पहचान पत्र",
+            "confidence": 0.93,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_modality_01",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_73fd76f6",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "shall be given",
+            "quote_hi": "दी जा सकेगी",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_modality_02",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_a4e04647",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "shall Endeavour",
+            "quote_hi": "प्रयास कर सकेगा",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_modality_03",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_a0c6ccb3",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "shall be deemed to be",
+            "quote_hi": "समझा जा सकेगा",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_modality_04",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_b7bddcc4",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "shall forward",
+            "quote_hi": "अग्रेषित कर सकेगा",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_modality_05",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_00d4b12d",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "may grant",
+            "quote_hi": "आदेश देगा",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_modality_06",
+        "is_synthetic": true,
+        "findings_count": 2,
+        "findings": [
+          {
+            "finding_id": "audit_27d7d8d9",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "may",
+            "quote_hi": "करेगा",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          },
+          {
+            "finding_id": "audit_076cbb7d",
+            "category": "OMISSION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'reasonable time' present in English is omitted in the Hindi version.",
+            "quote_en": "reasonable time",
+            "quote_hi": null,
+            "confidence": 0.94,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_modality_07",
+        "is_synthetic": true,
+        "findings_count": 2,
+        "findings": [
+          {
+            "finding_id": "audit_8794e334",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Value discrepancy: English has 'one hundred and twenty days' while Hindi has 'सौ'",
+            "quote_en": "one hundred and twenty days",
+            "quote_hi": "सौ",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "paired_facts": true
+            }
+          },
+          {
+            "finding_id": "audit_773058d5",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "shall not be liable",
+            "quote_hi": "दायी हो सकेगा",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_modality_08",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_6a9becc9",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "shall take cognizance",
+            "quote_hi": "संज्ञान कर सकेगा",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_modality_09",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_964d3c81",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "shall be entitled",
+            "quote_hi": "हकदार हो सकेगा",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_modality_10",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_9061c1a6",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "may",
+            "quote_hi": "करेगा",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_scope_01",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_8f3e0405",
+            "category": "SCOPE",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'Central Government' while Hindi specifies 'राज्य सरकार'.",
+            "quote_en": "Central Government",
+            "quote_hi": "राज्य सरकार",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_scope_02",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_58343f84",
+            "category": "SCOPE",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'every person' while Hindi specifies 'केवल व्यथित व्यक्ति'.",
+            "quote_en": "every person",
+            "quote_hi": "केवल व्यथित व्यक्ति",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_scope_03",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_df0d4788",
+            "category": "SCOPE",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'High Court' while Hindi specifies 'सर्वोच्च न्यायालय'.",
+            "quote_en": "High Court",
+            "quote_hi": "सर्वोच्च न्यायालय",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_scope_04",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_f93ef41a",
+            "category": "SCOPE",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'Judicial Magistrate' while Hindi specifies 'कार्यपालक मजिस्ट्रेट'.",
+            "quote_en": "Judicial Magistrate",
+            "quote_hi": "कार्यपालक मजिस्ट्रेट",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_scope_05",
+        "is_synthetic": true,
+        "findings_count": 2,
+        "findings": [
+          {
+            "finding_id": "audit_cf843508",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Value discrepancy: English has 'one hundred days' while Hindi has 'सौ'",
+            "quote_en": "one hundred days",
+            "quote_hi": "सौ",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "paired_facts": true
+            }
+          },
+          {
+            "finding_id": "audit_a95776b3",
+            "category": "SCOPE",
+            "source": "BOTH",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'all complaints' while Hindi specifies 'केवल प्रथम श्रेणी के परिवादों'.",
+            "quote_en": "all complaints",
+            "quote_hi": "केवल प्रथम श्रेणी के परिवादों",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": [
+                2
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_scope_06",
+        "is_synthetic": true,
+        "findings_count": 3,
+        "findings": [
+          {
+            "finding_id": "audit_6d7542cf",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Value discrepancy: English has 'one hundred days' while Hindi has 'सौ'",
+            "quote_en": "one hundred days",
+            "quote_hi": "सौ",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "paired_facts": true
+            }
+          },
+          {
+            "finding_id": "audit_8ec047cc",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Value discrepancy: English has 'five days' while Hindi has 'पांच'",
+            "quote_en": "five days",
+            "quote_hi": "पांच",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "paired_facts": true
+            }
+          },
+          {
+            "finding_id": "audit_dd22ced8",
+            "category": "SCOPE",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'throughout India' while Hindi specifies 'केवल संघ राज्यक्षेत्रों'.",
+            "quote_en": "throughout India",
+            "quote_hi": "केवल संघ राज्यक्षेत्रों",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_scope_07",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_859e3d71",
+            "category": "SCOPE",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'any officer' while Hindi specifies 'केवल जिला मजिस्ट्रेट'.",
+            "quote_en": "any officer",
+            "quote_hi": "केवल जिला मजिस्ट्रेट",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_scope_08",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_d630bf66",
+            "category": "SCOPE",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'civil court' while Hindi specifies 'राजस्व न्यायालय'.",
+            "quote_en": "civil court",
+            "quote_hi": "राजस्व न्यायालय",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_scope_09",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_34316657",
+            "category": "SCOPE",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'State Government' while Hindi specifies 'केंद्रीय सरकार'.",
+            "quote_en": "State Government",
+            "quote_hi": "केंद्रीय सरकार",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "dev_scope_10",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_82812ac2",
+            "category": "SCOPE",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'any institution' while Hindi specifies 'केवल शासकीय संस्था'.",
+            "quote_en": "any institution",
+            "quote_hi": "केवल शासकीय संस्था",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "heldout": {
+    "dataset_name": "heldout",
+    "total_cases": 50,
+    "clean_cases_count": 25,
+    "injected_cases_count": 25,
+    "overall": {
+      "precision": 0.4783,
+      "recall": 0.88,
+      "f1": 0.6197,
+      "true_positives": 22,
+      "false_positives": 24,
+      "false_negatives": 3
+    },
+    "per_category": {
+      "ADDITION": {
+        "total_injected": 5,
+        "true_positives": 4,
+        "false_positives": 1,
+        "false_negatives": 1,
+        "precision": 0.8,
+        "recall": 0.8,
+        "f1": 0.8
+      },
+      "MODALITY": {
+        "total_injected": 5,
+        "true_positives": 5,
+        "false_positives": 7,
+        "false_negatives": 0,
+        "precision": 0.4167,
+        "recall": 1.0,
+        "f1": 0.5882
+      },
+      "NUMERIC": {
+        "total_injected": 5,
+        "true_positives": 5,
+        "false_positives": 7,
+        "false_negatives": 0,
+        "precision": 0.4167,
+        "recall": 1.0,
+        "f1": 0.5882
+      },
+      "OMISSION": {
+        "total_injected": 5,
+        "true_positives": 3,
+        "false_positives": 0,
+        "false_negatives": 2,
+        "precision": 1.0,
+        "recall": 0.6,
+        "f1": 0.75
+      },
+      "SCOPE": {
+        "total_injected": 5,
+        "true_positives": 5,
+        "false_positives": 0,
+        "false_negatives": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      }
+    },
+    "clean_false_positive_rate_per_100": 16.0,
+    "clean_fp_findings_total": 9,
+    "contribution_breakdown": {
+      "deterministic_only": 40,
+      "llm_only": 14,
+      "both": 3
+    },
+    "ungrounded_discards": {
+      "discarded_count": 0,
+      "valid_count": 57,
+      "discard_rate": 0.0
+    },
+    "efficiency": {
+      "total_latency_seconds": 0.099,
+      "latency_per_100_clauses_seconds": 0.198,
+      "total_cost_usd": 0.001382,
+      "cost_per_100_clauses_usd": 0.0028
+    },
+    "misses": [
+      {
+        "case_id": "heldout_omission_03",
+        "expected_category": "OMISSION",
+        "ground_truth": {
+          "category": "OMISSION",
+          "severity": "HIGH",
+          "explanation": "Requirement of committee prior approval omitted in Hindi.",
+          "quote_en": "with the prior approval of the committee",
+          "quote_hi": null
+        },
+        "en_text": "Application of this Part This Part shall apply to matters relating to the insolvency and liquidation of corporate debtors where the minimum amount of the default is 1[one crore rupees]: of higher value which shall not be more than one crore rupees. 2[Provided further that the Central Government may, by notification, specify such minimum amount of default of higher value, which shall not be more than one crore rupees, for matters relating to the pre-packaged insolvency resolution process of corporate debtors under Chapter III-A.], provided that with the prior approval of the committee.",
+        "hi_text": "इस भाग का लागू िोना यि भाग हनगहमत ऋहणयों के दिवाला और पररसमापन से संबंहधत हवषयों को विां लागू िोगा, ििां व् यहतक्रम की न् यूनतम रकम एक लाि रुपए िै : परन् तु केन् रीय सरकार अहधसूचना द्वारा उ चतर मूल् य के व् यहतक्रम की न् यूनतम रकम हवहनर्िग ि कर सकेगी, िो एक करोड़ रुपए से अहधक निीं िोगी ।",
+        "findings_returned": [
+          {
+            "finding_id": "audit_76b94c72",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('1[one crore rupees') is absent in Hindi",
+            "quote_en": "1[one crore rupees",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_c1da75ba",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('one crore rupees') is absent in Hindi",
+            "quote_en": "one crore rupees",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_omission_05",
+        "expected_category": "OMISSION",
+        "ground_truth": {
+          "category": "OMISSION",
+          "severity": "HIGH",
+          "explanation": "48-hour deadline requirement omitted in Hindi.",
+          "quote_en": "within forty-eight hours",
+          "quote_hi": null
+        },
+        "en_text": "“auditor” means a chartered accountant certified to practice as such by the Institute of Chartered Accountants of India under section 6 of the Chartered Accountants Act, 1949 (38 of 1949); 3[(2A) “avoidance transaction” means a transaction as referred to in sections 43, 45, 49 and 50;] 2[4[(2B)] “base resolution plan” means a resolution plan provided by the corporate debtor under clause (c) of sub-section (4) of section 54A;], provided that within forty-eight hours.",
+        "hi_text": "“लेिापरीक्षक” से चािगर्ग अकाउिेंि अहधहनयम, 1949 (1949 का 38) की धारा 6 के अधीन भारतीय चािगर्ग अकाउंिेंि सं थान द्वारा ऐसे रूप में व् यवसाय के हलए प्रमाहणत कोई चािगर्ग अकाउंिेंि अहभप्रेत िै;",
+        "findings_returned": [
+          {
+            "finding_id": "audit_12d0c9cb",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('43') is absent in Hindi",
+            "quote_en": "43",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_09636823",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('45') is absent in Hindi",
+            "quote_en": "45",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_9453b1e5",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('49') is absent in Hindi",
+            "quote_en": "49",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_d21998a9",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('50') is absent in Hindi",
+            "quote_en": "50",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_766617d1",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('clause (c)') is absent in Hindi",
+            "quote_en": "clause (c)",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_9f36f1fe",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('sub-section (4)') is absent in Hindi",
+            "quote_en": "sub-section (4)",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_ac8bccc7",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('section 54A') is absent in Hindi",
+            "quote_en": "section 54A",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_9f91df7b",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('forty-eight') is absent in Hindi",
+            "quote_en": "forty-eight",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_addition_05",
+        "expected_category": "ADDITION",
+        "ground_truth": {
+          "category": "ADDITION",
+          "severity": "HIGH",
+          "explanation": "Hindi introduces an automatic dismissal penalty.",
+          "quote_en": null,
+          "quote_hi": "आवेदन स्वतः निरस्त समझा जाएगा"
+        },
+        "en_text": "The corporate insolvency resolution process shall commence from the date of admission of the application under sub-section (5).",
+        "hi_text": "हनगहमत दिवाला समाधान प्रदकया, उपधारा (5) के अधीन आवेिन के वीकार करने की तारीि से प्रारंभ िोगी । और सात दिन के भीतर समाधान न होने पर आवेदन स्वतः निरस्त समझा जाएगा ।",
+        "findings_returned": [
+          {
+            "finding_id": "audit_72cee3e9",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in Hindi ('सात दिन') is absent in English",
+            "quote_en": "",
+            "quote_hi": "सात दिन",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_EN"
+            }
+          }
+        ]
+      }
+    ],
+    "false_positives": [
+      {
+        "case_id": "heldout_clean_09",
+        "type": "clean_fp",
+        "finding": {
+          "finding_id": "audit_61992e65",
+          "category": "NUMERIC",
+          "source": "DETERMINISTIC",
+          "severity": "HIGH",
+          "explanation": "VALUE_MISMATCH in SECTION_REF: English has 'section 45' ({'target_type': 'section', 'target_id': '45'} section_ref), Hindi has 'धारा 45झ' ({'target_type': 'section', 'target_id': '45झ'} section_ref)",
+          "quote_en": "section 45",
+          "quote_hi": "धारा 45झ",
+          "confidence": 0.98,
+          "grounded": true,
+          "metadata": {
+            "fact_status": "VALUE_MISMATCH"
+          }
+        },
+        "en_text": "financial institution as defined in section 45-I of the Reserve Bank of India Act, 1934 (2 of 1934);",
+        "hi_text": "भारतीय ररिवग बैंक अहधहनयम, 1934 (1934 का 2) की धारा 45झ में यथापररभाहषत हवत्तीय सं था;"
+      },
+      {
+        "case_id": "heldout_clean_10",
+        "type": "clean_fp",
+        "finding": {
+          "finding_id": "audit_57add103",
+          "category": "NUMERIC",
+          "source": "DETERMINISTIC",
+          "severity": "HIGH",
+          "explanation": "Fact present in Hindi ('1') is absent in English",
+          "quote_en": "",
+          "quote_hi": "1",
+          "confidence": 0.98,
+          "grounded": true,
+          "metadata": {
+            "fact_status": "MISSING_IN_EN"
+          }
+        },
+        "en_text": "public financial institution as defined in clause (72) of section 2 of the Companies Act, 2013 (18 of 2013); and",
+        "hi_text": "कंपनी अहधहनयम, 2013 (2013 का 18) की धारा 2 के िंर् (72) में यथापररभाहषत कोई लोक हवत्तीय सं था; और 1 2018 के अहधहनयम सं० 26 की धारा 2 द्वारा प्रहत थाहपत ।"
+      },
+      {
+        "case_id": "heldout_clean_10",
+        "type": "clean_fp",
+        "finding": {
+          "finding_id": "audit_3a33e40f",
+          "category": "NUMERIC",
+          "source": "DETERMINISTIC",
+          "severity": "HIGH",
+          "explanation": "Fact present in Hindi ('2018') is absent in English",
+          "quote_en": "",
+          "quote_hi": "2018",
+          "confidence": 0.98,
+          "grounded": true,
+          "metadata": {
+            "fact_status": "MISSING_IN_EN"
+          }
+        },
+        "en_text": "public financial institution as defined in clause (72) of section 2 of the Companies Act, 2013 (18 of 2013); and",
+        "hi_text": "कंपनी अहधहनयम, 2013 (2013 का 18) की धारा 2 के िंर् (72) में यथापररभाहषत कोई लोक हवत्तीय सं था; और 1 2018 के अहधहनयम सं० 26 की धारा 2 द्वारा प्रहत थाहपत ।"
+      },
+      {
+        "case_id": "heldout_clean_10",
+        "type": "clean_fp",
+        "finding": {
+          "finding_id": "audit_d23688b6",
+          "category": "NUMERIC",
+          "source": "DETERMINISTIC",
+          "severity": "HIGH",
+          "explanation": "Fact present in Hindi ('26') is absent in English",
+          "quote_en": "",
+          "quote_hi": "26",
+          "confidence": 0.98,
+          "grounded": true,
+          "metadata": {
+            "fact_status": "MISSING_IN_EN"
+          }
+        },
+        "en_text": "public financial institution as defined in clause (72) of section 2 of the Companies Act, 2013 (18 of 2013); and",
+        "hi_text": "कंपनी अहधहनयम, 2013 (2013 का 18) की धारा 2 के िंर् (72) में यथापररभाहषत कोई लोक हवत्तीय सं था; और 1 2018 के अहधहनयम सं० 26 की धारा 2 द्वारा प्रहत थाहपत ।"
+      },
+      {
+        "case_id": "heldout_clean_10",
+        "type": "clean_fp",
+        "finding": {
+          "finding_id": "audit_dd252491",
+          "category": "NUMERIC",
+          "source": "DETERMINISTIC",
+          "severity": "HIGH",
+          "explanation": "Fact present in Hindi ('धारा 2') is absent in English",
+          "quote_en": "",
+          "quote_hi": "धारा 2",
+          "confidence": 0.98,
+          "grounded": true,
+          "metadata": {
+            "fact_status": "MISSING_IN_EN"
+          }
+        },
+        "en_text": "public financial institution as defined in clause (72) of section 2 of the Companies Act, 2013 (18 of 2013); and",
+        "hi_text": "कंपनी अहधहनयम, 2013 (2013 का 18) की धारा 2 के िंर् (72) में यथापररभाहषत कोई लोक हवत्तीय सं था; और 1 2018 के अहधहनयम सं० 26 की धारा 2 द्वारा प्रहत थाहपत ।"
+      },
+      {
+        "case_id": "heldout_clean_20",
+        "type": "clean_fp",
+        "finding": {
+          "finding_id": "audit_ecd0de65",
+          "category": "NUMERIC",
+          "source": "DETERMINISTIC",
+          "severity": "HIGH",
+          "explanation": "Fact present in English ('clause (v)') is absent in Hindi",
+          "quote_en": "clause (v)",
+          "quote_hi": "",
+          "confidence": 0.98,
+          "grounded": true,
+          "metadata": {
+            "fact_status": "MISSING_IN_HI"
+          }
+        },
+        "en_text": "“person resident in India” shall have the meaning as assigned to such term in clause (v) of section 2 of the Foreign Exchange Management Act, 1999 (42 of 1999);",
+        "hi_text": "“भारत में हनवासी व् यह त” का विी अथग िोगा िो हविेशी मुरा प्रबंध अहधहनयम, 1999 (1999 का 42) की धारा 2 के िंर् (फ) में ऐसे पि का िै;"
+      },
+      {
+        "case_id": "heldout_clean_23",
+        "type": "clean_fp",
+        "finding": {
+          "finding_id": "audit_db0ce60a",
+          "category": "NUMERIC",
+          "source": "DETERMINISTIC",
+          "severity": "HIGH",
+          "explanation": "Fact present in English ('2013') is absent in Hindi",
+          "quote_en": "2013",
+          "quote_hi": "",
+          "confidence": 0.98,
+          "grounded": true,
+          "metadata": {
+            "fact_status": "MISSING_IN_HI"
+          }
+        },
+        "en_text": "“property” includes money, goods, actionable claims, land and every description of property situated in India or outside India and every description of interest including present or future or vested or contingent interest arising out of, or incidental to, property; 1[(27A) “registered valuer” shall have the same meaning as assigned to it under Chapter XVII of the Companies Act, 2013 (18 of 2013);]",
+        "hi_text": "“संपहत्त” के अंतगगत धन, माल, अनुयोज् य िावे, भारत या भारत से बािर ह थत भूहम और संपहत्त के प्रत् येक हववरण तथा संपहत्त से उद्भूत िोने वाले या आनुषंहगक हित का प्रत् येक हववरण आता िै, हिसके अंतगगत, वतगमान में या भहव य में या हनहित या आकह मक हित भी िैं;"
+      },
+      {
+        "case_id": "heldout_clean_23",
+        "type": "clean_fp",
+        "finding": {
+          "finding_id": "audit_dbd1332d",
+          "category": "NUMERIC",
+          "source": "DETERMINISTIC",
+          "severity": "HIGH",
+          "explanation": "Fact present in English ('18') is absent in Hindi",
+          "quote_en": "18",
+          "quote_hi": "",
+          "confidence": 0.98,
+          "grounded": true,
+          "metadata": {
+            "fact_status": "MISSING_IN_HI"
+          }
+        },
+        "en_text": "“property” includes money, goods, actionable claims, land and every description of property situated in India or outside India and every description of interest including present or future or vested or contingent interest arising out of, or incidental to, property; 1[(27A) “registered valuer” shall have the same meaning as assigned to it under Chapter XVII of the Companies Act, 2013 (18 of 2013);]",
+        "hi_text": "“संपहत्त” के अंतगगत धन, माल, अनुयोज् य िावे, भारत या भारत से बािर ह थत भूहम और संपहत्त के प्रत् येक हववरण तथा संपहत्त से उद्भूत िोने वाले या आनुषंहगक हित का प्रत् येक हववरण आता िै, हिसके अंतगगत, वतगमान में या भहव य में या हनहित या आकह मक हित भी िैं;"
+      },
+      {
+        "case_id": "heldout_clean_23",
+        "type": "clean_fp",
+        "finding": {
+          "finding_id": "audit_32cf9f8e",
+          "category": "NUMERIC",
+          "source": "DETERMINISTIC",
+          "severity": "HIGH",
+          "explanation": "Fact present in English ('2013') is absent in Hindi",
+          "quote_en": "2013",
+          "quote_hi": "",
+          "confidence": 0.98,
+          "grounded": true,
+          "metadata": {
+            "fact_status": "MISSING_IN_HI"
+          }
+        },
+        "en_text": "“property” includes money, goods, actionable claims, land and every description of property situated in India or outside India and every description of interest including present or future or vested or contingent interest arising out of, or incidental to, property; 1[(27A) “registered valuer” shall have the same meaning as assigned to it under Chapter XVII of the Companies Act, 2013 (18 of 2013);]",
+        "hi_text": "“संपहत्त” के अंतगगत धन, माल, अनुयोज् य िावे, भारत या भारत से बािर ह थत भूहम और संपहत्त के प्रत् येक हववरण तथा संपहत्त से उद्भूत िोने वाले या आनुषंहगक हित का प्रत् येक हववरण आता िै, हिसके अंतगगत, वतगमान में या भहव य में या हनहित या आकह मक हित भी िैं;"
+      }
+    ],
+    "case_results": [
+      {
+        "case_id": "heldout_clean_01",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_02",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_03",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_04",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_05",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_06",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_07",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_08",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_09",
+        "is_synthetic": false,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_61992e65",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in SECTION_REF: English has 'section 45' ({'target_type': 'section', 'target_id': '45'} section_ref), Hindi has 'धारा 45झ' ({'target_type': 'section', 'target_id': '45झ'} section_ref)",
+            "quote_en": "section 45",
+            "quote_hi": "धारा 45झ",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_clean_10",
+        "is_synthetic": false,
+        "findings_count": 4,
+        "findings": [
+          {
+            "finding_id": "audit_57add103",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in Hindi ('1') is absent in English",
+            "quote_en": "",
+            "quote_hi": "1",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_EN"
+            }
+          },
+          {
+            "finding_id": "audit_3a33e40f",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in Hindi ('2018') is absent in English",
+            "quote_en": "",
+            "quote_hi": "2018",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_EN"
+            }
+          },
+          {
+            "finding_id": "audit_d23688b6",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in Hindi ('26') is absent in English",
+            "quote_en": "",
+            "quote_hi": "26",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_EN"
+            }
+          },
+          {
+            "finding_id": "audit_dd252491",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in Hindi ('धारा 2') is absent in English",
+            "quote_en": "",
+            "quote_hi": "धारा 2",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_EN"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_clean_11",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_12",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_13",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_14",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_15",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_16",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_17",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_18",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_19",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_20",
+        "is_synthetic": false,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_ecd0de65",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('clause (v)') is absent in Hindi",
+            "quote_en": "clause (v)",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_clean_21",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_22",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_23",
+        "is_synthetic": false,
+        "findings_count": 3,
+        "findings": [
+          {
+            "finding_id": "audit_db0ce60a",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('2013') is absent in Hindi",
+            "quote_en": "2013",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_dbd1332d",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('18') is absent in Hindi",
+            "quote_en": "18",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_32cf9f8e",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('2013') is absent in Hindi",
+            "quote_en": "2013",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_clean_24",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_clean_25",
+        "is_synthetic": false,
+        "findings_count": 0,
+        "findings": []
+      },
+      {
+        "case_id": "heldout_numeric_01",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_32635e9e",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in DURATION: English has 'thirty days' (30.0 day), Hindi has 'साठ दिन' (60.0 day)",
+            "quote_en": "thirty days",
+            "quote_hi": "साठ दिन",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_numeric_02",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_34168073",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in DURATION: English has '14 days' (14.0 day), Hindi has 'सात दिन' (7.0 day)",
+            "quote_en": "14 days",
+            "quote_hi": "सात दिन",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_numeric_03",
+        "is_synthetic": true,
+        "findings_count": 2,
+        "findings": [
+          {
+            "finding_id": "audit_d68b7b1f",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in MONEY: English has 'Rs. 1,00,000' (100000.0 INR), Hindi has 'दस लाख रुपये' (1000000.0 INR)",
+            "quote_en": "Rs. 1,00,000",
+            "quote_hi": "दस लाख रुपये",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          },
+          {
+            "finding_id": "audit_cbb097ae",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('clause (s)') is absent in Hindi",
+            "quote_en": "clause (s)",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_numeric_04",
+        "is_synthetic": true,
+        "findings_count": 7,
+        "findings": [
+          {
+            "finding_id": "audit_85399d30",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in NUMBER: English has '2009' (2009.0 ), Hindi has '2008' (2008.0 )",
+            "quote_en": "2009",
+            "quote_hi": "2008",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          },
+          {
+            "finding_id": "audit_1e9ced28",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in NUMBER: English has '18' (18.0 ), Hindi has '19' (19.0 )",
+            "quote_en": "18",
+            "quote_hi": "19",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          },
+          {
+            "finding_id": "audit_8989fc6d",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in DURATION: English has 'three years' (3.0 year), Hindi has 'पाँच वर्ष' (5.0 year)",
+            "quote_en": "three years",
+            "quote_hi": "पाँच वर्ष",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          },
+          {
+            "finding_id": "audit_9375f02b",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('6') is absent in Hindi",
+            "quote_en": "6",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_6a74f98f",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('2026,') is absent in Hindi",
+            "quote_en": "2026,",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_5c2365a2",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('2') is absent in Hindi",
+            "quote_en": "2",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_f908b4b1",
+            "category": "OMISSION",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('26.05.2026') is absent in Hindi",
+            "quote_en": "26.05.2026",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_numeric_05",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_c4108ba4",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in PERCENT: English has 'ten per cent' (10.0 %), Hindi has 'बीस प्रतिशत' (20.0 %)",
+            "quote_en": "ten per cent",
+            "quote_hi": "बीस प्रतिशत",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_omission_01",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_75ef6348",
+            "category": "OMISSION",
+            "source": "BOTH",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'prior notice in writing' present in English is omitted in the Hindi version.",
+            "quote_en": "prior notice in writing",
+            "quote_hi": null,
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": [
+                0
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_omission_02",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_e66c0a37",
+            "category": "OMISSION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'recording reasons in writing' present in English is omitted in the Hindi version.",
+            "quote_en": "recording reasons in writing",
+            "quote_hi": null,
+            "confidence": 0.94,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_omission_03",
+        "is_synthetic": true,
+        "findings_count": 2,
+        "findings": [
+          {
+            "finding_id": "audit_76b94c72",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('1[one crore rupees') is absent in Hindi",
+            "quote_en": "1[one crore rupees",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_c1da75ba",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('one crore rupees') is absent in Hindi",
+            "quote_en": "one crore rupees",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_omission_04",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_1e6ed775",
+            "category": "OMISSION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'opportunity of being heard' present in English is omitted in the Hindi version.",
+            "quote_en": "opportunity of being heard",
+            "quote_hi": null,
+            "confidence": 0.94,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_omission_05",
+        "is_synthetic": true,
+        "findings_count": 8,
+        "findings": [
+          {
+            "finding_id": "audit_12d0c9cb",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('43') is absent in Hindi",
+            "quote_en": "43",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_09636823",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('45') is absent in Hindi",
+            "quote_en": "45",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_9453b1e5",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('49') is absent in Hindi",
+            "quote_en": "49",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_d21998a9",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('50') is absent in Hindi",
+            "quote_en": "50",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_766617d1",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('clause (c)') is absent in Hindi",
+            "quote_en": "clause (c)",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_9f36f1fe",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('sub-section (4)') is absent in Hindi",
+            "quote_en": "sub-section (4)",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_ac8bccc7",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('section 54A') is absent in Hindi",
+            "quote_en": "section 54A",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_9f91df7b",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('forty-eight') is absent in Hindi",
+            "quote_en": "forty-eight",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_addition_01",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_cbed795a",
+            "category": "ADDITION",
+            "source": "BOTH",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'अतिरिक्त शास्ति शुल्क संदाय करने पर ही' absent in English statute.",
+            "quote_en": null,
+            "quote_hi": "अतिरिक्त शास्ति शुल्क संदाय करने पर ही",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": [
+                0
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_addition_02",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_046db018",
+            "category": "ADDITION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'पूर्व लिखित मंजूरी से ही' absent in English statute.",
+            "quote_en": null,
+            "quote_hi": "पूर्व लिखित मंजूरी से ही",
+            "confidence": 0.93,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_addition_03",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_2a0a560e",
+            "category": "ADDITION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'व्यक्तिगत रूप से उपस्थित हो' absent in English statute.",
+            "quote_en": null,
+            "quote_hi": "व्यक्तिगत रूप से उपस्थित हो",
+            "confidence": 0.93,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_addition_04",
+        "is_synthetic": true,
+        "findings_count": 2,
+        "findings": [
+          {
+            "finding_id": "audit_1b16569d",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Value discrepancy: English has 'fourteen days' while Hindi has 'धारा 5'",
+            "quote_en": "fourteen days",
+            "quote_hi": "धारा 5",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "paired_facts": true
+            }
+          },
+          {
+            "finding_id": "audit_cad34879",
+            "category": "ADDITION",
+            "source": "BOTH",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'दो राजपत्रित अधिकारियों के सत्यापन के अधीन' absent in English statute.",
+            "quote_en": null,
+            "quote_hi": "दो राजपत्रित अधिकारियों के सत्यापन के अधीन",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": [
+                0
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_addition_05",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_72cee3e9",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in Hindi ('सात दिन') is absent in English",
+            "quote_en": "",
+            "quote_hi": "सात दिन",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_EN"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_modality_01",
+        "is_synthetic": true,
+        "findings_count": 2,
+        "findings": [
+          {
+            "finding_id": "audit_0ad01861",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "shall be given",
+            "quote_hi": "दी जा सकेगी",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          },
+          {
+            "finding_id": "audit_25215c18",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('clause (a)') is absent in Hindi",
+            "quote_en": "clause (a)",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_modality_02",
+        "is_synthetic": true,
+        "findings_count": 2,
+        "findings": [
+          {
+            "finding_id": "audit_a4393ae7",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "shall Endeavour",
+            "quote_hi": "प्रयास कर सकेगा",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          },
+          {
+            "finding_id": "audit_aa608df4",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('ten days') is absent in Hindi",
+            "quote_en": "ten days",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_modality_03",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_e19de626",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "shall forward",
+            "quote_hi": "अग्रेषित कर सकेगा",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_modality_04",
+        "is_synthetic": true,
+        "findings_count": 6,
+        "findings": [
+          {
+            "finding_id": "audit_f52b8ad2",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "may grant",
+            "quote_hi": "आदेश देगा",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          },
+          {
+            "finding_id": "audit_1e6c0360",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('1') is absent in Hindi",
+            "quote_en": "1",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_ba2dd7a4",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('ten days') is absent in Hindi",
+            "quote_en": "ten days",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_dacfd788",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('2') is absent in Hindi",
+            "quote_en": "2",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_f36200c5",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('sub-section (1)') is absent in Hindi",
+            "quote_en": "sub-section (1)",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          },
+          {
+            "finding_id": "audit_4fe33276",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "Fact present in English ('3') is absent in Hindi",
+            "quote_en": "3",
+            "quote_hi": "",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "MISSING_IN_HI"
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_modality_05",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_fec69e06",
+            "category": "MODALITY",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Legal obligation discrepancy: statutory command differs between mandatory duty and discretionary permission.",
+            "quote_en": "shall not be liable",
+            "quote_hi": "दायी हो सकेगा",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "MODALITY",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_scope_01",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_4ac5a8bc",
+            "category": "SCOPE",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'Central Government' while Hindi specifies 'राज्य सरकार'.",
+            "quote_en": "Central Government",
+            "quote_hi": "राज्य सरकार",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_scope_02",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_d3350ad3",
+            "category": "SCOPE",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'every person' while Hindi specifies 'केवल व्यथित व्यक्ति'.",
+            "quote_en": "every person",
+            "quote_hi": "केवल व्यथित व्यक्ति",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_scope_03",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_2fe05516",
+            "category": "SCOPE",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'High Court' while Hindi specifies 'सर्वोच्च न्यायालय'.",
+            "quote_en": "High Court",
+            "quote_hi": "सर्वोच्च न्यायालय",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_scope_04",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_10aa964f",
+            "category": "SCOPE",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'Judicial Magistrate' while Hindi specifies 'कार्यपालक मजिस्ट्रेट'.",
+            "quote_en": "Judicial Magistrate",
+            "quote_hi": "कार्यपालक मजिस्ट्रेट",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      },
+      {
+        "case_id": "heldout_scope_05",
+        "is_synthetic": true,
+        "findings_count": 1,
+        "findings": [
+          {
+            "finding_id": "audit_b408c402",
+            "category": "SCOPE",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Substantive scope or jurisdiction discrepancy: English specifies 'civil court' while Hindi specifies 'राजस्व न्यायालय'.",
+            "quote_en": "civil court",
+            "quote_hi": "राजस्व न्यायालय",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "SCOPE",
+              "subsumed_facts": []
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "regression_cases": {
+    "total_regression_cases": 6,
+    "flagged_count": 6,
+    "all_flagged": true,
+    "cases": [
+      {
+        "case_id": "reg_synth_01_ten_times_tax",
+        "pattern_type": "pattern_a_ten_times_tax",
+        "is_flagged": true,
+        "findings_count": 1,
+        "expected_category": "ADDITION",
+        "findings": [
+          {
+            "finding_id": "audit_45f5bdbd",
+            "category": "ADDITION",
+            "source": "BOTH",
+            "severity": "HIGH",
+            "explanation": "Hindi version introduces an additional requirement or condition 'कर के अतिरिक्त' absent in English statute.",
+            "quote_en": "ten times the tax",
+            "quote_hi": "कर के अतिरिक्त",
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "ADDITION",
+              "subsumed_facts": [
+                0
+              ]
+            }
+          }
+        ],
+        "reason_if_missed": "None (successfully flagged)"
+      },
+      {
+        "case_id": "reg_synth_01b_tax_plus_penalty",
+        "pattern_type": "pattern_a_ten_times_tax",
+        "is_flagged": true,
+        "findings_count": 1,
+        "expected_category": "OMISSION",
+        "findings": [
+          {
+            "finding_id": "audit_340a10ee",
+            "category": "OMISSION",
+            "source": "BOTH",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'tax plus a penalty' present in English is omitted in the Hindi version.",
+            "quote_en": "tax plus a penalty",
+            "quote_hi": null,
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": [
+                0
+              ]
+            }
+          }
+        ],
+        "reason_if_missed": "None (successfully flagged)"
+      },
+      {
+        "case_id": "reg_synth_02_missing_qualification_notice",
+        "pattern_type": "pattern_b_missing_qualification",
+        "is_flagged": true,
+        "findings_count": 1,
+        "expected_category": "OMISSION",
+        "findings": [
+          {
+            "finding_id": "audit_7932b334",
+            "category": "OMISSION",
+            "source": "BOTH",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'prior notice in writing' present in English is omitted in the Hindi version.",
+            "quote_en": "prior notice in writing",
+            "quote_hi": null,
+            "confidence": 0.95,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": [
+                0
+              ]
+            }
+          }
+        ],
+        "reason_if_missed": "None (successfully flagged)"
+      },
+      {
+        "case_id": "reg_synth_02b_missing_qualification_approval",
+        "pattern_type": "pattern_b_missing_qualification",
+        "is_flagged": true,
+        "findings_count": 1,
+        "expected_category": "OMISSION",
+        "findings": [
+          {
+            "finding_id": "audit_fe96f486",
+            "category": "OMISSION",
+            "source": "LLM",
+            "severity": "HIGH",
+            "explanation": "Procedural condition or requirement 'prior approval of the Central Government' present in English is omitted in the Hindi version.",
+            "quote_en": "prior approval of the Central Government",
+            "quote_hi": null,
+            "confidence": 0.94,
+            "grounded": true,
+            "metadata": {
+              "semantic_category": "OMISSION",
+              "subsumed_facts": []
+            }
+          }
+        ],
+        "reason_if_missed": "None (successfully flagged)"
+      },
+      {
+        "case_id": "reg_synth_03_area_03_vs_3_acres",
+        "pattern_type": "pattern_c_area_order_of_magnitude",
+        "is_flagged": true,
+        "findings_count": 1,
+        "expected_category": "NUMERIC",
+        "findings": [
+          {
+            "finding_id": "audit_688c2b5a",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in AREA_LENGTH: English has '0.3 acres' (0.3 acre), Hindi has '3 एकड़' (3.0 acre)",
+            "quote_en": "0.3 acres",
+            "quote_hi": "3 एकड़",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ],
+        "reason_if_missed": "None (successfully flagged)"
+      },
+      {
+        "case_id": "reg_synth_03b_area_10_vs_100_hectares",
+        "pattern_type": "pattern_c_area_order_of_magnitude",
+        "is_flagged": true,
+        "findings_count": 1,
+        "expected_category": "NUMERIC",
+        "findings": [
+          {
+            "finding_id": "audit_b0daa289",
+            "category": "NUMERIC",
+            "source": "DETERMINISTIC",
+            "severity": "HIGH",
+            "explanation": "VALUE_MISMATCH in AREA_LENGTH: English has '10 hectares' (10.0 hectare), Hindi has '100 हेक्टेयर' (100.0 hectare)",
+            "quote_en": "10 hectares",
+            "quote_hi": "100 हेक्टेयर",
+            "confidence": 0.98,
+            "grounded": true,
+            "metadata": {
+              "fact_status": "VALUE_MISMATCH"
+            }
+          }
+        ],
+        "reason_if_missed": "None (successfully flagged)"
+      }
+    ]
+  }
+}
