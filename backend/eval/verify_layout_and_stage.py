@@ -32,12 +32,24 @@ async def verify():
         await page.goto("http://127.0.0.1:8000/", wait_until="networkidle")
         await page.wait_for_timeout(1000)
 
-        # --- Plain White Background Verification ---
-        print("\n--- Verifying Plain White Background ---")
-        bg_color = await page.evaluate("() => window.getComputedStyle(document.body).backgroundColor")
-        print(f"  Body background color: {bg_color}")
-        assert bg_color == "rgb(255, 255, 255)", f"Body background must be plain white, got {bg_color}"
-        print("  Body background verified: pure plain white.")
+        # --- Supreme Court Background Image Verification ---
+        print("\n--- Verifying Supreme Court Background Image ---")
+        bg_data = await page.evaluate("""() => {
+            const bodyStyle = window.getComputedStyle(document.body);
+            const stagePanel = document.getElementById('story-stage');
+            const panelStyle = stagePanel ? window.getComputedStyle(stagePanel) : null;
+            return {
+                bgImage: bodyStyle.backgroundImage,
+                bgColor: bodyStyle.backgroundColor,
+                panelBg: panelStyle ? panelStyle.backgroundColor : ''
+            };
+        }""")
+        print(f"  Body background image: {bg_data['bgImage']}")
+        print(f"  Body background color: {bg_data['bgColor']}")
+        print(f"  Stage panel background: {bg_data['panelBg']}")
+        assert "supreme_court_bg" in bg_data["bgImage"], f"Body background image must contain supreme_court_bg, got {bg_data['bgImage']}"
+        assert bg_data["bgColor"] == "rgb(255, 255, 255)", f"Body fallback background must be white, got {bg_data['bgColor']}"
+        print("  Background verified: Supreme Court architectural image active with clean white fallback.")
 
         # --- FIX 1 Verification: Framed Stage Panel & Layers a-f ---
         print("\n--- Verifying FIX 1: Restored Stage Panel & Layers a-f ---")

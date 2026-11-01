@@ -1358,6 +1358,65 @@ The book is now strictly fixed at the center across all scroll stages with botto
 ### Decide
 All requested changes verified: narrative cards alternate left and right sides with clean separation, background is pure plain white, and the 3D Constitution book volume remains strictly fixed at the center. Status: PASSED.
 
+---
+
+## Loop 19 - Supreme Court Background Image Integration & Stage Harmony
+
+- **Objective**: Implement user request (`"put background image"` with user-provided photograph of the Supreme Court of India):
+  1. Optimize and serve the user's uploaded Supreme Court image as a high-fidelity WebP asset (`/public/assets/supreme_court_bg.webp`).
+  2. Apply full-bleed background to the landing page body (`center center / cover no-repeat fixed`), ensuring the central dome and blue sky frame the scene.
+  3. Render `.stage-panel` with elegant semi-transparency (`rgba(255, 255, 255, 0.22)`) and transparent base layer (`.stage-layer-base`), allowing the architectural backdrop to be visible behind the book while preserving all required stage elements (SVG colonnade, ghost typography, light beam, and table surface ellipse).
+  4. Maintain solid white (`#FFFFFF`) on all narrative checkpoint cards (`.story-checkpoint-panel`) with crisp border and subtle elevation shadow for maximum contrast and legibility over the photographic background.
+  5. Maintain the 3D Constitution volume strictly fixed at the center with zero horizontal sway and alternating left/right side cards with clean separation.
+
+### Plan
+1. **Asset Processing**:
+   - Save image to `frontend/public/assets/supreme_court_bg.webp` (WebP quality 90) and `.jpg` (quality 95).
+2. **Frontend Styles (`frontend/static/style.css`)**:
+   - `body.story-landing-page, body:has(#story-canvas-container)`: `background: #FFFFFF url('/public/assets/supreme_court_bg.webp') center center / cover no-repeat fixed;`.
+   - `.stage-panel`: `background: rgba(255, 255, 255, 0.22); border: 1px solid rgba(255, 255, 255, 0.50); box-shadow: 0 16px 48px rgba(35, 74, 82, 0.12);`.
+   - `.stage-layer-base`: `background: transparent;`.
+   - `.story-checkpoint-panel`: `background: #FFFFFF; border: 1px solid rgba(220, 226, 228, 0.95); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);`.
+3. **Verification**:
+   - Update `backend/eval/verify_layout_and_stage.py` to assert background image presence (`supreme_court_bg`), stage panel transparency, alternating cards, and fixed centering.
+   - Run verification across 1440x900 and 1920x1080.
+   - Run backend test suite (90 passed).
+
+### Act
+- Created assets `supreme_court_bg.webp` and `supreme_court_bg.jpg`.
+- Updated `frontend/index.html`, `frontend/static/style.css`, and `backend/eval/verify_layout_and_stage.py`.
+
+### Verify
+1. **`backend/eval/verify_layout_and_stage.py`**:
+   - **Background Image Verification**: Body background image `url("http://127.0.0.1:8000/public/assets/supreme_court_bg.webp")`, fallback `rgb(255, 255, 255)`, stage panel `rgba(255, 255, 255, 0.22)`: PASSED.
+   - **FIX 1 (Stage Panel & Layers a–f)**: PASSED.
+   - **FIX 2 (Book Vertical Centering & Width Fit)**:
+     - 1440x900: Closed book top = 236.4px ($\ge 60$px). Panel margins: Above = 177.1px, Below = 175.9px (diff = 1.2px). Spread width = 713.8px, fits fully inside 1440px viewport. PASSED.
+     - 1920x1080: Closed book top = 259.7px ($\ge 60$px). Panel margins: Above = 112.4px, Below = 110.9px (diff = 1.5px). Spread fits fully inside 1920px viewport. PASSED.
+   - **FIX 3 (Spread Content & Devanagari Conjuncts)**: Pure English left page, pure Hindi right page with verified conjuncts ('संविधान', 'प्राधिकृत', 'निर्दिष्ट', 'द्वितीय'). PASSED.
+   - **FIX 4 (Turning Leaf Real Parchment Faces)**: Pure white ratio $\le 3.86\%$ ($< 10\%$), bright yellow debug ratio $= 0.00\%$. PASSED.
+   - **FIX 5 (Alternating Left/Right Cards & Fixed Center Book)**:
+     - $p = 0.00$ (panel-0): side = LEFT (expected LEFT), sep = 241.8px, bookCenter = 720.0px (diff = 0.0px).
+     - $p = 0.18$ (panel-1): side = RIGHT (expected RIGHT), sep = 182.6px, bookCenter = 716.6px (diff = 3.4px).
+     - $p = 0.35$ (panel-2): side = LEFT (expected LEFT), sep = 59.2px, bookCenter = 720.0px (diff = 0.0px).
+     - $p = 0.50$ (panel-3): side = RIGHT (expected RIGHT), sep = 31.2px, bookCenter = 720.0px (diff = 0.0px).
+     - $p = 0.68$ (panel-4): side = LEFT (expected LEFT), sep = 64.7px, bookCenter = 720.0px (diff = 0.0px).
+     - $p = 0.82$ (panel-5): side = RIGHT (expected RIGHT), sep = 88.1px, bookCenter = 720.0px (diff = 0.0px).
+     - $p = 0.91$ (panel-6): side = LEFT (expected LEFT), sep = 41.2px, bookCenter = 720.0px (diff = 0.0px).
+     - $p = 0.98$ (panel-7): side = RIGHT (expected RIGHT), sep = 232.3px, bookCenter = 720.1px (diff = 0.1px).
+     - At 1920x1080: Alternating sides verified; separation ranges between 148.5px and 445.1px; bookCenter diff $\le 16.6$px across all points.
+     - PASSED.
+   - **Idle Shake**: Diff percentage = 0.116% ($< 2.0\%$ threshold). PASSED.
+   - **Performance**: Frame compute time mean = 0.08 ms, p95 = 0.20 ms ($< 20$ ms). PASSED.
+   - **Screenshots**: 18 high-resolution screenshots saved to `docs/checkpoints/` and artifact store.
+2. **Regression Check**:
+   - Backend pytest suite: 90 passed in 1.52s.
+   - Zero console errors during headless test.
+
+### Decide
+The Supreme Court background image is fully integrated with elegant semi-transparent stage framing, maintaining centered 3D book placement and high-contrast alternating text cards. Status: PASSED.
+
+
 
 
 

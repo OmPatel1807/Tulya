@@ -80,6 +80,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Landing Story Full-Bleed Supreme Court Background Image */
+body.story-landing-page,
+body:has(#story-canvas-container) {
+  background: #FFFFFF url('/public/assets/supreme_court_bg.webp') center center / cover no-repeat fixed;
+}
+
 /* Accessible Focus States */
 a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible {
   outline: 2px solid var(--book-cover);
@@ -326,9 +332,10 @@ body.debug-mode .fps-counter {
   position: relative;
   width: min(84vw, 980px);
   height: min(84vh, 760px);
-  background: #FFFFFF;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.50);
   border-radius: 20px;
-  box-shadow: 0 16px 44px rgba(35, 74, 82, 0.05), 0 2px 10px rgba(35, 74, 82, 0.02);
+  box-shadow: 0 16px 48px rgba(35, 74, 82, 0.12), 0 2px 10px rgba(35, 74, 82, 0.04);
   transform: rotate(-1.5deg);
   overflow: hidden;
   pointer-events: none;
@@ -345,7 +352,7 @@ body.debug-mode .fps-counter {
 /* Layer a: Plain White Base + Faint Paper Grain (4 to 6 percent) */
 .stage-layer-base {
   z-index: 1;
-  background: #FFFFFF;
+  background: transparent;
 }
 
 .stage-grain {
@@ -580,10 +587,10 @@ body.debug-mode .fps-counter {
   position: fixed;
   z-index: 20;
   background: #FFFFFF; /* Plain white card surface */
-  border: 1px solid var(--surface-border);
+  border: 1px solid rgba(220, 226, 228, 0.95);
   border-radius: var(--radius-lg);
   padding: 1.15rem 1.45rem;
-  box-shadow: 0 14px 36px rgba(35, 74, 82, 0.08), 0 2px 8px rgba(35, 74, 82, 0.03);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 2px 10px rgba(0, 0, 0, 0.04);
   opacity: 0;
   pointer-events: none;
   transition: opacity 350ms ease, transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
