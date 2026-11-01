@@ -20,8 +20,8 @@
   const PARTICLE_COUNT = isReducedMotion ? 0 : (tier === 3 ? 1200 : (tier === 2 ? 600 : 200));
 
   // --- Palette Constants ("Ink and Clay") ---
-  const COLOR_COVER = 0x234A52;       // Deep ink-teal
-  const COLOR_BRASS = 0xB89B5E;       // Brass foil
+  const COLOR_COVER = 0x1A1B1E;       // Authentic deep charcoal leather of the Constitution volume
+  const COLOR_BRASS = 0xC8A452;       // Warm gold foil
   const COLOR_PARCHMENT = 0xF3ECDD;   // Warm parchment
   const COLOR_EDGE = 0xD9CFB8;        // Aged paper edge
   const COLOR_INK = 0x2B3A3F;         // Slate ink
@@ -135,24 +135,24 @@
 
   // --- Procedural Canvas Textures (B1, R1) ---
 
-  // 1. Front Cover Texture: Deep ink-teal with brass-foil typography & abstract borders
+  // 1. Front Cover Fallback Canvas Texture: Authentic dark charcoal leather with gold foil typography
   function createCoverTexture() {
     const cvs = document.createElement('canvas');
     cvs.width = 512;
     cvs.height = 768;
     const ctx = cvs.getContext('2d');
 
-    ctx.fillStyle = '#234A52';
+    ctx.fillStyle = '#1A1B1E';
     ctx.fillRect(0, 0, 512, 768);
 
     // Subtle leather grain
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.025)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
     for (let i = 0; i < 400; i++) {
       ctx.fillRect(Math.random() * 512, Math.random() * 768, 2, 2);
     }
 
-    // Double brass border
-    ctx.strokeStyle = '#B89B5E';
+    // Double brass/gold border
+    ctx.strokeStyle = '#C8A452';
     ctx.lineWidth = 4;
     ctx.strokeRect(26, 26, 460, 716);
     ctx.lineWidth = 1.5;
@@ -161,11 +161,11 @@
     // Geometric corner accents
     const corners = [[36, 36], [476, 36], [36, 732], [476, 732]];
     corners.forEach(([cx, cy]) => {
-      ctx.fillStyle = '#B89B5E';
+      ctx.fillStyle = '#C8A452';
       ctx.fillRect(cx - 5, cy - 5, 10, 10);
     });
 
-    ctx.fillStyle = '#B89B5E';
+    ctx.fillStyle = '#C8A452';
     ctx.textAlign = 'center';
 
     // English Title
@@ -538,7 +538,7 @@
 
   // --- 3D Procedural Book Hierarchy (Hardcover on Table with Spine Hinge) ---
   const bookGroup = new THREE.Group();
-  bookGroup.position.set(-1.2, 0.65, 0); // Initially shifted so closed book is centered
+  bookGroup.position.set(-1.2, 1.05, 0); // Initially shifted so closed book is centered vertically and horizontally
   scene.add(bookGroup);
 
   const BOOK_W = 2.4;
@@ -619,11 +619,12 @@
   rightPageBlock.position.set((BOOK_W - 0.08) / 2 + 0.04, 0, -0.01);
   bookGroup.add(rightPageBlock);
 
-  // Left Page Block Base (grows as pages turn from right to left)
+  // Left Page Block Base (hidden when closed; appears when pages turn from right to left)
   const leftBlockGeo = new THREE.BoxGeometry(BOOK_W - 0.08, BOOK_H - 0.08, BOOK_T - 0.06);
   const leftPageBlock = new THREE.Mesh(leftBlockGeo, pageBlockMaterials);
   leftPageBlock.position.set(-(BOOK_W - 0.08) / 2 - 0.04, 0, -0.01);
   leftPageBlock.scale.set(1.0, 1.0, 0.001);
+  leftPageBlock.visible = false;
   bookGroup.add(leftPageBlock);
 
   // Base Right Spread (Hindi Preamble text on right page)
@@ -647,7 +648,7 @@
     color: COLOR_COVER,
     roughness: 0.55
   });
-  const frontCoverFaceMat = new THREE.MeshBasicMaterial({ map: coverTex });
+  const frontCoverFaceMat = new THREE.MeshBasicMaterial({ map: coverTex, color: 0xFFFFFF });
   const frontCoverEndpaperMat = new THREE.MeshStandardMaterial({
     map: endpaperTex,
     roughness: 0.65
@@ -672,7 +673,7 @@
         `
         #include <begin_vertex>
         float normX = clamp((position.x + ${BOOK_W / 2}) / ${BOOK_W}, 0.0, 1.0);
-        transformed.z += normX * normX * uCoverFlex * 0.16;
+        transformed.z -= normX * normX * uCoverFlex * 0.16;
         `
       );
     };
@@ -683,12 +684,30 @@
   frontCoverMesh.position.set(BOOK_W / 2, 0, COVER_T / 2);
   coverPivot.add(frontCoverMesh);
 
-  // Progressive texture load: CC0 leather normal map if available
+  // Progressive texture load: Authentic Constitution of India photograph cover (User Provided Image)
   const texLoader = new THREE.TextureLoader();
+  texLoader.load('/public/assets/constitution_cover.webp', (tex) => {
+    tex.anisotropy = 4;
+    frontCoverFaceMat.map = tex;
+    frontCoverFaceMat.needsUpdate = true;
+  }, undefined, () => {
+    texLoader.load('/public/assets/constitution_cover.jpg', (tex) => {
+      tex.anisotropy = 4;
+      frontCoverFaceMat.map = tex;
+      frontCoverFaceMat.needsUpdate = true;
+    });
+  });
+
   texLoader.load('/public/assets/cover_leather_nor_gl_1k.webp', (tex) => {
     frontCoverFaceMat.normalMap = tex;
-    frontCoverFaceMat.normalScale = new THREE.Vector2(0.4, 0.4);
+    frontCoverFaceMat.normalScale = new THREE.Vector2(0.35, 0.35);
     frontCoverFaceMat.needsUpdate = true;
+    backCoverLeatherMat.normalMap = tex;
+    backCoverLeatherMat.normalScale = new THREE.Vector2(0.35, 0.35);
+    backCoverLeatherMat.needsUpdate = true;
+    spineMat.normalMap = tex;
+    spineMat.normalScale = new THREE.Vector2(0.35, 0.35);
+    spineMat.needsUpdate = true;
   }, undefined, () => {});
 
   // Turning Page Leaf (One leaf, scroll 0.28 to 0.34)
@@ -849,24 +868,8 @@
   const glyphPoints = new THREE.Points(glyphGeo, glyphMat);
   bookGroup.add(glyphPoints);
 
-  // --- Sage Alignment Threads with Pulse Dash (Phase C, p in [0.42, 0.58]) ---
-  const threadsGroup = new THREE.Group();
-  bookGroup.add(threadsGroup);
-
-  const threadLines = [];
-  cardYPositions.forEach((yPos) => {
-    const threadGeo = new THREE.CylinderGeometry(0.014, 0.014, 1.9, 8);
-    const threadMat = new THREE.MeshBasicMaterial({
-      color: COLOR_SAGE,
-      transparent: true,
-      opacity: 0.0
-    });
-    const threadMesh = new THREE.Mesh(threadGeo, threadMat);
-    threadMesh.position.set(0, yPos, 0.24);
-    threadMesh.rotation.z = Math.PI / 2;
-    threadsGroup.add(threadMesh);
-    threadLines.push(threadMesh);
-  });
+  // --- Clause Cards Alignment Scene (Green line cylinders removed for text legibility) ---
+  // Thread lines across text are omitted so English and Hindi clause cards remain completely unobstructed
 
   // --- Synthetic Demo Sheet (Fix 1: Cleaned up, no ring, no handle, small tag, text-only underlines, edge connector) ---
   const syntheticSheetGroup = new THREE.Group();
@@ -893,16 +896,16 @@
   const synthBorderMesh = new THREE.LineSegments(synthBorderGeo, synthBorderMat);
   syntheticSheetGroup.add(synthBorderMesh);
 
-  // --- Catmull-Rom Camera Spline Path (Viewed from slightly raised table perspective) ---
+  // --- Catmull-Rom Camera Spline Path (Raised closed hero perspective for centered framing) ---
   const cameraPath = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0, 0.65, 7.6),   // 0.00: Closed hero
-    new THREE.Vector3(0, 0.68, 7.2),   // 0.15: Opening arc
+    new THREE.Vector3(0, 0.75, 7.6),   // 0.00: Closed hero (elevated for centered viewport)
+    new THREE.Vector3(0, 0.72, 7.2),   // 0.15: Opening arc
     new THREE.Vector3(0, 0.58, 6.7),   // 0.32: Spread settled
     new THREE.Vector3(0, 0.55, 6.4),   // 0.48: Clause cards lift
     new THREE.Vector3(0, 0.52, 6.0),   // 0.65: Synthetic demo card
     new THREE.Vector3(0, 0.55, 6.4),   // 0.80: Substantive review
-    new THREE.Vector3(0, 0.62, 7.2),   // 0.94: Closing
-    new THREE.Vector3(0, 0.65, 7.6)    // 1.00: Closed CTA
+    new THREE.Vector3(0, 0.68, 7.2),   // 0.94: Closing
+    new THREE.Vector3(0, 0.75, 7.6)    // 1.00: Closed CTA
   ]);
 
   // --- Pure Deterministic Timeline State Function: calcBookState(p) ---
@@ -913,15 +916,17 @@
   function calcBookState(p) {
     p = Math.max(0.0, Math.min(1.0, p));
 
-    // 1. Front Cover Angle (0 to 170 deg), Flex, and Centering Shift (Fix 2)
+    // 1. Front Cover Angle (0 to 170 deg), Flex, and Centering Shift (Fix 2 & Centering)
     let coverAngle = 0.0;
     let coverFlex = 0.0;
     let bookShiftX = -1.2;
+    let bookShiftY = 1.05;
 
     if (p < 0.08) {
       coverAngle = 0.0;
       coverFlex = 0.0;
       bookShiftX = -1.2;
+      bookShiftY = 1.05;
     } else if (p >= 0.08 && p < 0.28) {
       const u = (p - 0.08) / 0.20;
       const eu = easeInOutCubic(u);
@@ -934,10 +939,12 @@
       coverAngle = ang;
       coverFlex = Math.sin(Math.min(Math.PI, (coverAngle / 170.0) * Math.PI));
       bookShiftX = -1.2 * (1.0 - eu);
+      bookShiftY = 1.05 - 0.40 * eu;
     } else if (p >= 0.28 && p < 0.93) {
       coverAngle = 170.0;
       coverFlex = 0.0;
       bookShiftX = 0.0;
+      bookShiftY = 0.65;
     } else if (p >= 0.93 && p <= 1.00) {
       const v = (p - 0.93) / 0.07;
       const ev = easeInOutCubic(1.0 - v);
@@ -949,6 +956,7 @@
       coverAngle = ang;
       coverFlex = Math.sin(Math.min(Math.PI, (coverAngle / 170.0) * Math.PI));
       bookShiftX = -1.2 * (1.0 - ev);
+      bookShiftY = 0.65 + 0.40 * (1.0 - ev);
     }
 
     // 2. Turning Leaf (p in [0.28, 0.36] opening, [0.88, 0.93] closing)
@@ -1086,6 +1094,7 @@
       turnLeafAngle,
       turnLeafCurl,
       bookShiftX,
+      bookShiftY,
       leftBlockScaleZ,
       rightBlockScaleZ,
       glyphAlpha,
@@ -1110,27 +1119,30 @@
     const state = calcBookState(p);
     latestState = state;
 
-    // Shift book position to keep open spread or closed cover centered
+    // Shift book position to keep open spread or closed cover centered in viewport
     bookGroup.position.x = state.bookShiftX;
+    bookGroup.position.y = state.bookShiftY;
     bookGroup.rotation.x = state.bookRotX;
     bookGroup.rotation.y = state.bookRotY;
     bookGroup.rotation.z = state.bookRotZ;
 
-    // Contact shadow
+    // Contact shadow mathematically centered directly under closed volume or open spread
     shadowMat.opacity = state.shadowOpacity;
     const openFrac = (state.coverAngle / 170.0);
-    shadowMesh.scale.x = 0.6 + openFrac * 0.4;
-    shadowMesh.position.x = -state.bookShiftX * 0.5;
+    shadowMesh.scale.x = 0.5 + openFrac * 0.5;
+    shadowMesh.position.x = 1.2 * (1.0 - openFrac);
 
-    // Cover Rotation & Flex
-    coverPivot.rotation.y = THREE.MathUtils.degToRad(state.coverAngle);
+    // Cover Rotation & Flex (Negative rotation around Y lifts cover UP towards viewer from frontside)
+    coverPivot.rotation.y = THREE.MathUtils.degToRad(-state.coverAngle);
     coverFlexUniform.value = state.coverFlex;
 
-    // Turning Leaf Rotation & Curl
-    turnLeafPivot.rotation.y = THREE.MathUtils.degToRad(state.turnLeafAngle);
+    // Turning Leaf Rotation & Curl (Negative rotation around Y lifts leaf UP and turns it to the left spread)
+    turnLeafPivot.visible = (p >= 0.08 && p <= 0.93);
+    turnLeafPivot.rotation.y = THREE.MathUtils.degToRad(-state.turnLeafAngle);
     turnLeafCurlUniform.value = state.turnLeafCurl;
 
-    // Page Block Thickness Dynamics
+    // Page Block Thickness Dynamics & Visibility (left block ONLY visible after pages turn!)
+    leftPageBlock.visible = (p >= 0.28 && p < 0.93);
     leftPageBlock.scale.z = state.leftBlockScaleZ;
     rightPageBlock.scale.z = state.rightBlockScaleZ;
 
@@ -1143,18 +1155,16 @@
     cardsEn.forEach((c) => { c.position.z = 0.08 + state.cardLift; });
     cardsHi.forEach((c) => { c.position.z = 0.08 + state.cardLift; });
 
-    // Alignment Threads
-    threadLines.forEach((t) => { t.material.opacity = state.threadAlpha; });
-
     // Synthetic Demo Sheet
     syntheticSheetGroup.position.y = state.sheetY;
     synthMat.opacity = state.sheetAlpha;
     synthBorderMat.opacity = state.sheetAlpha * state.synthBorderOpacity;
 
-    // Smooth Catmull-Rom Camera Interpolation
+    // Smooth Catmull-Rom Camera Interpolation with framed lookAt
     const camPos = cameraPath.getPointAt(p);
     camera.position.set(camPos.x, camPos.y, camPos.z);
-    camera.lookAt(0, 0.45, 0);
+    const lookTargetY = 0.70 - 0.20 * openFrac;
+    camera.lookAt(0, lookTargetY, 0);
   }
 
   // --- Optimized Narrative Overlay Panels Update (Zero DOM Thrashing) ---

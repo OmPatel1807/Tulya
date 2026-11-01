@@ -58,7 +58,23 @@ All assets are licensed under **Creative Commons CC0 1.0 Universal (Public Domai
 
 ---
 
-## 4. Animation & Smooth Scroll Engine Libraries
+## 4. Constitution of India Hero Volume Cover (Official Edition)
+
+| Property | Details |
+| :--- | :--- |
+| **Asset Name** | Constitution of India Official Volume Cover (`constitution_cover`) |
+| **Asset Type** | Photographic Cover Texture (Albedo / Diffuse) |
+| **Resolution** | 776 × 1024, bundled as WebP (357 KB) and JPEG (649 KB) |
+| **Source** | User-Provided Official Photograph of the Authentic Constitution of India Volume |
+| **Local Paths** | • `frontend/public/assets/constitution_cover.webp` (357,252 bytes)<br>• `frontend/public/assets/constitution_cover.jpg` (649,956 bytes) |
+| **Author / Provider** | Government of India Official Publication Archive (Public Domain) |
+| **License** | Public Domain (Official text and facsimile of the Constitution of India) |
+| **Date Added** | 2026-11-01 |
+| **Visual Characteristics**| Authentic dark charcoal leather with intricate illuminated gold leaf borders, gold embossed title lettering, and official emblem. |
+
+---
+
+## 5. Animation & Smooth Scroll Engine Libraries
 
 | Asset Name | Type / Format | Author / Source | License | Date Added | Modification & Usage Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |

@@ -957,6 +957,55 @@ Execute two targeted, loop-engineered fixes on the Tulya landing story (`/`) whi
 - Checkpoints saved in `docs/checkpoints/`.
 - Status: **PASSED**.
 
+---
+
+## [2026-11-01] Visual Refinement Cycle: Authentic Cover, Viewport Centering, Left Page Removal, Frontside Opening & Clean Clause Text
+
+### Context & User Directives
+User provided three direct visual feedback items with reference screenshots:
+1. **Remove White Page on Left**: At hero ($p=0.00$), a white sheet/slab was protruding from the left side of the closed book (`media_1793520817947_b7525fb8.jpg`).
+2. **Center Book in Viewport**: The book volume must sit squarely in the center of the available viewport area, elevated above the bottom narrative panel without text collision.
+3. **Open From Frontside (Kinematics Fix)**: The cover was opening from the backside (positive Y rotation swinging into the table plane away from the camera). It must open from the frontside (negative Y rotation lifting towards the camera and swinging over to the left).
+4. **Remove Green Line Across Text**: In the clause alignment scene ($p \approx 0.48$), green connector cylinders were cutting horizontally across English and Hindi clause texts (`media_1793520977971_ea7dcd2e.jpg`). User instructed: *"remove the green line from 2nd ss so text is visible properly"*.
+5. **Authentic Constitution Cover**: User provided an authentic high-resolution photograph of the official Constitution of India volume (`media_1793521086170_8f33b1e6.jpg`) with dark charcoal leather and illuminated gold leaf ornamental borders and Ashoka emblem. User instructed: *"also instead of that green cover of the constitution use third ss"*.
+
+---
+
+### Implementation Details
+- **`frontend/public/assets/`**:
+  - Transferred user-supplied image to `frontend/public/assets/constitution_cover.jpg` (649 KB) and generated optimized WebP `frontend/public/assets/constitution_cover.webp` (357 KB, quality 90).
+  - Documented in `frontend/public/ASSETS.md` and `docs/ASSETS.md`.
+- **`frontend/static/story.js`**:
+  - **Cover Texture & Materials**: Updated `COLOR_COVER` to `0x1A1B1E` (deep charcoal leather) and `COLOR_BRASS` to `0xC8A452` (warm gold foil). Loaded `constitution_cover.webp` (fallback to `.jpg`) on `frontCoverFaceMat` with `anisotropy = 4`. Applied leather normal maps across front cover, back cover, and spine for unified physical materiality.
+  - **Left Page Removal**: Added visibility condition `leftPageBlock.visible = (p >= 0.28 && p < 0.93)`. Initialized `leftPageBlock.visible = false`. Completely eliminated the exposed white page to the left of the closed book.
+  - **Frontside Opening Kinematics**:
+    - Changed `coverPivot.rotation.y` to `THREE.MathUtils.degToRad(-state.coverAngle)`. Negative rotation lifts the cover forward towards the viewer (+Z) and swings it gracefully over to the left (-X), mirroring authentic book physics.
+    - Changed `turnLeafPivot.rotation.y` to `THREE.MathUtils.degToRad(-state.turnLeafAngle)` with `turnLeafPivot.visible = (p >= 0.08 && p <= 0.93)`.
+  - **Viewport Centering & Framing**:
+    - Added `bookShiftY` in `calcBookState(p)`: at $p < 0.08$, `bookShiftY = 1.05` (elevated so the entire volume floats centered above the bottom card without overlap); eases to `0.65` at $p \ge 0.28$.
+    - Adjusted camera spline: `new THREE.Vector3(0, 0.75, 7.6)` at $p=0.00$ with dynamic lookAt `(0, 0.70 - 0.20 * openFrac, 0)`.
+    - Centered contact shadow: `shadowMesh.position.x = 1.2 * (1.0 - openFrac)` and `shadowMesh.scale.x = 0.5 + openFrac * 0.5`, ensuring shadow is always centered directly under the volume in both closed and open states.
+  - **Green Line Elimination**:
+    - Removed `threadsGroup` and `threadLines` cylinder meshes entirely. Clause cards now float cleanly over the pages with zero lines obstructing English or Hindi text.
+- **`frontend/index.html`**:
+  - Updated Panel 3 title to *"Bilingual Clauses Paired Across Languages"* and copy to *"Clause cards elevate cleanly from the pages, pairing corresponding English and Hindi statutory provisions side by side with crystal clarity."*
+
+---
+
+### Verification Results
+1. **Automated Playwright Verifier (`backend/eval/verify_book_and_demo.py`)**:
+   - Opening checkpoints ($p=0.00 \to 0.28$): All passed, smooth ease-in-out arc $0^\circ \to 170^\circ$, bookShiftX $-1.20 \to 0.00$.
+   - Closing checkpoints ($p=0.88 \to 1.00$): All passed, smooth reversal $170^\circ \to 0^\circ$, bookShiftX $0.00 \to -1.20$.
+   - Synthetic demo clean check: 0 bounding box overlaps with quoted text.
+   - Idle shake: max 0.548% (threshold < 2.0%).
+   - Frame compute time: mean 0.06 ms, p95 0.10 ms (target < 20 ms). Frames > 50 ms: 0.
+   - Console errors: 0.
+2. **Pixel & Visual Inspection**:
+   - `docs/checkpoints/user_fix_closed_book.png`: Left region mean RGB [231.99, 235.98, 231.96] with std [0.25, 0.58, 1.23] matches background mist (`#E8ECE8`), confirming **zero** white page pixels on the left. Center book mean RGB [77.27, 73.05, 70.45] confirms authentic black/gold Constitution cover.
+   - `docs/checkpoints/user_fix_opening_arc.png`: Cover lifts up toward viewer in foreground from the frontside.
+   - `docs/checkpoints/user_fix_clause_pairing.png`: Clause gutter mean RGB [251.45, 249.11, 241.56] confirms **zero** green lines; text is 100% unobstructed.
+- **Status: PASSED**.
+
 
 
 
