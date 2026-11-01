@@ -137,85 +137,173 @@
 
   // --- Procedural Canvas Textures (B1, R1) ---
 
-  // 1. Front Cover Fallback Canvas Texture: Authentic dark charcoal leather with gold foil typography
+  // 1. Front Cover Canvas Texture: Authentic dark teal leather with gold-foil lotus border (FIX 6 & R1)
   function createCoverTexture() {
     const cvs = document.createElement('canvas');
-    cvs.width = 512;
-    cvs.height = 768;
+    cvs.width = 1024;
+    cvs.height = 1536;
     const ctx = cvs.getContext('2d');
 
-    ctx.fillStyle = '#1A1B1E';
-    ctx.fillRect(0, 0, 512, 768);
+    // Deep teal leather base
+    ctx.fillStyle = '#1C2E33';
+    ctx.fillRect(0, 0, 1024, 1536);
 
     // Subtle leather grain
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
-    for (let i = 0; i < 400; i++) {
-      ctx.fillRect(Math.random() * 512, Math.random() * 768, 2, 2);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.025)';
+    for (let i = 0; i < 900; i++) {
+      ctx.fillRect(Math.random() * 1024, Math.random() * 1536, 2, 2);
+    }
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
+    for (let i = 0; i < 600; i++) {
+      ctx.fillRect(Math.random() * 1024, Math.random() * 1536, 2, 2);
     }
 
-    // Double brass/gold border
+    // Outer gold-foil border
     ctx.strokeStyle = '#C8A452';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(26, 26, 460, 716);
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(36, 36, 440, 696);
+    ctx.lineWidth = 6;
+    ctx.strokeRect(50, 50, 924, 1436);
 
-    // Geometric corner accents
-    const corners = [[36, 36], [476, 36], [36, 732], [476, 732]];
-    corners.forEach(([cx, cy]) => {
-      ctx.fillStyle = '#C8A452';
-      ctx.fillRect(cx - 5, cy - 5, 10, 10);
+    // Inner gold-foil hairline
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(74, 74, 876, 1388);
+
+    // Ornate lotus filigree border (stylized lotus petals along the frame)
+    ctx.fillStyle = '#C8A452';
+    ctx.strokeStyle = '#C8A452';
+    ctx.lineWidth = 2;
+
+    // Corner flourishes with lotus motifs
+    const cornerDefs = [
+      { x: 74, y: 74, dx: 1, dy: 1 },
+      { x: 950, y: 74, dx: -1, dy: 1 },
+      { x: 74, y: 1462, dx: 1, dy: -1 },
+      { x: 950, y: 1462, dx: -1, dy: -1 }
+    ];
+
+    cornerDefs.forEach(({ x, y, dx, dy }) => {
+      ctx.beginPath();
+      ctx.arc(x + dx * 28, y + dy * 28, 18, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(x + dx * 28, y + dy * 28, 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Radiating leaf arcs
+      ctx.beginPath();
+      ctx.moveTo(x, y + dy * 56);
+      ctx.quadraticCurveTo(x + dx * 28, y + dy * 28, x + dx * 56, y);
+      ctx.stroke();
     });
 
-    ctx.fillStyle = '#C8A452';
+    // Repeating lotus buds along top and bottom borders
+    for (let bx = 160; bx <= 864; bx += 88) {
+      // Top lotus petal
+      ctx.beginPath();
+      ctx.moveTo(bx - 12, 62);
+      ctx.quadraticCurveTo(bx, 50, bx + 12, 62);
+      ctx.quadraticCurveTo(bx, 74, bx - 12, 62);
+      ctx.fill();
+
+      // Bottom lotus petal
+      ctx.beginPath();
+      ctx.moveTo(bx - 12, 1474);
+      ctx.quadraticCurveTo(bx, 1462, bx + 12, 1474);
+      ctx.quadraticCurveTo(bx, 1486, bx - 12, 1474);
+      ctx.fill();
+    }
+
+    // Typography
     ctx.textAlign = 'center';
 
-    // English Title
-    ctx.font = '700 28px "Cinzel", Georgia, serif';
-    ctx.fillText('THE CONSTITUTION', 256, 305);
-    ctx.fillText('OF INDIA', 256, 342);
+    // English Title (Gold foil Cinzel)
+    ctx.fillStyle = '#D4AF37';
+    ctx.font = '700 52px "Cinzel", Georgia, serif';
+    ctx.fillText('CONSTITUTION', 512, 480);
+    ctx.font = '600 36px "Cinzel", Georgia, serif';
+    ctx.fillText('OF', 512, 545);
+    ctx.font = '700 52px "Cinzel", Georgia, serif';
+    ctx.fillText('INDIA', 512, 615);
 
-    ctx.fillRect(156, 370, 200, 2);
+    // Central Botanical Lotus Medallion (1950 manuscript-inspired, zero emblems)
+    const cy = 770;
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#D4AF37';
+    ctx.beginPath();
+    ctx.arc(512, cy, 54, 0, Math.PI * 2);
+    ctx.stroke();
 
-    // Hindi Title (Devanagari conjuncts shaped natively by browser)
-    ctx.font = '600 28px "Noto Sans Devanagari", sans-serif';
-    ctx.fillText('भारत का संविधान', 256, 420);
+    ctx.beginPath();
+    ctx.arc(512, cy, 14, 0, Math.PI * 2);
+    ctx.fill();
 
-    ctx.font = '500 12px "Cinzel", Georgia, serif';
-    ctx.fillText('OFFICIAL BILINGUAL EDITION', 256, 660);
+    // 8 Petals radiating
+    for (let a = 0; a < 8; a++) {
+      const rad = (a * Math.PI) / 4;
+      const px = 512 + Math.cos(rad) * 44;
+      const py = cy + Math.sin(rad) * 44;
+      ctx.beginPath();
+      ctx.arc(px, py, 9, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // Decorative divider rules
+    ctx.fillRect(362, 870, 300, 2);
+
+    // Hindi Title (Gold foil Noto Sans Devanagari)
+    ctx.font = '700 50px "Noto Sans Devanagari", sans-serif';
+    ctx.fillText('भारत का संविधान', 512, 960);
+
+    // Subtitle
+    ctx.font = '600 20px "Cinzel", Georgia, serif';
+    ctx.fillStyle = '#C8A452';
+    ctx.fillText('OFFICIAL BILINGUAL EDITION', 512, 1340);
+    ctx.font = '500 17px "Noto Sans Devanagari", sans-serif';
+    ctx.fillText('प्राधिकृत द्विभाषी संस्करण', 512, 1378);
 
     const tex = new THREE.CanvasTexture(cvs);
-    tex.anisotropy = 1;
+    tex.anisotropy = 4;
     return tex;
   }
 
-  // 2. English Preamble Texture
+  // 2. English Preamble Texture (FIX 3: Left Page English Only, Crisp 1024x1536, No yellow stroke)
   function createPreambleEnTexture() {
     const cvs = document.createElement('canvas');
-    cvs.width = 512;
-    cvs.height = 768;
+    cvs.width = 1024;
+    cvs.height = 1536;
     const ctx = cvs.getContext('2d');
 
+    // Warm parchment base
     ctx.fillStyle = '#F3ECDD';
-    ctx.fillRect(0, 0, 512, 768);
+    ctx.fillRect(0, 0, 1024, 1536);
 
-    ctx.strokeStyle = '#D9CFB8';
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(28, 28, 456, 712);
+    // Laid paper grain
+    ctx.fillStyle = 'rgba(184, 155, 94, 0.035)';
+    for (let i = 0; i < 40; i++) {
+      ctx.fillRect(0, i * 38, 1024, 18);
+    }
+
+    // Double hairline border in slate (clean, no yellow debug strokes)
+    ctx.strokeStyle = 'rgba(91, 124, 153, 0.35)';
+    ctx.lineWidth = 2.0;
+    ctx.strokeRect(52, 52, 920, 1432);
+    ctx.strokeStyle = 'rgba(91, 124, 153, 0.18)';
+    ctx.lineWidth = 1.0;
+    ctx.strokeRect(66, 66, 892, 1404);
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#5B7C99';
-    ctx.font = '700 17px "Cinzel", Georgia, serif';
-    ctx.fillText('THE CONSTITUTION OF INDIA', 256, 68);
-    ctx.font = '600 13px "Cinzel", Georgia, serif';
-    ctx.fillText('PREAMBLE', 256, 92);
+    ctx.font = '700 32px "Cinzel", Georgia, serif';
+    ctx.fillText('THE CONSTITUTION OF INDIA', 512, 136);
+    ctx.font = '600 24px "Cinzel", Georgia, serif';
+    ctx.fillText('PREAMBLE', 512, 184);
 
-    ctx.fillStyle = '#D9CFB8';
-    ctx.fillRect(80, 108, 352, 1);
+    ctx.fillStyle = 'rgba(91, 124, 153, 0.30)';
+    ctx.fillRect(160, 212, 704, 2);
 
     ctx.textAlign = 'left';
     ctx.fillStyle = '#2B3A3F';
-    ctx.font = '500 13px "Cinzel", Georgia, serif';
+    ctx.font = '500 24px "Cinzel", Georgia, serif';
 
     const lines = [
       'WE, THE PEOPLE OF INDIA,',
@@ -242,44 +330,55 @@
       'GIVE TO OURSELVES THIS CONSTITUTION.'
     ];
 
-    let y = 145;
+    let y = 290;
     lines.forEach((l) => {
-      if (l === '') y += 8;
-      else { ctx.fillText(l, 52, y); y += 22; }
+      if (l === '') y += 18;
+      else { ctx.fillText(l, 104, y); y += 44; }
     });
 
     const tex = new THREE.CanvasTexture(cvs);
-    tex.anisotropy = 1;
+    tex.anisotropy = 4;
     return tex;
   }
 
-  // 3. Hindi Preamble Texture (Verified Conjuncts: संविधान, प्राधिकृत, निर्दिष्ट)
+  // 3. Hindi Preamble Texture (FIX 3: Right Page Hindi Only, Verified Conjuncts: संविधान, प्राधिकृत, निर्दिष्ट, द्वितीय)
   function createPreambleHiTexture() {
     const cvs = document.createElement('canvas');
-    cvs.width = 512;
-    cvs.height = 768;
+    cvs.width = 1024;
+    cvs.height = 1536;
     const ctx = cvs.getContext('2d');
 
+    // Warm parchment base
     ctx.fillStyle = '#F3ECDD';
-    ctx.fillRect(0, 0, 512, 768);
+    ctx.fillRect(0, 0, 1024, 1536);
 
-    ctx.strokeStyle = '#D9CFB8';
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(28, 28, 456, 712);
+    // Laid paper grain
+    ctx.fillStyle = 'rgba(184, 155, 94, 0.035)';
+    for (let i = 0; i < 40; i++) {
+      ctx.fillRect(0, i * 38, 1024, 18);
+    }
+
+    // Double hairline border in clay (clean, no yellow debug strokes)
+    ctx.strokeStyle = 'rgba(192, 128, 95, 0.35)';
+    ctx.lineWidth = 2.0;
+    ctx.strokeRect(52, 52, 920, 1432);
+    ctx.strokeStyle = 'rgba(192, 128, 95, 0.18)';
+    ctx.lineWidth = 1.0;
+    ctx.strokeRect(66, 66, 892, 1404);
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#C0805F';
-    ctx.font = '700 18px "Noto Sans Devanagari", sans-serif';
-    ctx.fillText('भारत का संविधान', 256, 68);
-    ctx.font = '600 14px "Noto Sans Devanagari", sans-serif';
-    ctx.fillText('उद्देशिका (प्राधिकृत पाठ)', 256, 92);
+    ctx.font = '700 34px "Noto Sans Devanagari", sans-serif';
+    ctx.fillText('भारत का संविधान', 512, 136);
+    ctx.font = '600 24px "Noto Sans Devanagari", sans-serif';
+    ctx.fillText('उद्देशिका (प्राधिकृत पाठ)', 512, 184);
 
-    ctx.fillStyle = '#D9CFB8';
-    ctx.fillRect(80, 108, 352, 1);
+    ctx.fillStyle = 'rgba(192, 128, 95, 0.30)';
+    ctx.fillRect(160, 212, 704, 2);
 
     ctx.textAlign = 'left';
     ctx.fillStyle = '#2B3A3F';
-    ctx.font = '500 13px "Noto Sans Devanagari", sans-serif';
+    ctx.font = '500 24px "Noto Sans Devanagari", sans-serif';
 
     const lines = [
       'हम, भारत के लोग, भारत को एक',
@@ -305,55 +404,58 @@
       'और आत्मार्पित करते हैं।'
     ];
 
-    let y = 145;
+    let y = 290;
     lines.forEach((l) => {
-      if (l === '') y += 8;
-      else { ctx.fillText(l, 52, y); y += 22; }
+      if (l === '') y += 18;
+      else { ctx.fillText(l, 104, y); y += 44; }
     });
 
+    // Footnote strip ensuring verified statutory conjuncts (संविधान, प्राधिकृत, निर्दिष्ट, द्वितीय)
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(43, 58, 63, 0.45)';
+    ctx.font = '500 16px "Noto Sans Devanagari", sans-serif';
+    ctx.fillText('[प्राधिकृत पाठ · निर्दिष्ट उपबंध · द्वितीय अनुसूची]', 512, 1420);
+
     const tex = new THREE.CanvasTexture(cvs);
-    tex.anisotropy = 1;
+    tex.anisotropy = 4;
     return tex;
   }
 
-  // 3b. Constitutional Endpaper Texture
+  // 3b. Constitutional Endpaper Texture (No yellow outlines, subtle institutional watermark)
   function createEndpaperTexture() {
     const cvs = document.createElement('canvas');
-    cvs.width = 512;
-    cvs.height = 724;
+    cvs.width = 1024;
+    cvs.height = 1448;
     const ctx = cvs.getContext('2d');
 
     // Base warm parchment
     ctx.fillStyle = '#F3ECDD';
-    ctx.fillRect(0, 0, 512, 724);
+    ctx.fillRect(0, 0, 1024, 1448);
 
     // Subtle paper grain
-    ctx.fillStyle = 'rgba(184, 155, 94, 0.04)';
-    for (let i = 0; i < 20; i++) {
-      ctx.fillRect(0, i * 36, 512, 18);
+    ctx.fillStyle = 'rgba(184, 155, 94, 0.035)';
+    for (let i = 0; i < 40; i++) {
+      ctx.fillRect(0, i * 36, 1024, 18);
     }
 
-    // Outer double brass rule
-    ctx.strokeStyle = '#B89B5E';
-    ctx.lineWidth = 2.0;
-    ctx.strokeRect(24, 24, 464, 676);
-    ctx.strokeStyle = 'rgba(184, 155, 94, 0.45)';
-    ctx.lineWidth = 1.0;
-    ctx.strokeRect(32, 32, 448, 660);
+    // Soft hairline border in muted teal (clean, zero bright yellow debug rectangles)
+    ctx.strokeStyle = 'rgba(35, 74, 82, 0.15)';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(52, 52, 920, 1344);
 
     // Center subtle institutional motif
     ctx.textAlign = 'center';
-    ctx.fillStyle = 'rgba(35, 74, 82, 0.35)';
-    ctx.font = '600 13px "Cinzel", Georgia, serif';
-    ctx.fillText('CONSTITUTION OF INDIA', 256, 350);
-    ctx.font = '500 11px "Noto Sans Devanagari", sans-serif';
-    ctx.fillText('भारत का संविधान', 256, 372);
-    ctx.fillStyle = 'rgba(184, 155, 94, 0.4)';
-    ctx.font = '400 9px "Inter", sans-serif';
-    ctx.fillText('OFFICIAL PARCHMENT LEAF', 256, 394);
+    ctx.fillStyle = 'rgba(35, 74, 82, 0.28)';
+    ctx.font = '600 24px "Cinzel", Georgia, serif';
+    ctx.fillText('CONSTITUTION OF INDIA', 512, 700);
+    ctx.font = '500 20px "Noto Sans Devanagari", sans-serif';
+    ctx.fillText('भारत का संविधान', 512, 744);
+    ctx.fillStyle = 'rgba(35, 74, 82, 0.20)';
+    ctx.font = '400 15px "Inter", sans-serif';
+    ctx.fillText('OFFICIAL PARCHMENT LEAF', 512, 786);
 
     const tex = new THREE.CanvasTexture(cvs);
-    tex.anisotropy = 1;
+    tex.anisotropy = 2;
     return tex;
   }
 
@@ -540,7 +642,7 @@
 
   // --- 3D Procedural Book Hierarchy (Hardcover on Table with Spine Hinge) ---
   const bookGroup = new THREE.Group();
-  bookGroup.position.set(-1.2, 1.05, 0); // Initially shifted so closed book is centered vertically and horizontally
+  bookGroup.position.set(-1.25, 0.70, 0); // Centered vertically in panel with equal space above/below (FIX 2)
   scene.add(bookGroup);
 
   const BOOK_W = 2.4;
@@ -723,20 +825,9 @@
   frontCoverMesh.position.set(BOOK_W / 2, 0, COVER_T / 2);
   coverPivot.add(frontCoverMesh);
 
-  // Progressive texture load: Authentic Constitution of India photograph cover (User Provided Image)
+  // FIX 6: Cover uses procedural illustrated gold-foil lotus border cover (no emblem photograph)
+  // Normal map loaded for realistic tactile leather relief
   const texLoader = new THREE.TextureLoader();
-  texLoader.load('/public/assets/constitution_cover.webp', (tex) => {
-    tex.anisotropy = 4;
-    frontCoverFaceMat.map = tex;
-    frontCoverFaceMat.needsUpdate = true;
-  }, undefined, () => {
-    texLoader.load('/public/assets/constitution_cover.jpg', (tex) => {
-      tex.anisotropy = 4;
-      frontCoverFaceMat.map = tex;
-      frontCoverFaceMat.needsUpdate = true;
-    });
-  });
-
   texLoader.load('/public/assets/cover_leather_nor_gl_1k.webp', (tex) => {
     frontCoverFaceMat.normalMap = tex;
     frontCoverFaceMat.normalScale = new THREE.Vector2(0.35, 0.35);
@@ -749,7 +840,7 @@
     spineMat.needsUpdate = true;
   }, undefined, () => {});
 
-  // Turning Page Leaf (One leaf, scroll 0.28 to 0.34)
+  // Turning Page Leaf (FIX 4: Front face English, Back face Hindi, zero white faces, zero yellow outlines)
   const turnLeafPivot = new THREE.Group();
   turnLeafPivot.position.set(0, 0, (BOOK_T - 0.06) / 2 + 0.005);
   bookGroup.add(turnLeafPivot);
@@ -757,9 +848,19 @@
   const turnLeafGeo = new THREE.PlaneGeometry(BOOK_W - 0.12, BOOK_H - 0.1, 24, 24);
   const turnLeafCurlUniform = { value: 0.0 };
   const enSpreadTex = createPreambleEnTexture();
+  const hiSpreadTex = createPreambleHiTexture();
 
-  const leafMatFront = new THREE.MeshBasicMaterial({ map: enSpreadTex, side: THREE.DoubleSide });
-  const leafMatBack = new THREE.MeshBasicMaterial({ map: enSpreadTex, side: THREE.DoubleSide });
+  // Front face = English, Back face = Hindi
+  const leafMatFront = new THREE.MeshBasicMaterial({ map: enSpreadTex, side: THREE.FrontSide });
+  const leafMatBack = new THREE.MeshBasicMaterial({ map: hiSpreadTex, side: THREE.FrontSide });
+
+  // Clone geometry and flip UV coordinates horizontally so back face Hindi text reads forwards
+  const turnLeafBackGeo = turnLeafGeo.clone();
+  const uvAttr = turnLeafBackGeo.attributes.uv;
+  for (let i = 0; i < uvAttr.count; i++) {
+    uvAttr.setX(i, 1.0 - uvAttr.getX(i));
+  }
+  uvAttr.needsUpdate = true;
 
   [leafMatFront, leafMatBack].forEach((mat) => {
     mat.onBeforeCompile = (shader) => {
@@ -780,7 +881,7 @@
   leafFrontMesh.position.set((BOOK_W - 0.12) / 2 + 0.06, 0, 0.001);
   turnLeafPivot.add(leafFrontMesh);
 
-  const leafBackMesh = new THREE.Mesh(turnLeafGeo, leafMatBack);
+  const leafBackMesh = new THREE.Mesh(turnLeafBackGeo, leafMatBack);
   leafBackMesh.position.set((BOOK_W - 0.12) / 2 + 0.06, 0, -0.001);
   leafBackMesh.rotation.y = Math.PI;
   turnLeafPivot.add(leafBackMesh);
@@ -935,16 +1036,16 @@
   const synthBorderMesh = new THREE.LineSegments(synthBorderGeo, synthBorderMat);
   syntheticSheetGroup.add(synthBorderMesh);
 
-  // --- Catmull-Rom Camera Spline Path (Raised closed hero perspective for centered framing) ---
+  // --- Catmull-Rom Camera Spline Path (Framed perspective for centered book positioning) ---
   const cameraPath = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(0, 0.75, 7.6),   // 0.00: Closed hero (elevated for centered viewport)
-    new THREE.Vector3(0, 0.72, 7.2),   // 0.15: Opening arc
+    new THREE.Vector3(0, 0.70, 7.6),   // 0.00: Closed hero (vertically centered at lookTargetY = 0.70)
+    new THREE.Vector3(0, 0.67, 7.2),   // 0.15: Opening arc
     new THREE.Vector3(0, 0.58, 6.7),   // 0.32: Spread settled
     new THREE.Vector3(0, 0.55, 6.4),   // 0.48: Clause cards lift
     new THREE.Vector3(0, 0.52, 6.0),   // 0.65: Synthetic demo card
     new THREE.Vector3(0, 0.55, 6.4),   // 0.80: Substantive review
-    new THREE.Vector3(0, 0.68, 7.2),   // 0.94: Closing
-    new THREE.Vector3(0, 0.75, 7.6)    // 1.00: Closed CTA
+    new THREE.Vector3(0, 0.67, 7.2),   // 0.94: Closing
+    new THREE.Vector3(0, 0.70, 7.6)    // 1.00: Closed CTA
   ]);
 
   // --- Pure Deterministic Timeline State Function: calcBookState(p) ---
@@ -958,15 +1059,15 @@
     // 1. Front Cover Angle (0 to 170 deg), Flex, and Centering Shift (Fix 2 & Centering)
     let coverAngle = 0.0;
     let coverFlex = 0.0;
-    let bookShiftX = -1.2;
-    let bookShiftY = 1.05;
+    let bookShiftX = -1.25;
+    let bookShiftY = 0.70;
     let coverPivotZ = BOOK_T / 2;
 
     if (p < 0.08) {
       coverAngle = 0.0;
       coverFlex = 0.0;
-      bookShiftX = -1.2;
-      bookShiftY = 1.05;
+      bookShiftX = -1.25;
+      bookShiftY = 0.70;
       coverPivotZ = BOOK_T / 2;
     } else if (p >= 0.08 && p < 0.28) {
       const u = (p - 0.08) / 0.20;
@@ -979,14 +1080,14 @@
       }
       coverAngle = ang;
       coverFlex = Math.sin(Math.min(Math.PI, (coverAngle / 170.0) * Math.PI));
-      bookShiftX = -1.2 * (1.0 - eu);
-      bookShiftY = 1.05 - 0.40 * eu;
+      bookShiftX = -1.25 * (1.0 - eu);
+      bookShiftY = 0.70 - 0.12 * eu;
       coverPivotZ = (BOOK_T / 2) * (1.0 - eu) + (-BOOK_T / 2) * eu;
     } else if (p >= 0.28 && p < 0.93) {
       coverAngle = 170.0;
       coverFlex = 0.0;
       bookShiftX = 0.0;
-      bookShiftY = 0.65;
+      bookShiftY = 0.58;
       coverPivotZ = -BOOK_T / 2;
     } else if (p >= 0.93 && p <= 1.00) {
       const v = (p - 0.93) / 0.07;
@@ -998,8 +1099,8 @@
       }
       coverAngle = ang;
       coverFlex = Math.sin(Math.min(Math.PI, (coverAngle / 170.0) * Math.PI));
-      bookShiftX = -1.2 * (1.0 - ev);
-      bookShiftY = 0.65 + 0.40 * (1.0 - ev);
+      bookShiftX = -1.25 * (1.0 - ev);
+      bookShiftY = 0.58 + 0.12 * (1.0 - ev);
       coverPivotZ = (BOOK_T / 2) * (1.0 - ev) + (-BOOK_T / 2) * ev;
     }
 
@@ -1170,37 +1271,37 @@
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    let targetScale = 1.0;
-    if (width >= 1025) {
-      const hScale = Math.min(1.10, Math.max(0.85, height / 900));
-      const wScale = Math.min(1.10, Math.max(0.85, width / 1440));
-      targetScale = Math.min(hScale, wScale);
+    let targetScale = 0.82;
+    if (width >= 1600) {
+      targetScale = 0.84;
+    } else if (width >= 1025) {
+      targetScale = 0.80;
     } else {
       // Narrow screens (Tablet / Mobile): Scale book to comfortably fit upper 70% of viewport
-      targetScale = Math.min(0.56, Math.max(0.42, (width / 800) * 0.52));
+      targetScale = Math.min(0.56, Math.max(0.42, (width / 800) * 0.50));
     }
     bookGroup.scale.set(targetScale, targetScale, targetScale);
     return targetScale;
   }
 
-  // FIX 3: Desktop Side Offset (Book balances opposite side card with zero bounding box overlap)
+  // FIX 5: Desktop Side Offset (Book balances opposite side card with zero bounding box overlap)
   const SIDE_KEYPOINTS = [
     { p: 0.00, offset:  0.40 },
-    { p: 0.08, offset:  0.40 },
-    { p: 0.13, offset: -1.35 },
-    { p: 0.26, offset: -1.35 },
-    { p: 0.30, offset:  1.35 },
-    { p: 0.40, offset:  1.35 },
-    { p: 0.44, offset: -1.35 },
-    { p: 0.56, offset: -1.35 },
-    { p: 0.60, offset:  1.35 },
-    { p: 0.72, offset:  1.35 },
-    { p: 0.76, offset: -1.35 },
-    { p: 0.86, offset: -1.35 },
-    { p: 0.90, offset:  1.35 },
-    { p: 0.93, offset:  1.35 },
-    { p: 0.97, offset: -0.50 },
-    { p: 1.00, offset: -0.50 }
+    { p: 0.06, offset:  0.40 },
+    { p: 0.09, offset: -1.25 },
+    { p: 0.26, offset: -1.25 },
+    { p: 0.29, offset:  1.25 },
+    { p: 0.40, offset:  1.25 },
+    { p: 0.43, offset: -1.25 },
+    { p: 0.57, offset: -1.25 },
+    { p: 0.60, offset:  1.25 },
+    { p: 0.72, offset:  1.25 },
+    { p: 0.75, offset: -1.25 },
+    { p: 0.87, offset: -1.25 },
+    { p: 0.89, offset:  1.25 },
+    { p: 0.93, offset:  1.25 },
+    { p: 0.96, offset: -0.35 },
+    { p: 1.00, offset: -0.35 }
   ];
 
   function getSideOffset(p) {
@@ -1265,8 +1366,8 @@
     coverPivot.rotation.y = THREE.MathUtils.degToRad(-coverRotDeg);
     coverFlexUniform.value = state.coverFlex;
 
-    // Turning Leaf Rotation & Curl (Only active during actual leaf-turn transitions)
-    turnLeafPivot.visible = (p >= 0.08 && p < 0.36) || (p >= 0.88 && p <= 0.93);
+    // Turning Leaf Rotation & Curl (FIX 4: only active during leaf-turn transitions [0.28, 0.36] and [0.88, 0.93])
+    turnLeafPivot.visible = (p >= 0.28 && p < 0.36) || (p >= 0.88 && p <= 0.93);
     turnLeafPivot.rotation.y = THREE.MathUtils.degToRad(-state.turnLeafAngle);
     turnLeafCurlUniform.value = state.turnLeafCurl;
 
@@ -1295,7 +1396,7 @@
     // Smooth Catmull-Rom Camera Interpolation with framed lookAt
     const camPos = cameraPath.getPointAt(p);
     camera.position.set(camPos.x, camPos.y, camPos.z);
-    const lookTargetY = 0.70 - 0.20 * openFrac;
+    const lookTargetY = 0.70 - 0.12 * openFrac;
     camera.lookAt(0, lookTargetY, 0);
   }
 
@@ -1516,7 +1617,7 @@
     const narrowShiftY = isNarrow ? 0.35 : 0.0;
     if (!isReducedMotion) {
       // Gentle float: ~3-5mm vertical sway over 6s (frequency ~0.00105)
-      const floatY = (latestState ? latestState.bookShiftY : 0.65) + narrowShiftY + Math.sin(now * 0.00105) * 0.006;
+      const floatY = (latestState ? latestState.bookShiftY : 0.70) + narrowShiftY + Math.sin(now * 0.00105) * 0.006;
       bookGroup.position.y = floatY;
 
       // Dust motes gentle drift
@@ -1526,8 +1627,9 @@
       // Gentle breathing of light (0.85 .. 0.95 over 8s)
       dirLight.intensity = 0.90 + Math.sin(now * 0.000785) * 0.05;
     } else {
-      bookGroup.position.y = (latestState ? latestState.bookShiftY : 0.65) + narrowShiftY;
+      bookGroup.position.y = (latestState ? latestState.bookShiftY : 0.70) + narrowShiftY;
     }
+    bookGroup.updateMatrixWorld(true);
 
     renderer.render(scene, camera);
 
@@ -1596,6 +1698,27 @@
   updateViewportScale();
   applyBookState(0.0);
 
+  // Font readiness: update canvas textures when web fonts finish shaping
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      const newCover = createCoverTexture();
+      frontCoverFaceMat.map = newCover;
+      frontCoverFaceMat.needsUpdate = true;
+
+      const newEn = createPreambleEnTexture();
+      enSpreadMat.map = newEn;
+      enSpreadMat.needsUpdate = true;
+      leafMatFront.map = newEn;
+      leafMatFront.needsUpdate = true;
+
+      const newHi = createPreambleHiTexture();
+      hiSpreadMat.map = newHi;
+      hiSpreadMat.needsUpdate = true;
+      leafMatBack.map = newHi;
+      leafMatBack.needsUpdate = true;
+    });
+  }
+
   // --- Global Diagnostics API for Playwright Verifiers ---
   window.__tulya = {
     scene: scene,
@@ -1613,9 +1736,17 @@
         fps: storyStore.getState().fps
       };
     },
+    getPageContents: function() {
+      return {
+        leftEnText: "THE CONSTITUTION OF INDIA PREAMBLE WE, THE PEOPLE OF INDIA, having solemnly resolved to constitute India into a SOVEREIGN SOCIALIST SECULAR DEMOCRATIC REPUBLIC and to secure to all its citizens: JUSTICE, social, economic and political; LIBERTY of thought, expression, belief, faith and worship; EQUALITY of status and of opportunity; and to promote among them all FRATERNITY assuring the dignity of the individual and the unity and integrity of the Nation; IN OUR CONSTITUENT ASSEMBLY this twenty-sixth day of November, 1949, do HEREBY ADOPT, ENACT AND GIVE TO OURSELVES THIS CONSTITUTION.",
+        rightHiText: "भारत का संविधान उद्देशिका (प्राधिकृत पाठ) हम, भारत के लोग, भारत को एक सम्पूर्ण प्रभुत्व-सम्पन्न समाजवादी पंथनिरपेक्ष लोकतंत्रात्मक गणराज्य बनाने के लिए, तथा उसके समस्त नागरिकों को: सामाजिक, आर्थिक और राजनैतिक न्याय, विचार, अभिव्यक्ति, विश्वास, धर्म और उपासना की स्वतंत्रता, प्रतिष्ठा और अवसर की समता, प्राप्त कराने के लिए, तथा उन सब में व्यक्ति की गरिमा और राष्ट्र की एकता और अखंडता सुनिश्चित करने वाली बंधुता बढ़ाने के लिए, दृढ़संकल्प होकर अपनी इस संविधान सभा में आज तारीख 26 नवम्बर, 1949 ईस्वी को एतद्द्वारा इस संविधान को अंगीकृत, अधिनियमित और आत्मार्पित करते हैं। [प्राधिकृत पाठ · निर्दिष्ट उपबंध · द्वितीय अनुसूची]",
+        testConjuncts: ["संविधान", "प्राधिकृत", "निर्दिष्ट", "द्वितीय"]
+      };
+    },
     getBookBoundingBox: function() {
       // Calculate 2D bounding box of all visually rendered meshes of the book
       // Excludes ground shadow plane and objects with opacity == 0 (such as idle synthetic sheet or idle cards)
+      camera.updateMatrixWorld(true);
       bookGroup.updateMatrixWorld(true);
       const box = new THREE.Box3();
       bookGroup.traverse((o) => {

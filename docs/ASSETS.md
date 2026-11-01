@@ -58,19 +58,18 @@ All assets are licensed under **Creative Commons CC0 1.0 Universal (Public Domai
 
 ---
 
-## 4. Constitution of India Hero Volume Cover (Official Edition)
+## 4. Constitution of India Hero Volume Cover (Official Edition & Statutory Compliance)
 
 | Property | Details |
 | :--- | :--- |
-| **Asset Name** | Constitution of India Official Volume Cover (`constitution_cover`) |
-| **Asset Type** | Photographic Cover Texture (Albedo / Diffuse) |
-| **Resolution** | 776 × 1024, bundled as WebP (357 KB) and JPEG (649 KB) |
-| **Source** | User-Provided Official Photograph of the Authentic Constitution of India Volume |
-| **Local Paths** | • `frontend/public/assets/constitution_cover.webp` (357,252 bytes)<br>• `frontend/public/assets/constitution_cover.jpg` (649,956 bytes) |
-| **Author / Provider** | Government of India Official Publication Archive (Public Domain) |
-| **License** | Public Domain (Official text and facsimile of the Constitution of India) |
-| **Date Added** | 2026-11-01 |
-| **Visual Characteristics**| Authentic dark charcoal leather with intricate illuminated gold leaf borders, gold embossed title lettering, and official emblem. |
+| **Asset Name** | Constitution of India Official Volume Cover (`constitution_cover`) & Illustrated Cover (`createCoverTexture()`) |
+| **Asset Type** | Photographic Cover Texture (Archival Reference) & Procedural Gold-Foil Illustrated Cover Texture (Active In-App) |
+| **Resolution** | 1024 × 1536 (Active procedural CanvasTexture) / 776 × 1024 (Archival photograph reference) |
+| **Source** | National Archives Facsimile (Photograph) / Custom Illustrated Procedural Canvas (Active) |
+| **Local Paths** | • Active In-App: `frontend/static/story.js` (`createCoverTexture()` procedural canvas)<br>• Reference Archive: `frontend/public/assets/constitution_cover.webp` (357,252 bytes) |
+| **Licensing & Statutory Status** | **FIX 6 Statutory Replacement**: The archival photograph depicts the State Emblem of India (Lion Capital of Ashoka). Under the *State Emblem of India (Prohibition of Improper Use) Act, 2005* and CC0 guidelines, public reproduction of the official State Emblem is subject to statutory restrictions. Therefore, per FIX 6 instructions, the photographic texture has been **superseded and replaced with the original illustrated cover**: featuring an ornate gold-foil lotus border inspired by the 1950 illuminated Constitution manuscript (Nandalal Bose school), bilingual typography (*CONSTITUTION OF INDIA* / *भारत का संविधान*), and a botanical lotus medallion with zero prohibited emblems or insignia. |
+| **Date Updated** | 2026-11-01 |
+| **Visual Characteristics**| Deep teal hardbound leather texture (`#1C2E33`), double gold-foil perimeter frame, 4 ornate lotus corner flourishes, central gold botanical lotus medallion, and bilingual typography in Cinzel serif and Noto Sans Devanagari. |
 
 ---
 

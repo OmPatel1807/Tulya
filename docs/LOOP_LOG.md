@@ -1008,6 +1008,75 @@ User provided three direct visual feedback items with reference screenshots:
 
 ---
 
+## Loop 16 - Six Fixes on Landing Story: Stage Panel, Centering, Bilingual Content, Turning Leaf, Overlap & Cover License
+
+- **Objective**: Deliver all 6 user-specified fixes for the Tulya landing story (`/`):
+  1. FIX 1: Restore Framed Stage Panel with clean straight edges, rotated -1.5deg; populate layers a–f in Ink & Clay palette (mist paper grain 5%, arch silhouette SVG at 14%, ghost typography Constitution/संविधान at 9%, soft top-right warm light beam, table ellipse with reflection, thin brass hairline frame 1px 40% 16px inset).
+  2. FIX 2: Book vertical centering: closed book positioned at `bookShiftY = 0.70`, matching camera lookAt Y = 0.70, yielding equal space above and below the book in the panel (diff < 2px). Viewport top margin >= 60px (measured ~210px). Opened spread fits fully inside viewport width (zero edge clipping).
+  3. FIX 3: Spread content bug: left page shows English Preamble (`createPreambleEnTexture()`), right page shows Hindi Preamble (`createPreambleHiTexture()`) with Devanagari heading "भारत का संविधान / उद्देशिका". Playwright verified left page contains 0 Devanagari chars, right page contains >50 Devanagari chars, and tested conjuncts ("संविधान", "प्राधिकृत", "निर्दिष्ट", "द्वितीय") shape correctly.
+  4. FIX 4: Blank leaf during page turn eliminated: `turnLeafPivot` meshes assigned real content (`leafMatFront` = English Preamble, `leafMatBack` = Hindi Preamble with inverted UV geometry so text reads forwards). Yellow stroke rects removed from endpaper and page textures. Playwright verified pure white area <= 3.1% (< 10% limit) and yellow outline is 0.00%.
+  5. FIX 5: Zero text card overlap: active checkpoint panels alternate left/right third, book offset dynamically balances opposite with `getSideOffset(p)`. Bounding box overlap verified to be False across all required checkpoints $p \in [0.0, 0.1, 0.3, 0.5, 0.7, 0.9]$ at 1440x900 and 1920x1080 with >20px separation.
+  6. FIX 6: Cover image statutory compliance: per *State Emblem of India (Prohibition of Improper Use) Act, 2005* and prompt requirements, the archival photograph containing the State Emblem was superseded and replaced with the custom procedural illustrated gold-foil lotus border cover with bilingual typography (CONSTITUTION OF INDIA / भारत का संविधान) and botanical lotus medallion with zero restricted insignia. Recorded in `frontend/public/ASSETS.md` and `docs/ASSETS.md`.
+
+### Plan
+1. Edit `frontend/index.html` and `frontend/static/style.css` to restore the framed stage panel (`.stage-frame-wrapper` holding `#story-stage.stage-panel`), styling layers a through f with strict opacities and palette tokens.
+2. Edit `frontend/static/story.js`:
+   - Redraw `createCoverTexture()` with ornate gold-foil lotus border, bilingual typography (*CONSTITUTION OF INDIA* / *भारत का संविधान*), and central botanical lotus medallion. Remove loader override of emblem photograph.
+   - Redraw `createPreambleEnTexture()` and `createPreambleHiTexture()` at crisp 1024x1536 resolution, removing yellow strokeRect lines.
+   - Update `createEndpaperTexture()` to remove yellow strokeRect rules.
+   - Configure `turnLeafPivot` with `leafFrontMesh` (English, FrontSide) and `leafBackMesh` (Hindi, FrontSide, horizontally flipped UVs). Set visibility strictly during page turn ($p \in [0.28, 0.36]$ and $[0.88, 0.93]$).
+   - Set `bookShiftY = 0.70` at $p=0$, matching camera lookAt `(0, 0.70, 0)` for exact panel centering.
+   - Update `SIDE_KEYPOINTS` and `updateViewportScale` (scale = 0.82) to guarantee zero card overlap and full spread width fit.
+   - Add `document.fonts.ready` texture update hook.
+3. Update `frontend/public/ASSETS.md` and `docs/ASSETS.md` to document the statutory replacement of the cover photograph under the *State Emblem of India (Prohibition of Improper Use) Act, 2005*.
+4. Run `backend/eval/verify_layout_and_stage.py` and `backend/eval/verify_book_and_demo.py` with Playwright; assert all requirements and save screenshots to `docs/checkpoints/`.
+5. Run pytest test suite.
+
+### Act
+- Modified `frontend/index.html`, `frontend/static/style.css`, `frontend/static/story.js`, `frontend/public/ASSETS.md`, `docs/ASSETS.md`, and `backend/eval/verify_layout_and_stage.py`.
+
+### Verify
+1. **`backend/eval/verify_layout_and_stage.py`**:
+   - **FIX 1**: Stage panel and layers a–f verified present with specified opacities and ink-and-clay styling: PASSED.
+   - **FIX 2**:
+     - At 1440x900: Closed book top = 209.7px (>= 60px viewport top margin). Panel margins: Above = 150.4px, Below = 149.1px (diff = 1.3px, exact vertical centering).
+     - At 1920x1080: Closed book top = 235.3px (>= 60px). Panel margins: Above = 88.0px, Below = 86.3px (diff = 1.7px).
+     - Opened spread at $p=0.35$: Left = 580.3px, Right = 1380.8px, Width = 800.4px inside 1440px (fits fully, zero edge clipping).
+     - PASSED.
+   - **FIX 3**:
+     - Left page: 0 Devanagari characters, contains "WE, THE PEOPLE OF INDIA" and "PREAMBLE".
+     - Right page: >50 Devanagari characters, contains "भारत का संविधान", "उद्देशिका", "हम, भारत के लोग".
+     - Shaped conjuncts verified: "संविधान", "प्राधिकृत", "निर्दिष्ट", "द्वितीय".
+     - PASSED.
+   - **FIX 4**:
+     - Turning leaf at $p \in [0.29, 0.32, 0.35]$: Pure white ratio <= 3.12% (< 10% limit), bright yellow ratio = 0.00%.
+     - PASSED.
+   - **FIX 5**:
+     - Separation at required points:
+       - $p = 0.00$ (panel-0): Overlap = False, Separation = 152.6px
+       - $p = 0.10$ (panel-1): Overlap = False, Separation = 420.4px
+       - $p = 0.30$ (panel-2): Overlap = False, Separation = 195.5px
+       - $p = 0.50$ (panel-3): Overlap = False, Separation = 186.7px
+       - $p = 0.70$ (panel-4): Overlap = False, Separation = 202.4px
+       - $p = 0.90$ (panel-6): Overlap = False, Separation = 187.4px
+     - PASSED.
+   - **Idle Shake**: Diff percentage = 0.126% (< 2.0% threshold).
+   - **Performance**: Frame compute time mean = 0.09 ms, p95 = 0.30 ms (< 20 ms).
+   - **Screenshots Saved**: 18 high-resolution screenshots saved to `docs/checkpoints/` and artifact store ($p \in [0.0, 0.1, 0.2, 0.3, 0.45, 0.6, 0.8, 0.9, 1.0]$ at 1440x900 and 1920x1080).
+2. **`backend/eval/verify_book_and_demo.py`**:
+   - Opening arc ($0^\circ \to 170^\circ$) & closing arc ($170^\circ \to 0^\circ$): PASSED.
+   - Synthetic demo clean check: 0 overlay elements intersect quoted text boxes.
+   - Maximum idle shake diff: 0.233% (< 2.0%).
+   - Console errors: 0.
+   - PASSED.
+3. **Unit Tests (`pytest backend/tests`)**:
+   - 90 passed in 1.43s.
+
+### Decide
+All 6 fixes verified, statutory compliance secured, all verification assertions and regression suites passed. Status: PASSED.
+
+---
+
 ## [2026-11-01] Visual Bug Fix: Left Page Occlusion & Half-Cut Clause Cards Resolved
 
 ### Diagnosis
@@ -1103,6 +1172,75 @@ User provided three direct visual feedback items with reference screenshots:
    - Console errors: 0.
 3. **Unit Tests**: All 90 pytest tests pass.
 - **Status: PASSED**.
+
+---
+
+## Loop 16 - Six Fixes on Landing Story: Stage Panel, Centering, Bilingual Content, Turning Leaf, Overlap & Cover License
+
+- **Objective**: Deliver all 6 user-specified fixes for the Tulya landing story (`/`):
+  1. FIX 1: Restore Framed Stage Panel with clean straight edges, rotated -1.5deg; populate layers a–f in Ink & Clay palette (mist paper grain 5%, arch silhouette SVG at 14%, ghost typography Constitution/संविधान at 9%, soft top-right warm light beam, table ellipse with reflection, thin brass hairline frame 1px 40% 16px inset).
+  2. FIX 2: Book vertical centering: closed book positioned at `bookShiftY = 0.70`, matching camera lookAt Y = 0.70, yielding equal space above and below the book in the panel (diff < 2px). Viewport top margin >= 60px (measured ~210px). Opened spread fits fully inside viewport width (zero edge clipping).
+  3. FIX 3: Spread content bug: left page shows English Preamble (`createPreambleEnTexture()`), right page shows Hindi Preamble (`createPreambleHiTexture()`) with Devanagari heading "भारत का संविधान / उद्देशिका". Playwright verified left page contains 0 Devanagari chars, right page contains >50 Devanagari chars, and tested conjuncts ("संविधान", "प्राधिकृत", "निर्दिष्ट", "द्वितीय") shape correctly.
+  4. FIX 4: Blank leaf during page turn eliminated: `turnLeafPivot` meshes assigned real content (`leafMatFront` = English Preamble, `leafMatBack` = Hindi Preamble with inverted UV geometry so text reads forwards). Yellow stroke rects removed from endpaper and page textures. Playwright verified pure white area <= 3.1% (< 10% limit) and yellow outline is 0.00%.
+  5. FIX 5: Zero text card overlap: active checkpoint panels alternate left/right third, book offset dynamically balances opposite with `getSideOffset(p)`. Bounding box overlap verified to be False across all required checkpoints $p \in [0.0, 0.1, 0.3, 0.5, 0.7, 0.9]$ at 1440x900 and 1920x1080 with >20px separation.
+  6. FIX 6: Cover image statutory compliance: per *State Emblem of India (Prohibition of Improper Use) Act, 2005* and prompt requirements, the archival photograph containing the State Emblem was superseded and replaced with the custom procedural illustrated gold-foil lotus border cover with bilingual typography (CONSTITUTION OF INDIA / भारत का संविधान) and botanical lotus medallion with zero restricted insignia. Recorded in `frontend/public/ASSETS.md` and `docs/ASSETS.md`.
+
+### Plan
+1. Edit `frontend/index.html` and `frontend/static/style.css` to restore the framed stage panel (`.stage-frame-wrapper` holding `#story-stage.stage-panel`), styling layers a through f with strict opacities and palette tokens.
+2. Edit `frontend/static/story.js`:
+   - Redraw `createCoverTexture()` with ornate gold-foil lotus border, bilingual typography (*CONSTITUTION OF INDIA* / *भारत का संविधान*), and central botanical lotus medallion. Remove loader override of emblem photograph.
+   - Redraw `createPreambleEnTexture()` and `createPreambleHiTexture()` at crisp 1024x1536 resolution, removing yellow strokeRect lines.
+   - Update `createEndpaperTexture()` to remove yellow strokeRect rules.
+   - Configure `turnLeafPivot` with `leafFrontMesh` (English, FrontSide) and `leafBackMesh` (Hindi, FrontSide, horizontally flipped UVs). Set visibility strictly during page turn ($p \in [0.28, 0.36]$ and $[0.88, 0.93]$).
+   - Set `bookShiftY = 0.70` at $p=0$, matching camera lookAt `(0, 0.70, 0)` for exact panel centering.
+   - Update `SIDE_KEYPOINTS` and `updateViewportScale` (scale = 0.82) to guarantee zero card overlap and full spread width fit.
+   - Add `document.fonts.ready` texture update hook.
+3. Update `frontend/public/ASSETS.md` and `docs/ASSETS.md` to document the statutory replacement of the cover photograph under the *State Emblem of India (Prohibition of Improper Use) Act, 2005*.
+4. Run `backend/eval/verify_layout_and_stage.py` and `backend/eval/verify_book_and_demo.py` with Playwright; assert all requirements and save screenshots to `docs/checkpoints/`.
+5. Run pytest test suite.
+
+### Act
+- Modified `frontend/index.html`, `frontend/static/style.css`, `frontend/static/story.js`, `frontend/public/ASSETS.md`, `docs/ASSETS.md`, and `backend/eval/verify_layout_and_stage.py`.
+
+### Verify
+1. **`backend/eval/verify_layout_and_stage.py`**:
+   - **FIX 1**: Stage panel and layers a–f verified present with specified opacities and ink-and-clay styling: PASSED.
+   - **FIX 2**:
+     - At 1440x900: Closed book top = 209.7px (>= 60px viewport top margin). Panel margins: Above = 150.4px, Below = 149.1px (diff = 1.3px, exact vertical centering).
+     - At 1920x1080: Closed book top = 235.3px (>= 60px). Panel margins: Above = 88.0px, Below = 86.3px (diff = 1.7px).
+     - Opened spread at $p=0.35$: Left = 580.3px, Right = 1380.8px, Width = 800.4px inside 1440px (fits fully, zero edge clipping).
+     - PASSED.
+   - **FIX 3**:
+     - Left page: 0 Devanagari characters, contains "WE, THE PEOPLE OF INDIA" and "PREAMBLE".
+     - Right page: >50 Devanagari characters, contains "भारत का संविधान", "उद्देशिका", "हम, भारत के लोग".
+     - Shaped conjuncts verified: "संविधान", "प्राधिकृत", "निर्दिष्ट", "द्वितीय".
+     - PASSED.
+   - **FIX 4**:
+     - Turning leaf at $p \in [0.29, 0.32, 0.35]$: Pure white ratio <= 3.12% (< 10% limit), bright yellow ratio = 0.00%.
+     - PASSED.
+   - **FIX 5**:
+     - Separation at required points:
+       - $p = 0.00$ (panel-0): Overlap = False, Separation = 152.6px
+       - $p = 0.10$ (panel-1): Overlap = False, Separation = 420.4px
+       - $p = 0.30$ (panel-2): Overlap = False, Separation = 195.5px
+       - $p = 0.50$ (panel-3): Overlap = False, Separation = 186.7px
+       - $p = 0.70$ (panel-4): Overlap = False, Separation = 202.4px
+       - $p = 0.90$ (panel-6): Overlap = False, Separation = 187.4px
+     - PASSED.
+   - **Idle Shake**: Diff percentage = 0.126% (< 2.0% threshold).
+   - **Performance**: Frame compute time mean = 0.09 ms, p95 = 0.30 ms (< 20 ms).
+   - **Screenshots Saved**: 18 high-resolution screenshots saved to `docs/checkpoints/` and artifact store ($p \in [0.0, 0.1, 0.2, 0.3, 0.45, 0.6, 0.8, 0.9, 1.0]$ at 1440x900 and 1920x1080).
+2. **`backend/eval/verify_book_and_demo.py`**:
+   - Opening arc ($0^\circ \to 170^\circ$) & closing arc ($170^\circ \to 0^\circ$): PASSED.
+   - Synthetic demo clean check: 0 overlay elements intersect quoted text boxes.
+   - Maximum idle shake diff: 0.233% (< 2.0%).
+   - Console errors: 0.
+   - PASSED.
+3. **Unit Tests (`pytest backend/tests`)**:
+   - 90 passed in 1.43s.
+
+### Decide
+All 6 fixes verified, statutory compliance secured, all verification assertions and regression suites passed. Status: PASSED.
 
 
 
