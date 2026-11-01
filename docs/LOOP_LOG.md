@@ -1242,6 +1242,58 @@ All 6 fixes verified, statutory compliance secured, all verification assertions 
 ### Decide
 All 6 fixes verified, statutory compliance secured, all verification assertions and regression suites passed. Status: PASSED.
 
+---
+
+## Loop 17 - Fixed Center Book Position & Bottom-Centered Narrative Cards
+
+- **Objective**: Fix the book position so it stays strictly centered at all times without changing sides or swaying left/right (`"Don't change book side fix it at center"`), with the narrative cards positioned at the bottom center matching the user's reference layout. Maintain high-resolution book cover photograph from user upload (`constitution_cover.webp` / `constitution_cover.jpg`), 60fps smooth scrolling, and strict Ink & Clay visual fidelity.
+
+### Plan
+1. **Frontend Styles (`frontend/static/style.css`)**:
+   - Update `.story-checkpoint-panel` to dock cleanly at bottom center (`bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(8px); width: min(90vw, 560px)` on mobile, `bottom: 2rem; width: min(85vw, 580px)` on desktop).
+   - Remove left/right side offset overrides (`.panel-side-left`, `.panel-side-right`) so all checkpoint cards sit at bottom center.
+2. **Frontend 3D Scene (`frontend/static/story.js`)**:
+   - Update `getSideOffset(p)` to return `0.0` unconditionally so the book never shifts horizontally to the left or right side.
+   - Set closed book initial position and `bookShiftX = -0.905` when closed, exactly balancing the spine hinge and perspective tilt so the book visual midpoint is at $X = 720.0$px (diff $= 0.1$px from viewport center).
+   - Set open spread `bookShiftX = 0.0` when open ($p \in [0.28, 0.93]$), which is symmetrically centered around the spine at $X = 720.0$px (diff $= 0.0$px).
+   - Interpolate `bookShiftX` dynamically based on the front cover's projected extent during opening ($p \in [0.08, 0.28]$) and closing ($p \in [0.93, 1.00]$), maintaining horizontal centering within $5.7$px throughout the motion.
+   - Maintain vertical centering in stage panel: closed book top margin $\ge 60$px, panel top margin $=$ bottom margin ($150.4$px vs $149.1$px, diff $= 1.3$px).
+3. **Verification Script (`backend/eval/verify_layout_and_stage.py`)**:
+   - Update FIX 5 assertions to verify that `sideOffset == 0.0`, book horizontal midpoint diff from viewport center is $\le 15$px across all checkpoints ($p = 0.0, 0.1, 0.3, 0.5, 0.7, 0.9$), and card center diff is $\le 15$px.
+   - Run verification across both 1440x900 and 1920x1080 viewports.
+   - Save updated checkpoint screenshots to `docs/checkpoints/`.
+
+### Act
+- Modified `frontend/static/style.css`, `frontend/static/story.js`, and `backend/eval/verify_layout_and_stage.py`.
+
+### Verify
+1. **`backend/eval/verify_layout_and_stage.py`**:
+   - **FIX 1 (Stage Panel & Layers a–f)**: PASSED.
+   - **FIX 2 (Book Position & Vertical Centering)**:
+     - 1440x900: Closed book top = 209.7px ($\ge 60$px). Panel margins: Above = 150.4px, Below = 149.1px (diff = 1.3px). Opened spread width = 800.4px, fits fully inside viewport width (zero edge clipping). PASSED.
+     - 1920x1080: Closed book top = 235.3px ($\ge 60$px). Panel margins: Above = 88.0px, Below = 86.3px (diff = 1.7px). Spread fits fully inside 1920px width. PASSED.
+   - **FIX 3 (Spread Content & Devanagari Conjuncts)**: Pure English left page, pure Hindi right page with verified conjuncts ('संविधान', 'प्राधिकृत', 'निर्दिष्ट', 'द्वितीय'). PASSED.
+   - **FIX 4 (Turning Leaf Real Parchment Faces)**: Pure white ratio $\le 3.62\%$ ($< 10\%$), bright yellow debug ratio $= 0.00\%$. PASSED.
+   - **FIX 5 (Strict Fixed Center Book & Bottom Center Cards)**:
+     - $p = 0.00$ (panel-0): bookCenter = 720.1px (diff = 0.1px), cardCenter = 720.0px, sideOffset = 0.
+     - $p = 0.10$ (panel-1): bookCenter = 720.1px (diff = 0.1px), cardCenter = 720.0px, sideOffset = 0.
+     - $p = 0.30$ (panel-2): bookCenter = 720.0px (diff = 0.0px), cardCenter = 720.0px, sideOffset = 0.
+     - $p = 0.50$ (panel-3): bookCenter = 720.0px (diff = 0.0px), cardCenter = 720.0px, sideOffset = 0.
+     - $p = 0.70$ (panel-4): bookCenter = 720.0px (diff = 0.0px), cardCenter = 720.0px, sideOffset = 0.
+     - $p = 0.90$ (panel-6): bookCenter = 720.0px (diff = 0.0px), cardCenter = 720.0px, sideOffset = 0.
+     - At 1920x1080: bookCenter diff $\le 10.7$px across all points, cardCenter = 960.0px (exact center).
+     - PASSED.
+   - **Idle Shake**: Diff percentage = 0.275% ($< 2.0\%$ threshold). PASSED.
+   - **Performance**: Frame compute time mean = 0.09 ms, p95 = 0.20 ms ($< 20$ ms). PASSED.
+   - **Screenshots**: 18 high-resolution screenshots saved to `docs/checkpoints/` and artifact store.
+2. **Regression Check**:
+   - Backend pytest suite: 90 passed.
+   - Zero console errors during headless test.
+
+### Decide
+The book is now strictly fixed at the center across all scroll stages with bottom-centered checkpoint cards, matching the approved layout and reference screenshots. Status: PASSED.
+
+
 
 
 

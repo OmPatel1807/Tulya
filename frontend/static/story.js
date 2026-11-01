@@ -642,7 +642,7 @@
 
   // --- 3D Procedural Book Hierarchy (Hardcover on Table with Spine Hinge) ---
   const bookGroup = new THREE.Group();
-  bookGroup.position.set(-1.25, 0.70, 0); // Centered vertically in panel with equal space above/below (FIX 2)
+  bookGroup.position.set(-0.905, 0.70, 0); // Centered vertically in panel with equal space above/below (FIX 2)
   scene.add(bookGroup);
 
   const BOOK_W = 2.4;
@@ -1065,17 +1065,17 @@
   function calcBookState(p) {
     p = Math.max(0.0, Math.min(1.0, p));
 
-    // 1. Front Cover Angle (0 to 170 deg), Flex, and Centering Shift (Fix 2 & Centering)
+    // 1. Front Cover Angle (0 to 170 deg), Flex, and Centering Shift (Fixed Center Layout)
     let coverAngle = 0.0;
     let coverFlex = 0.0;
-    let bookShiftX = -1.25;
+    let bookShiftX = -0.905;
     let bookShiftY = 0.70;
     let coverPivotZ = BOOK_T / 2;
 
     if (p < 0.08) {
       coverAngle = 0.0;
       coverFlex = 0.0;
-      bookShiftX = -1.25;
+      bookShiftX = -0.905;
       bookShiftY = 0.70;
       coverPivotZ = BOOK_T / 2;
     } else if (p >= 0.08 && p < 0.28) {
@@ -1089,7 +1089,9 @@
       }
       coverAngle = ang;
       coverFlex = Math.sin(Math.min(Math.PI, (coverAngle / 170.0) * Math.PI));
-      bookShiftX = -1.25 * (1.0 - eu);
+      const wLeft = ang > 90 ? -2.4 * Math.sin((ang - 90) * Math.PI / 180.0) : 0.0;
+      const localCenter = (wLeft + 2.4) / 2;
+      bookShiftX = -0.905 * (localCenter / 1.2);
       bookShiftY = 0.70 - 0.12 * eu;
       coverPivotZ = (BOOK_T / 2) * (1.0 - eu) + (-BOOK_T / 2) * eu;
     } else if (p >= 0.28 && p < 0.93) {
@@ -1108,7 +1110,9 @@
       }
       coverAngle = ang;
       coverFlex = Math.sin(Math.min(Math.PI, (coverAngle / 170.0) * Math.PI));
-      bookShiftX = -1.25 * (1.0 - ev);
+      const wLeft = ang > 90 ? -2.4 * Math.sin((ang - 90) * Math.PI / 180.0) : 0.0;
+      const localCenter = (wLeft + 2.4) / 2;
+      bookShiftX = -0.905 * (localCenter / 1.2);
       bookShiftY = 0.58 + 0.12 * (1.0 - ev);
       coverPivotZ = (BOOK_T / 2) * (1.0 - ev) + (-BOOK_T / 2) * ev;
     }
@@ -1293,41 +1297,8 @@
     return targetScale;
   }
 
-  // FIX 5: Desktop Side Offset (Book balances opposite side card with zero bounding box overlap)
-  const SIDE_KEYPOINTS = [
-    { p: 0.00, offset:  0.40 },
-    { p: 0.06, offset:  0.40 },
-    { p: 0.09, offset: -1.25 },
-    { p: 0.26, offset: -1.25 },
-    { p: 0.29, offset:  1.25 },
-    { p: 0.40, offset:  1.25 },
-    { p: 0.43, offset: -1.25 },
-    { p: 0.57, offset: -1.25 },
-    { p: 0.60, offset:  1.25 },
-    { p: 0.72, offset:  1.25 },
-    { p: 0.75, offset: -1.25 },
-    { p: 0.87, offset: -1.25 },
-    { p: 0.89, offset:  1.25 },
-    { p: 0.93, offset:  1.25 },
-    { p: 0.96, offset: -0.35 },
-    { p: 1.00, offset: -0.35 }
-  ];
-
+  // Fixed Center Book Layout: Book visual center stays strictly centered at X = 0
   function getSideOffset(p) {
-    if (window.innerWidth < 1025) return 0.0;
-    if (p <= SIDE_KEYPOINTS[0].p) return SIDE_KEYPOINTS[0].offset;
-    if (p >= SIDE_KEYPOINTS[SIDE_KEYPOINTS.length - 1].p) {
-      return SIDE_KEYPOINTS[SIDE_KEYPOINTS.length - 1].offset;
-    }
-    for (let i = 0; i < SIDE_KEYPOINTS.length - 1; i++) {
-      const k0 = SIDE_KEYPOINTS[i];
-      const k1 = SIDE_KEYPOINTS[i + 1];
-      if (p >= k0.p && p <= k1.p) {
-        const u = (p - k0.p) / (k1.p - k0.p);
-        const eu = easeInOutCubic(u);
-        return k0.offset + (k1.offset - k0.offset) * eu;
-      }
-    }
     return 0.0;
   }
 

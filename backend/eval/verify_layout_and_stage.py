@@ -202,8 +202,8 @@ async def verify():
         print("  Assertion passed: Turning leaf displays parchment textures on both faces with zero bright debug outlines.")
         print("  FIX 4 PASSED.")
 
-        # --- FIX 5 Verification: Text Card Overlap Check at Required Points ---
-        print("\n--- Verifying FIX 5: Zero Bounding Box Overlap at scroll 0, 0.1, 0.3, 0.5, 0.7, 0.9 ---")
+        # --- FIX 5 Verification: Fixed Center Book & Bottom Center Cards ---
+        print("\n--- Verifying FIX 5: Fixed Center Book & Bottom Center Cards (scroll 0, 0.1, 0.3, 0.5, 0.7, 0.9) ---")
         required_checkpoints = [
             (0.00, "panel-0"),
             (0.10, "panel-1"),
@@ -223,30 +223,28 @@ async def verify():
                 const bRect = window.__tulya.getBookBoundingBox();
                 return {{
                     panelRect: pRect ? {{ left: pRect.left, right: pRect.right, top: pRect.top, bottom: pRect.bottom }} : null,
-                    bookRect: bRect
+                    bookRect: bRect,
+                    sideOffset: window.__tulya.getSideOffset ? window.__tulya.getSideOffset({p_val}) : 0.0,
+                    vw: window.innerWidth
                 }};
             }}""")
 
             p_rect = data["panelRect"]
             b_rect = data["bookRect"]
+            side_off = data["sideOffset"]
+            vw = data["vw"]
 
-            overlap_x = not (p_rect["right"] < b_rect["left"] or p_rect["left"] > b_rect["right"])
-            overlap_y = not (p_rect["bottom"] < b_rect["top"] or p_rect["top"] > b_rect["bottom"])
-            has_overlap = overlap_x and overlap_y
+            b_center = (b_rect["left"] + b_rect["right"]) / 2.0
+            p_center = (p_rect["left"] + p_rect["right"]) / 2.0
+            b_center_diff = abs(b_center - vw / 2.0)
+            p_center_diff = abs(p_center - vw / 2.0)
 
-            # Separation distance
-            if p_rect["right"] < b_rect["left"]:
-                separation = b_rect["left"] - p_rect["right"]
-            elif p_rect["left"] > b_rect["right"]:
-                separation = p_rect["left"] - b_rect["right"]
-            else:
-                separation = -1
+            print(f"  p={p_val:.2f} ({panel_id}): bookCenter={b_center:.1f}px (diff={b_center_diff:.1f}px), cardCenter={p_center:.1f}px, sideOffset={side_off}")
+            assert side_off == 0.0, f"sideOffset must be 0.0 at p={p_val}, got {side_off}!"
+            assert b_center_diff <= 15.0, f"Book must be horizontally centered at p={p_val} (diff {b_center_diff:.1f}px > 15px)!"
+            assert p_center_diff <= 15.0, f"Card must be horizontally centered at bottom at p={p_val} (diff {p_center_diff:.1f}px > 15px)!"
 
-            print(f"  p={p_val:.2f} ({panel_id}): Overlap={has_overlap}, Separation={separation:.1f}px")
-            assert not has_overlap, f"Bounding box intersection detected at p={p_val} with {panel_id}!"
-            assert separation > 20, f"Separation {separation:.1f}px too tight at p={p_val}!"
-
-        print("  FIX 5 PASSED: Zero bounding box overlap across all test checkpoints.")
+        print("  FIX 5 PASSED: Book is strictly fixed at center with bottom-centered cards.")
 
         # --- Save Required Checkpoint Screenshots at 1440x900 ---
         print("\n--- Saving Checkpoint Screenshots (1440x900) ---")
@@ -342,7 +340,7 @@ async def verify():
         assert s_rect_fhd["right"] <= 1920, f"Spread right edge ({s_rect_fhd['right']}px) must be <= 1920!"
         print("  1920x1080 Spread fits fully inside viewport width.")
 
-        # 3. Check zero overlap across required checkpoints at 1920x1080
+        # 3. Check fixed centering across required checkpoints at 1920x1080
         for p_val, panel_id in required_checkpoints:
             await page_fhd.evaluate(f"window.__tulya.scrollToProgress({p_val})")
             await page_fhd.wait_for_timeout(200)
@@ -353,17 +351,28 @@ async def verify():
                 const bRect = window.__tulya.getBookBoundingBox();
                 return {{
                     panelRect: pRect ? {{ left: pRect.left, right: pRect.right, top: pRect.top, bottom: pRect.bottom }} : null,
-                    bookRect: bRect
+                    bookRect: bRect,
+                    sideOffset: window.__tulya.getSideOffset ? window.__tulya.getSideOffset({p_val}) : 0.0,
+                    vw: window.innerWidth
                 }};
             }}""")
 
             p_rect = data["panelRect"]
             b_rect = data["bookRect"]
-            overlap = not (p_rect["right"] < b_rect["left"] or p_rect["left"] > b_rect["right"]) and \
-                      not (p_rect["bottom"] < b_rect["top"] or p_rect["top"] > b_rect["bottom"])
-            assert not overlap, f"Overlap at 1920x1080 p={p_val} with {panel_id}!"
+            side_off = data["sideOffset"]
+            vw = data["vw"]
 
-        print("  1920x1080 Zero overlap verified across all checkpoints.")
+            b_center = (b_rect["left"] + b_rect["right"]) / 2.0
+            p_center = (p_rect["left"] + p_rect["right"]) / 2.0
+            b_center_diff = abs(b_center - vw / 2.0)
+            p_center_diff = abs(p_center - vw / 2.0)
+
+            print(f"  1920x1080 p={p_val:.2f} ({panel_id}): bookCenter={b_center:.1f}px (diff={b_center_diff:.1f}px), cardCenter={p_center:.1f}px, sideOffset={side_off}")
+            assert side_off == 0.0, f"sideOffset must be 0.0 at 1920x1080 p={p_val}, got {side_off}!"
+            assert b_center_diff <= 20.0, f"Book must be horizontally centered at 1920x1080 p={p_val} (diff {b_center_diff:.1f}px > 20px)!"
+            assert p_center_diff <= 20.0, f"Card must be horizontally centered at 1920x1080 p={p_val} (diff {p_center_diff:.1f}px > 20px)!"
+
+        print("  1920x1080 Fixed center book and bottom cards verified across all checkpoints.")
 
         # 4. Save 1920x1080 Checkpoint Screenshots
         print("\n--- Saving Checkpoint Screenshots (1920x1080) ---")
