@@ -1,4 +1,28 @@
+# Python
 __pycache__/
-*.pyc
-.DS_Store
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
 .env
+.venv/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Builds & Distributions
+dist/
+build/
+*.egg-info/
+
+# OS and Editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo

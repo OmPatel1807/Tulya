@@ -1811,7 +1811,8 @@
   // --- Real Stats Population (R4: Never Hardcoded) ---
   async function loadLiveStats() {
     try {
-      const res = await fetch('/samples');
+      const apiBase = window.TULYA_API_BASE || '';
+      const res = await fetch(`${apiBase}/api/samples`);
       if (res.ok) {
         const data = await res.json();
         const samples = data.samples || [];

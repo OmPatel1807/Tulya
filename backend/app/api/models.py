@@ -55,11 +55,15 @@ class AuditReportResponse(BaseModel):
     title: str
     status: JobStatus = JobStatus.COMPLETED
     fallback_used: bool = False
+    withheld: bool = False
+    withheld_message: Optional[str] = None
+    unreliable_pages: List[int] = Field(default_factory=list)
     summary: Dict[str, Any]
     findings: List[AuditFinding]
     aligned_pairs: List[Dict[str, Any]] = Field(default_factory=list)
     disclaimer: str = LEGAL_DISCLAIMER
     metrics: Dict[str, Any] = Field(default_factory=dict)
+
 
 
 class SampleItem(BaseModel):

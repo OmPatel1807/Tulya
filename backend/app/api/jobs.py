@@ -20,7 +20,8 @@ from backend.app.api.models import (
     AuditReportResponse,
     LEGAL_DISCLAIMER
 )
-from backend.app.ingest.script_check import check_script, LegacyFontError
+from backend.app.ingest.script_check import check_script, hindi_word_validity, LegacyFontError
+
 from backend.app.ingest.clean import clean_page_text
 from backend.app.ingest.pdf_loader import extract_text
 from backend.app.ingest.split_language import process_document_pair
@@ -148,9 +149,21 @@ class JobManager:
             if en_total_len < 10 or hi_total_len < 10:
                 raise ValueError("PDF text extraction produced insufficient text. Document may be an un-OCRed scanned image.")
 
-            # Script Check for Hindi
+            # Script Check and Lexical Quality Gate for Hindi
+            unreliable_pages = []
             for p in hi_pages:
                 check_script(p.get("text", ""), expected_lang="hi", strict=True)
+                q_res = hindi_word_validity(p.get("text", ""))
+                if q_res.get("verdict") != "ok":
+                    unreliable_pages.append(p.get("page_no", 1))
+
+            # Document is considered unreliable if more than 20% of Hindi pages or >= 3 pages fail
+            doc_withheld = (
+                len(unreliable_pages) > 0 and (
+                    (len(unreliable_pages) / max(1, len(hi_pages))) > 0.20
+                    or len(unreliable_pages) >= 3
+                )
+            )
 
             # --- Stage 2: SEGMENTATION (30%) ---
             self._update_stage(job_id, JobStage.SEGMENTATION, 30.0, "Constructing hierarchical statutory clause trees...")
@@ -179,37 +192,66 @@ class JobManager:
             aligned_pair_records: List[Dict[str, Any]] = []
 
             total_pairs = len(align_res.pairs)
-            for idx, p in enumerate(align_res.pairs):
-                # Update progress smoothly through facts and semantic
-                if total_pairs > 0 and idx % max(1, total_pairs // 5) == 0:
-                    pct = 70.0 + (idx / total_pairs) * 20.0
-                    stage_curr = JobStage.FACTS if pct < 80.0 else JobStage.SEMANTIC
-                    msg = "Extracting factual differences..." if stage_curr == JobStage.FACTS else "Evaluating grounded semantic consistency..."
-                    self._update_stage(job_id, stage_curr, pct, msg, fallback_used=fallback_used)
 
-                # Execute clause audit
-                c_id = f"{act_slug}_{idx+1:03d}"
-                audit_res = runner.audit_clause_pair(
-                    case_id=c_id,
-                    en_text=p.en_text,
-                    hi_text=p.hi_text,
-                    en_paths=p.en_paths,
-                    hi_paths=p.hi_paths
+            if doc_withheld:
+                # Withhold findings when Hindi text extraction is unreliable
+                self._update_stage(
+                    job_id, JobStage.MERGE, 90.0,
+                    "Hindi text extraction is unreliable for this document; withholding audit findings.",
+                    fallback_used=fallback_used
                 )
+                for idx, p in enumerate(align_res.pairs):
+                    aligned_pair_records.append({
+                        "pair_index": idx,
+                        "en_paths": p.en_paths,
+                        "hi_paths": p.hi_paths,
+                        "en_text": p.en_text,
+                        "hi_text": p.hi_text,
+                        "match_type": p.match_type,
+                        "similarity": round(p.similarity, 4),
+                        "is_omission": p.is_omission,
+                        "findings_count": 0,
+                        "finding_ids": []
+                    })
+            else:
+                for idx, p in enumerate(align_res.pairs):
+                    # Update progress smoothly through facts and semantic
+                    if total_pairs > 0 and idx % max(1, total_pairs // 5) == 0:
+                        pct = 70.0 + (idx / total_pairs) * 20.0
+                        stage_curr = JobStage.FACTS if pct < 80.0 else JobStage.SEMANTIC
+                        msg = "Extracting factual differences..." if stage_curr == JobStage.FACTS else "Evaluating grounded semantic consistency..."
+                        self._update_stage(job_id, stage_curr, pct, msg, fallback_used=fallback_used)
 
-                all_findings.extend(audit_res.findings)
-                aligned_pair_records.append({
-                    "pair_index": idx,
-                    "en_paths": p.en_paths,
-                    "hi_paths": p.hi_paths,
-                    "en_text": p.en_text,
-                    "hi_text": p.hi_text,
-                    "match_type": p.match_type,
-                    "similarity": round(p.similarity, 4),
-                    "is_omission": p.is_omission,
-                    "findings_count": len(audit_res.findings),
-                    "finding_ids": [f.finding_id for f in audit_res.findings]
-                })
+                    # Execute clause audit
+                    c_id = f"{act_slug}_{idx+1:03d}"
+                    audit_res = runner.audit_clause_pair(
+                        case_id=c_id,
+                        en_text=p.en_text,
+                        hi_text=p.hi_text,
+                        en_paths=p.en_paths,
+                        hi_paths=p.hi_paths
+                    )
+
+                    # Filter out any false "absent in Hindi" omission findings if page was unreliable
+                    pair_findings = []
+                    for f in audit_res.findings:
+                        if unreliable_pages and f.category == AuditCategory.OMISSION and "Hindi" in (f.explanation or ""):
+                            continue
+                        pair_findings.append(f)
+
+                    all_findings.extend(pair_findings)
+                    aligned_pair_records.append({
+                        "pair_index": idx,
+                        "en_paths": p.en_paths,
+                        "hi_paths": p.hi_paths,
+                        "en_text": p.en_text,
+                        "hi_text": p.hi_text,
+                        "match_type": p.match_type,
+                        "similarity": round(p.similarity, 4),
+                        "is_omission": p.is_omission,
+                        "findings_count": len(pair_findings),
+                        "finding_ids": [f.finding_id for f in pair_findings]
+                    })
 
             # --- Stage 6: MERGE & REPORT GENERATION (95%) ---
             self._update_stage(job_id, JobStage.MERGE, 95.0, "Consolidating findings and compiling audit scorecard...", fallback_used=fallback_used)
@@ -245,7 +287,10 @@ class JobManager:
                 "by_category": dict(by_category),
                 "by_severity": dict(by_severity),
                 "by_source": by_source,
-                "elapsed_seconds": round(total_elapsed, 2)
+                "elapsed_seconds": round(total_elapsed, 2),
+                "withheld": doc_withheld,
+                "withheld_message": "Hindi text could not be extracted reliably for this document; results are withheld." if doc_withheld else None,
+                "unreliable_pages": unreliable_pages
             }
 
             report = AuditReportResponse(
@@ -254,6 +299,9 @@ class JobManager:
                 title=display_title,
                 status=JobStatus.COMPLETED,
                 fallback_used=fallback_used,
+                withheld=doc_withheld,
+                withheld_message="Hindi text could not be extracted reliably for this document; results are withheld." if doc_withheld else None,
+                unreliable_pages=unreliable_pages,
                 summary=summary,
                 findings=all_findings,
                 aligned_pairs=aligned_pair_records,
@@ -269,14 +317,19 @@ class JobManager:
                 self._reports[job_id] = report
 
             # --- Stage 7: COMPLETE (100%) ---
+            complete_msg = (
+                "Hindi text could not be extracted reliably for this document; results are withheld."
+                if doc_withheld else "Audit successfully completed."
+            )
             self._update_stage(
                 job_id=job_id,
                 stage=JobStage.COMPLETE,
                 percent=100.0,
-                message="Audit successfully completed.",
+                message=complete_msg,
                 status=JobStatus.COMPLETED,
                 fallback_used=fallback_used
             )
+
 
         except LegacyFontError as le:
             error_msg = (

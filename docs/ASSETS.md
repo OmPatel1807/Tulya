@@ -83,7 +83,25 @@ All assets are licensed under **Creative Commons CC0 1.0 Universal (Public Domai
 
 ---
 
-## 5. Compliance & Verification
+## 6. Hindi Lexical Quality Wordlist (Dictionary Quality Gate)
+
+| Property | Details |
+| :--- | :--- |
+| **Asset Name** | LibreOffice / GNU Aspell Hindi Dictionary (`hi_IN.dic` & statutory legal terms) |
+| **Asset Type** | Compressed Lexical Wordlist (`hindi_wordlist.txt.gz`) |
+| **Word Count** | 195,237 validated Devanagari Hindi root words, inflected forms, and legal terminology |
+| **Upstream Sources** | • GNU Aspell 0.60 Hindi Dictionary (Janabhaaratii Team, NCST)<br>• LibreOffice Indian Language Dictionaries (`hi_IN`) |
+| **Direct Source URL** | https://raw.githubusercontent.com/LibreOffice/dictionaries/master/hi_IN/hi_IN.dic |
+| **Local Path** | `backend/app/ingest/assets/hindi_wordlist.txt.gz` (763,375 bytes, ~745 KB gzip) |
+| **Authors / Maintainers** | The Janabhaaratii Team (जनभारती), Laszlo Nemeth, LibreOffice contributors |
+| **License** | GNU General Public License (GPL) / LGPL / MPL Tri-license |
+| **Date Bundled** | 2026-11-01 |
+| **Usage in Tulya** | Powers `hindi_word_validity(text)` quality gate in ingestion stage. Scores page lexical validity against authentic Devanagari lexicon, penalizing U+25CC placeholders, orphan matras, and illicit glyph substitutions. |
+
+---
+
+## 7. Compliance & Verification
+
 
 - **License Verification**: All upstream asset providers (Poly Haven and ambientCG) explicitly license all assets under CC0 1.0 Universal.
 - **Offline Self-Containment**: Zero external CDN requests. All files are bundled directly in the local repository under `frontend/public/assets/`.

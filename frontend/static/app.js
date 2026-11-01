@@ -8,6 +8,7 @@
   'use strict';
 
   // --- State ---
+  const API_BASE = window.TULYA_API_BASE || '';
   let currentJobId = null;
   let currentReport = null;
   let currentFilter = 'ALL';
@@ -131,7 +132,7 @@
   // --- Samples Catalog ---
   async function loadSamples() {
     try {
-      const res = await fetch('/api/samples');
+      const res = await fetch(`${API_BASE}/api/samples`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       sampleSelect.innerHTML = '';
@@ -158,7 +159,7 @@
     updateProgressUI(10, 'Initializing pipeline job...');
 
     try {
-      const res = await fetch(`/api/samples/${sampleId}/analyze?force_deterministic=true`, {
+      const res = await fetch(`${API_BASE}/api/samples/${sampleId}/analyze?force_deterministic=true`, {
         method: 'POST'
       });
       if (!res.ok) throw new Error(`Failed to start job: ${res.statusText}`);
@@ -194,7 +195,7 @@
     formData.append('force_deterministic', 'true');
 
     try {
-      const res = await fetch('/api/analyze', {
+      const res = await fetch(`${API_BASE}/api/analyze`, {
         method: 'POST',
         body: formData
       });
@@ -222,7 +223,7 @@
 
     while (Date.now() - startTime < maxPollMs) {
       try {
-        const res = await fetch(`/api/jobs/${jobId}`);
+        const res = await fetch(`${API_BASE}/api/jobs/${jobId}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const p = await res.json();
 
@@ -264,7 +265,7 @@
   // --- Load and Render Job Report ---
   async function loadJobReport(jobId) {
     try {
-      const res = await fetch(`/api/jobs/${jobId}/report`);
+      const res = await fetch(`${API_BASE}/api/jobs/${jobId}/report`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       currentReport = await res.json();
 
@@ -354,7 +355,23 @@
     if (!findingsListEl || !currentReport) return;
 
     findingsListEl.innerHTML = '';
+
+    // Check if audit results are withheld due to unreliable Hindi extraction
+    if (currentReport.withheld) {
+      const banner = document.createElement('div');
+      banner.className = 'withheld-banner';
+      banner.style.cssText = 'background: #FFF3CD; color: #856404; padding: 1.25rem 1.5rem; border-radius: 8px; border: 1px solid #FFEEBA; margin-bottom: 1rem; font-size: 0.92rem; line-height: 1.5; box-shadow: 0 1px 3px rgba(0,0,0,0.05);';
+      banner.innerHTML = `<strong>⚠️ Audit Withheld:</strong> ${currentReport.withheld_message || "Hindi text could not be extracted reliably for this document; results are withheld."}`;
+      findingsListEl.appendChild(banner);
+
+      if (findingsCountBadge) {
+        findingsCountBadge.textContent = 'Withheld';
+      }
+      return;
+    }
+
     const allFindings = currentReport.findings || [];
+
 
     const filtered = allFindings.filter(f => {
       if (currentFilter === 'ALL') return true;
@@ -584,7 +601,7 @@
       alert('No active job report to export.');
       return;
     }
-    window.location.href = `/api/jobs/${currentJobId}/export?format=${format}`;
+    window.location.href = `${API_BASE}/api/jobs/${currentJobId}/export?format=${format}`;
   }
 
   function escapeHtml(str) {

@@ -1,9 +1,11 @@
 """
 pdf_loader.py - Extracts text from PDF files with PyMuPDF and pdfplumber fallback.
-Returns a list of page dicts: [{'page_no': int, 'raw_text': str, 'method': str}]
+Applies automated TrueType CMap repair and Devanagari visual-to-logical reordering.
+Returns a list of page dicts: [{'page_no': int, 'raw_text': str, 'method': str, 'hindi_quality': dict, 'is_reliable': bool}]
 """
 
 import os
+import re
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
@@ -19,6 +21,11 @@ try:
     import pdfplumber
 except ImportError:
     pdfplumber = None
+
+from backend.app.ingest.hindi_repair import repair_pdf_cmaps, repair_hindi_text
+from backend.app.ingest.script_check import hindi_word_validity
+
+DEVANAGARI_RE = re.compile(r'[\u0900-\u097F]')
 
 
 def extract_page_pdfplumber(pdf_path: str, page_index: int) -> str:
@@ -39,8 +46,9 @@ def extract_page_pdfplumber(pdf_path: str, page_index: int) -> str:
 def extract_text(pdf_path: str) -> List[Dict[str, Any]]:
     """
     Extracts text page by page from a PDF file.
-    Attempts PyMuPDF first. If a page yields fewer than 30 characters and has no images
-    or if PyMuPDF fails, falls back to pdfplumber for that page.
+    Applies in-memory TrueType CMap repair to fix glyph-to-Unicode mapping bugs,
+    followed by Devanagari Unicode logical reordering.
+    Evaluates lexical quality against the bundled Hindi dictionary.
     """
     path_obj = Path(pdf_path)
     if not path_obj.exists():
@@ -51,10 +59,13 @@ def extract_text(pdf_path: str) -> List[Dict[str, Any]]:
     if fitz is None and pdfplumber is None:
         raise ImportError("Neither PyMuPDF nor pdfplumber is installed.")
 
-    # 1. Primary extraction with PyMuPDF
+    # 1. Primary extraction with PyMuPDF + CMap Repair
     if fitz is not None:
         try:
             doc = fitz.open(pdf_path)
+            # Apply in-memory CMap repair for TrueType embedded fonts
+            repair_pdf_cmaps(doc)
+
             for page_index, page in enumerate(doc):
                 page_no = page_index + 1
                 text = page.get_text("text") or ""
@@ -67,15 +78,24 @@ def extract_text(pdf_path: str) -> List[Dict[str, Any]]:
                         text = fallback_text
                         method = "pdfplumber_fallback"
 
+                # If text contains Devanagari, apply Unicode logical reordering and repair
+                hindi_q = None
+                is_rel = True
+                if DEVANAGARI_RE.search(text):
+                    text = repair_hindi_text(text)
+                    hindi_q = hindi_word_validity(text)
+                    is_rel = (hindi_q.get("verdict") == "ok")
+
                 pages.append({
                     "page_no": page_no,
                     "raw_text": text,
-                    "method": method
+                    "method": method,
+                    "hindi_quality": hindi_q,
+                    "is_reliable": is_rel
                 })
             doc.close()
             return pages
         except Exception as e:
-            # If PyMuPDF crashes completely on the document, try full pdfplumber
             if pdfplumber is None:
                 raise RuntimeError(f"PyMuPDF failed and pdfplumber is not available: {e}")
 
@@ -85,10 +105,19 @@ def extract_text(pdf_path: str) -> List[Dict[str, Any]]:
             for page_index, page in enumerate(pdf.pages):
                 page_no = page_index + 1
                 text = page.extract_text(layout=True) or page.extract_text() or ""
+                hindi_q = None
+                is_rel = True
+                if DEVANAGARI_RE.search(text):
+                    text = repair_hindi_text(text)
+                    hindi_q = hindi_word_validity(text)
+                    is_rel = (hindi_q.get("verdict") == "ok")
+
                 pages.append({
                     "page_no": page_no,
                     "raw_text": text,
-                    "method": "pdfplumber"
+                    "method": "pdfplumber",
+                    "hindi_quality": hindi_q,
+                    "is_reliable": is_rel
                 })
         return pages
 
