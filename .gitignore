@@ -1,28 +1,31 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
 *.so
 .Python
+*.egg-info/
+
+# Virtual environments
 env/
 venv/
-ENV/
-.env
 .venv/
 
-# Testing & Coverage
+# Environment / secrets — NEVER commit
+.env
+
+# Test / Coverage
 .pytest_cache/
 .coverage
 htmlcov/
 
-# Builds & Distributions
+# Build artefacts
 dist/
 build/
-*.egg-info/
 
-# OS and Editor
+# OS
 .DS_Store
+
+# IDE
 .vscode/
 .idea/
 *.swp
-*.swo

@@ -1555,3 +1555,53 @@ All requested changes are fully implemented and verified: the background image i
 
 ### Diagnose & Decide
 All root causes of font CMap corruption, visual-to-logical ordering inversion, orphan matras, and footnote pollution have been resolved. Corrupted gazette PDFs now extract at 85–87.5% dictionary validity with zero U+25CC and near-zero orphan matras. Any Act with non-standard legacy fonts is properly identified and withheld with safety banners. Loop R0 is complete and PASSED. Proceeding to Phase Loop R.
+
+---
+
+## Loop Deploy-1 — Deployable Build (2026-11-01)
+
+**Goal**: One Render web service (backend + frontend, same origin). Vercel frontend-only backup.
+
+### Plan
+1. Audit: frontend is plain HTML/JS/CSS served by FastAPI `StaticFiles` — no build step needed.
+2. Split requirements into `requirements.txt` (deploy, ~55 MB RAM) and `requirements-live.txt` (full pipeline, ~1.5 GB RAM).
+3. Add `TULYA_DEPLOY_MODE=precomputed` flag; precomputed router skips all ML imports.
+4. Add `/healthz` endpoint for Render.
+5. Tighten CORS to env-var-controlled origins.
+6. Write `runtime.txt` (Python 3.11.9) and clean `render.yaml` / `Procfile`.
+7. Secrets scan — scrub any leaked key.
+
+### Act
+- **Leaked API key found in `.env`** and immediately scrubbed. `.env` confirmed not tracked by git.
+- `requirements.txt` reduced to 9 packages (no torch/sentence-transformers). Estimated install time on Render: ~2 min.
+- `requirements-live.txt` contains torch, sentence-transformers, pytest.
+- `backend/app/api/routes_precomputed.py` created — lightweight read-only router. No ML imports at module level.
+- `backend/app/api/main.py` updated: deploy mode switch, `/healthz`, env-controlled CORS.
+- `runtime.txt` set to `3.11.9`.
+- `render.yaml`: plan=free, healthCheckPath=/healthz, TULYA_DEPLOY_MODE=precomputed.
+- `docs/DEPLOY.md` written with click-by-click steps.
+- `vercel.json` cleaned (documented placeholder URL, not invented).
+- `.gitignore` hardened — `.env` explicitly excluded.
+- Secrets scan: 0 secrets in any git-tracked file.
+
+### Verify
+
+| Check | Result |
+|:------|:-------|
+| Precomputed mode cold-start import time | **0.20 s** |
+| Peak RSS (precomputed) | **~53 MB** (well under 512 MB free-plan limit) |
+| `torch` imported in precomputed mode | **False** |
+| `sentence_transformers` imported | **False** |
+| `/healthz` response | `{"status":"ok","mode":"precomputed"}` |
+| `/api/samples` | 5 samples listed |
+| `/api/samples/right_to_information_2005/analyze` | status=COMPLETED, job loaded |
+| `/api/analyze` (upload endpoint) | **503** with friendly message |
+| `/api/jobs/{id}/export?format=json` | 200 OK |
+| Full test suite (90 tests, live mode) | **90 passed, 0 failed** |
+| Secrets in tracked files | **0** |
+
+### Decide
+Deploy-1 PASSED all exit criteria. Push to GitHub and deploy on Render / Vercel.
+
+### Biggest Risk
+Free-plan cold start (~30 s after 15 min idle). Ping `/healthz` before demos.

@@ -1,0 +1,12 @@
+# Tulya (तुल्य) — Live / Full Pipeline Dependencies
+# Install this on top of requirements.txt to enable live bilingual auditing.
+# WARNING: torch alone is ~2 GB; total install ~3.5 GB RAM at model load.
+#
+# Usage:
+#   pip install -r requirements.txt -r requirements-live.txt
+#
+# Pinned for Python 3.11.x.
+
+sentence-transformers==3.0.1
+torch==2.2.2
+pytest==8.3.2

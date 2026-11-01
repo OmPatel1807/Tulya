@@ -1,13 +1,16 @@
-# Tulya (तुल्य) - Production Dependencies
-fastapi>=0.110.0
-uvicorn[standard]>=0.28.0
-python-multipart>=0.0.9
-pydantic>=2.7.0
-pymupdf>=1.24.0
-pdfplumber>=0.11.0
-fonttools>=4.50.0
-sentence-transformers>=3.0.0
-torch>=2.2.0
-rapidfuzz>=3.8.0
-numpy>=1.26.0
-pytest>=8.0.0
+# Tulya (तुल्य) — Production Dependencies (Deploy Mode: precomputed)
+# These are the ONLY packages needed for TULYA_DEPLOY_MODE=precomputed.
+# Heavy ML packages (torch, sentence-transformers) are NOT installed.
+# For live auditing (local development), use requirements-live.txt.
+#
+# Pinned for Python 3.11.x on Render.
+
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-multipart==0.0.9
+pydantic==2.7.4
+pymupdf==1.24.9
+pdfplumber==0.11.4
+fonttools==4.53.1
+rapidfuzz==3.9.7
+numpy==1.26.4
