@@ -27,130 +27,156 @@
     </div>
   </header>
 
-  <!-- 3D Background Canvas ("Two Sheets, One Law") -->
+  <!-- 3D Background Canvas ("The Book of Two Languages") -->
   <div id="story-canvas-container" aria-hidden="true">
     <canvas id="story-canvas"></canvas>
   </div>
 
-  <!-- Narrative Scroll Content -->
+  <!-- Narrative Scroll Content (600vh scroll container) -->
   <main class="story-scroll-wrapper" id="main-content">
 
-    <!-- Section 0: p=0.0 - Two Sheets, One Law -->
-    <section class="story-section" id="story-section-0" aria-labelledby="title-sec-0">
-      <div class="story-card">
-        <span class="story-tag">Constitutional Framework</span>
-        <h2 class="story-title" id="title-sec-0">Two Sheets. One Law.</h2>
-        <p class="story-desc">
-          Under Article 348 of the Constitution and the Official Languages Act, Indian Central Acts are published in both English and Hindi. Citizens and courts reference both texts.
-        </p>
-        <p class="story-desc" style="margin-bottom: 0;">
-          Differences between official language versions can change how a law is read.
-        </p>
+    <!-- Checkpoint Panel 0: p = 0.00 - 0.08 (Closed Book Hero) -->
+    <section class="story-checkpoint-panel active" id="panel-0" aria-labelledby="title-p0">
+      <span class="story-tag">Constitutional Framework</span>
+      <h2 class="story-title" id="title-p0">Two official versions. One law. Do they agree?</h2>
+      <p class="story-desc">
+        Under Article 348 and the Official Languages Act, Indian statutes are published in both English and Hindi. Citizens and courts reference both texts. Differences between official language versions can alter statutory interpretation.
+      </p>
+      <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 1rem;">
+        <span style="font-size: 0.85rem; color: var(--ink-secondary);">Scroll to open the volume</span>
+        <span style="color: var(--ink-muted);">·</span>
+        <a href="/app" class="btn btn-secondary btn-sm" id="skip-intro-link">Skip intro &rarr;</a>
       </div>
     </section>
 
-    <!-- Section 1: p=0.15 - Clause Separation -->
-    <section class="story-section" id="story-section-1" aria-labelledby="title-sec-1">
-      <div class="story-card">
-        <span class="story-tag">Clause Alignment</span>
-        <h2 class="story-title" id="title-sec-1">Pairing Every Provision</h2>
-        <p class="story-desc">
-          To evaluate consistency, the legislation is segmented into hierarchical clause trees. Each subsection in the English gazette is anchored to its counterpart in the Hindi text.
-        </p>
-        <div class="story-stat-grid" aria-label="Audited Central Acts">
-          <div class="stat-item">
-            <span class="stat-number" id="stat-acts-count">—</span>
-            <span class="stat-label">Central Acts Audited</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number" id="stat-clauses-count">—</span>
-            <span class="stat-label">Aligned Provisions</span>
-          </div>
+    <!-- Checkpoint Panel 1: p = 0.08 - 0.25 (Cover Opens) -->
+    <section class="story-checkpoint-panel" id="panel-1" aria-labelledby="title-p1">
+      <span class="story-tag">Bilingual Foundation</span>
+      <h2 class="story-title" id="title-p1">Opening the Statute</h2>
+      <p class="story-desc">
+        The Constitution of India provides the foundational standard for bilingual governance. The front cover opens to reveal the parallel enactments across languages.
+      </p>
+      <p class="story-desc" style="margin-bottom: 0;">
+        Every Central Act is enacted with equal solemnity, establishing rights and obligations across jurisdictions.
+      </p>
+    </section>
+
+    <!-- Checkpoint Panel 2: p = 0.25 - 0.38 (Pages Turn to Spread) -->
+    <section class="story-checkpoint-panel" id="panel-2" aria-labelledby="title-p2">
+      <span class="story-tag">Official Text</span>
+      <h2 class="story-title" id="title-p2">The Preamble in Two Languages</h2>
+      <p class="story-desc">
+        Pages turn to an open spread: English on the left page, Hindi on the right page. In this foundational excerpt, both language editions express identical constitutional values.
+      </p>
+      <div style="display: flex; gap: 1rem; margin-top: 0.75rem;">
+        <span style="font-size: 0.8rem; font-weight: 600; color: var(--accent-en-text);">Left: English Gazette</span>
+        <span style="font-size: 0.8rem; font-weight: 600; color: var(--accent-hi-text);">Right: Hindi Gazette (हिन्दी)</span>
+      </div>
+    </section>
+
+    <!-- Checkpoint Panel 3: p = 0.38 - 0.52 (Clause Segmentation) -->
+    <section class="story-checkpoint-panel" id="panel-3" aria-labelledby="title-p3">
+      <span class="story-tag">Structural Segmentation</span>
+      <h2 class="story-title" id="title-p3">Hierarchical Clause Parsing</h2>
+      <p class="story-desc">
+        Statutory text lines lift off the parchment into structured clause cards, arranged in parallel columns for sentence-by-sentence comparison.
+      </p>
+      <p class="story-desc" style="margin-bottom: 0;">
+        Each provision is assigned an addressable statutory coordinate before linguistic review begins.
+      </p>
+    </section>
+
+    <!-- Checkpoint Panel 4: p = 0.52 - 0.66 (Clause Alignment) -->
+    <section class="story-checkpoint-panel" id="panel-4" aria-labelledby="title-p4">
+      <span class="story-tag">Bilingual Pairing</span>
+      <h2 class="story-title" id="title-p4">Clause-by-Clause Alignment</h2>
+      <p class="story-desc">
+        Thin sage threads connect each English provision to its corresponding Hindi counterpart across the spread.
+      </p>
+      <div style="margin-top: 1rem;">
+        <span class="status-chip chip-consistent">Consistent in this excerpt</span>
+      </div>
+    </section>
+
+    <!-- Checkpoint Panel 5: p = 0.66 - 0.80 (The Test - Synthetic Divergence Demo) -->
+    <section class="story-checkpoint-panel" id="panel-5" aria-labelledby="title-p5">
+      <div>
+        <span class="synthetic-banner" data-synthetic="true">SYNTHETIC DEMO EXAMPLE: Section 12(3) Divergence</span>
+      </div>
+      <span class="story-tag">Audit Methodology</span>
+      <h2 class="story-title" id="title-p5">Isolating Divergence: The Test</h2>
+      <p class="story-desc">
+        To demonstrate how discrepancies are detected, a synthetic case is introduced on a loose sheet. The Constitution itself has no known divergence shown here; this demonstrates pipeline sensitivity on reported statutory divergence patterns.
+      </p>
+      <div class="quote-box">
+        <div class="quote-label">English Statutory Provision</div>
+        <div class="quote-text">"...a penalty equal to ten times the tax..."</div>
+      </div>
+      <div class="quote-box hindi" lang="hi">
+        <div class="quote-label">Hindi Statutory Provision (हिन्दी)</div>
+        <div class="quote-text">"...कर के अतिरिक्त दस गुना शास्ति..."</div>
+      </div>
+      <div style="margin-top: 0.75rem;">
+        <span class="status-chip chip-divergence">Discrepancy: 'कर के अतिरिक्त' alters liability threshold</span>
+      </div>
+    </section>
+
+    <!-- Checkpoint Panel 6: p = 0.80 - 0.90 (Semantic & Modality Inspection) -->
+    <section class="story-checkpoint-panel" id="panel-6" aria-labelledby="title-p6">
+      <span class="story-tag">Semantic Inspection</span>
+      <h2 class="story-title" id="title-p6">Magnifying Obligation & Penalty Differences</h2>
+      <p class="story-desc">
+        A focused lens glides across the divergence, isolating how "in addition to tax" modifies liability compared to "ten times the tax".
+      </p>
+      <div style="margin-top: 1rem;">
+        <span class="status-chip chip-divergence">Numeric discrepancy: 10x penalty vs 10x penalty in addition to tax</span>
+      </div>
+    </section>
+
+    <!-- Checkpoint Panel 7: p = 0.90 - 0.97 (Summary & Flatten) -->
+    <section class="story-checkpoint-panel" id="panel-7" aria-labelledby="title-p7">
+      <span class="story-tag">Verification Summary</span>
+      <h2 class="story-title" id="title-p7">Evidence-Backed Audit Summary</h2>
+      <p class="story-desc">
+        The cards flatten back into the volume. Real metrics computed from verified pipeline runs across Central Acts:
+      </p>
+      <div class="story-stat-grid" aria-label="Audited Central Acts">
+        <div class="stat-item">
+          <span class="stat-number" id="stat-acts-count">—</span>
+          <span class="stat-label">Central Acts Audited</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" id="stat-clauses-count">—</span>
+          <span class="stat-label">Aligned Provisions</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" id="stat-findings-count">—</span>
+          <span class="stat-label">Discrepancies Flagged</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number" id="stat-grounding-rate">—</span>
+          <span class="stat-label">Quote Grounding Verified</span>
         </div>
       </div>
     </section>
 
-    <!-- Section 2: p=0.40 - Quantitative Discrepancies -->
-    <section class="story-section" id="story-section-2" aria-labelledby="title-sec-2">
-      <div class="story-card">
-        <span class="story-tag">Factual Comparison</span>
-        <h2 class="story-title" id="title-sec-2">Factual & Numeric Precision</h2>
-        <p class="story-desc">
-          When statutory figures differ, legal compliance becomes ambiguous. Tulya isolates specific quantities, time periods, and currency amounts across gazette editions.
-        </p>
-        <div class="quote-box">
-          <div class="quote-label">English Text</div>
-          <div class="quote-text">"...a penalty equal to ten times the amount of tax payable..."</div>
-        </div>
-        <div class="quote-box hindi" lang="hi">
-          <div class="quote-label">Hindi Text (हिन्दी)</div>
-          <div class="quote-text">"...देय कर की रकम के दस गुने के अतिरिक्त शास्ति..."</div>
-        </div>
-        <div class="story-stat-grid" style="margin-top: 1.25rem;">
-          <div class="stat-item">
-            <span class="stat-number" id="stat-findings-count">—</span>
-            <span class="stat-label">Factual Discrepancies Flagged</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number" id="stat-grounding-rate">—</span>
-            <span class="stat-label">Quote Grounding Verified</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 3: p=0.60 - Modality & Legal Obligations -->
-    <section class="story-section" id="story-section-3" aria-labelledby="title-sec-3">
-      <div class="story-card">
-        <span class="story-tag">Semantic Review</span>
-        <h2 class="story-title" id="title-sec-3">Discretion vs. Duty</h2>
-        <p class="story-desc">
-          Modal auxiliaries define executive powers. A divergence between discretionary phrasing ("may") and mandatory phrasing ("shall" / करेगा) shifts statutory authority.
-        </p>
-        <div class="quote-box">
-          <div class="quote-label">English Discretionary Phrasing</div>
-          <div class="quote-text">"The Central Government <strong>may</strong> make rules to carry out the provisions..."</div>
-        </div>
-        <div class="quote-box hindi" lang="hi">
-          <div class="quote-label">Hindi Mandatory Phrasing (हिन्दी)</div>
-          <div class="quote-text">"केन्द्रीय सरकार उपबंधों को कार्यान्वित करने के लिए नियम <strong>बनाएगी</strong>..."</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 4: p=0.80 - Judicial & Reviewer Utility -->
-    <section class="story-section" id="story-section-4" aria-labelledby="title-sec-4">
-      <div class="story-card">
-        <span class="story-tag">Reviewer's Assistant</span>
-        <h2 class="story-title" id="title-sec-4">Objective Assistance for Reviewers</h2>
-        <p class="story-desc">
-          Manual reconciliation across languages is painstaking. Tulya provides government reviewers and legal teams with an impartial, evidence-backed summary of points needing human review.
-        </p>
-        <p class="story-desc" style="margin-bottom: 0;">
-          Every finding is paired with verbatim quotes and side-by-side clause references.
-        </p>
-      </div>
-    </section>
-
-    <!-- Section 5: p=1.00 - Calm CTA -->
-    <section class="story-section" id="story-section-5" aria-labelledby="title-sec-5">
-      <div class="story-card" style="text-align: center;">
-        <span class="story-tag">Review Workspace</span>
-        <h2 class="story-title" id="title-sec-5">Explore Aligned Legislation</h2>
-        <p class="story-desc">
-          Open the comparative review workspace to inspect bundled Central Acts or analyze custom bilingual documents.
-        </p>
-        <div style="margin: 2rem 0;">
-          <a href="/app" class="btn btn-primary" id="enter-workspace-btn" style="padding: 0.75rem 2rem; font-size: 1rem;">
-            Open Review Workspace &rarr;
-          </a>
-        </div>
+    <!-- Checkpoint Panel 8: p = 0.97 - 1.00 (Closing & Workspace CTA) -->
+    <section class="story-checkpoint-panel" id="panel-8" aria-labelledby="title-p8" style="text-align: center;">
+      <span class="story-tag">Review Workspace</span>
+      <h2 class="story-title" id="title-p8">Begin Verification</h2>
+      <p class="story-desc">
+        The Constitution closes. Step into the auditor to inspect bundled Central Acts, evaluate alignments, or upload custom gazette PDFs.
+      </p>
+      <div style="margin: 1.5rem 0 0.5rem 0;">
+        <a href="/app" class="btn btn-primary" id="open-auditor-btn" style="padding: 0.75rem 2.25rem; font-size: 1rem;">
+          Open the auditor &rarr;
+        </a>
       </div>
     </section>
 
   </main>
 
-  <!-- Mandatory Trust & Clarity Notice Footer -->
+  <!-- Mandatory Government Trust & Clarity Footer Notice -->
   <footer class="footer-notice" role="contentinfo">
     <span>Tulya is an independent prototype for reviewing differences between official language versions. It is not an official government service and does not determine which version is legally authoritative.</span>
   </footer>

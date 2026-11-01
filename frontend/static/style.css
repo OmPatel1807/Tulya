@@ -1,41 +1,48 @@
 /* ==========================================================================
-   Tulya (तुल्य) - Calm Pastel Minimalist Design System
-   Designed for Government Reviewers, Legal Researchers, and Judicial Scrutiny.
+   Tulya (तुल्य) - "Ink and Clay" Design System
+   The Book of Two Languages Edition: Refined, Restrained, Trustworthy.
    WCAG 2.1 AA Compliant (All text contrast >= 4.5:1, typical >= 7:1)
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Canvas Backgrounds: Warm off-white with barely perceptible vertical wash */
-  --bg-canvas: #F7F5F0;
-  --bg-canvas-wash: #EEF2F7;
+  /* Canvas Background: Soft mist gradient from #E8ECE8 to #D3DCDB with faint vignette */
+  --bg-scene-top: #E8ECE8;
+  --bg-scene-bottom: #D3DCDB;
   
-  /* Surfaces: Soft translucent white at 78% opacity with light blur */
-  --surface-card: rgba(255, 255, 255, 0.78);
-  --surface-card-solid: #FFFFFF;
-  --surface-card-hover: rgba(255, 255, 255, 0.92);
-  --surface-border: rgba(31, 42, 55, 0.10);
-  --surface-border-focus: #3A6EA5;
-  --surface-shadow: 0 4px 20px rgba(31, 42, 55, 0.06);
-  --surface-shadow-hover: 0 8px 30px rgba(31, 42, 55, 0.10);
+  /* Book Materials: Ink-teal & brass foil */
+  --book-cover: #234A52;
+  --book-brass: #B89B5E;
+  --book-edge: #1A383F;
 
-  /* Ink (Typography): High contrast, dignified, readable */
-  --ink-primary: #1F2A37;      /* Body & Titles - Contrast ~13.5:1 */
-  --ink-secondary: #4B5A6B;    /* Explanations & Meta - Contrast ~6.8:1 */
-  --ink-muted: #6B7280;        /* Captions - Contrast ~4.8:1 */
+  /* Parchment Pages & Text Ink */
+  --page-parchment: #F3ECDD;
+  --page-ink: #2B3A3F;
 
-  /* Calm Pastel Accents */
-  --accent-en: #A9C5E8;            /* English soft blue surface */
-  --accent-en-text: #3A6EA5;       /* English text version */
-  --accent-hi: #F0CDB0;            /* Hindi soft sand/peach surface */
-  --accent-hi-text: #945320;       /* Hindi text version (WCAG AA >= 4.5:1 compliant: 5.63:1) */
-  --match-sage: #A8CDB5;           /* Consistent match surface */
-  --match-sage-text: #3F7A5B;      /* Match text version */
-  --mismatch-coral: #E8918F;       /* Discrepancy coral surface */
-  --mismatch-coral-text: #B2423F;  /* Discrepancy text version */
-  --neutral-lavender: #CFCAE6;     /* Neutral badge surface */
-  --neutral-lavender-text: #4E4770;/* Neutral text version */
+  /* UI Surfaces: #FBF8F1 at 80% opacity with hairline rgba(35,74,82,0.14) borders */
+  --surface-card: rgba(251, 248, 241, 0.85);
+  --surface-card-solid: #FBF8F1;
+  --surface-border: rgba(35, 74, 82, 0.14);
+  --surface-border-subtle: rgba(35, 74, 82, 0.08);
+  --surface-shadow: 0 4px 24px rgba(35, 74, 82, 0.07);
+  --surface-shadow-hover: 0 8px 32px rgba(35, 74, 82, 0.12);
+
+  /* Typography Colors */
+  --ink-primary: #2B3A3F;      /* Contrast on #FBF8F1 is 11.8:1 */
+  --ink-secondary: #4A5B60;    /* Contrast is 6.5:1 */
+  --ink-muted: #6C7D82;        /* Contrast is 4.6:1 */
+
+  /* "Ink and Clay" Accents */
+  --accent-en: #5B7C99;            /* Slate blue surface */
+  --accent-en-text: #3F5F7E;       /* Slate blue text (5.5:1) */
+  --accent-hi: #C0805F;            /* Clay surface */
+  --accent-hi-text: #8F4F32;       /* Clay text (5.2:1) */
+  --match-sage: #7FA08A;           /* Sage match surface */
+  --match-sage-text: #3F6B52;      /* Sage match text (5.1:1) */
+  --mismatch-rose: #A5566B;        /* Muted plum-rose mismatch surface */
+  --mismatch-rose-text: #7D3A4D;   /* Muted plum-rose mismatch text (5.7:1) */
+  --neutral-stone: #A9B0AE;        /* Stone neutral */
 
   /* Typography Stacks */
   --font-serif: 'Cinzel', Georgia, serif;
@@ -44,9 +51,9 @@
   --font-mono: 'JetBrains Mono', monospace;
 
   /* Geometry & Animation */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
   --transition-calm: 450ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -59,15 +66,15 @@
 
 html {
   font-size: 16px;
-  scroll-behavior: smooth;
-  background-color: var(--bg-canvas);
+  scroll-behavior: auto;
+  background-color: var(--bg-scene-top);
   color: var(--ink-primary);
   font-family: var(--font-sans);
 }
 
 body {
   min-height: 100vh;
-  background: linear-gradient(180deg, var(--bg-canvas) 0%, var(--bg-canvas-wash) 100%);
+  background: radial-gradient(circle at 50% 30%, var(--bg-scene-top) 0%, var(--bg-scene-bottom) 100%);
   overflow-x: hidden;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
@@ -75,7 +82,7 @@ body {
 
 /* Accessible Focus States */
 a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible {
-  outline: 2px solid var(--accent-en-text);
+  outline: 2px solid var(--book-cover);
   outline-offset: 3px;
 }
 
@@ -95,32 +102,34 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-canvas);
+  background: var(--bg-scene-top);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(31, 42, 55, 0.18);
+  background: rgba(35, 74, 82, 0.22);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(31, 42, 55, 0.32);
+  background: rgba(35, 74, 82, 0.38);
 }
 
 /* ==========================================================================
    Navigation Header
    ========================================================================== */
 .navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0.85rem 2.25rem;
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(251, 248, 241, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--surface-border);
-  box-shadow: 0 1px 12px rgba(31, 42, 55, 0.03);
+  box-shadow: 0 1px 12px rgba(35, 74, 82, 0.04);
 }
 
 .brand {
@@ -135,15 +144,14 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   width: 36px;
   height: 36px;
   border-radius: var(--radius-sm);
-  background: var(--bg-canvas);
-  border: 1px solid var(--surface-border);
+  background: var(--book-cover);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-hindi);
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--accent-hi-text);
+  color: var(--book-brass);
 }
 
 .brand-text h1 {
@@ -166,7 +174,7 @@ a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible
   gap: 0.85rem;
 }
 
-/* Debug Badges: Hidden in normal UI, visible only if explicitly enabled */
+/* Debug Badges: Hidden unless debug key pressed */
 .tier-badge, .fps-counter {
   display: none !important;
   font-size: 0.75rem;
@@ -200,13 +208,13 @@ body.debug-mode .fps-counter {
 }
 
 .btn-primary {
-  background: var(--ink-primary);
+  background: var(--book-cover);
   color: #FFFFFF;
-  border-color: var(--ink-primary);
+  border-color: var(--book-cover);
 }
 .btn-primary:hover {
-  background: #374151;
-  border-color: #374151;
+  background: #1A383F;
+  border-color: #1A383F;
   transform: translateY(-1px);
 }
 
@@ -216,7 +224,7 @@ body.debug-mode .fps-counter {
 }
 .btn-secondary:hover {
   background: var(--surface-card-solid);
-  border-color: rgba(31, 42, 55, 0.25);
+  border-color: rgba(35, 74, 82, 0.25);
 }
 
 .btn-sm {
@@ -225,7 +233,7 @@ body.debug-mode .fps-counter {
 }
 
 /* ==========================================================================
-   3D Story View ("Two Sheets, One Law")
+   Constitution Book 3D Scroll Story
    ========================================================================== */
 #story-canvas-container {
   position: fixed;
@@ -240,35 +248,37 @@ body.debug-mode .fps-counter {
   display: block;
 }
 
+/* 600vh scroll container for smooth, unhurried progression */
 .story-scroll-wrapper {
   position: relative;
   z-index: 10;
-  padding-bottom: 20vh;
+  min-height: 600vh;
 }
 
-.story-section {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
-}
-
-.story-card {
-  max-width: 650px;
-  width: 100%;
+.story-checkpoint-panel {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  max-width: 660px;
+  width: 90%;
   background: var(--surface-card);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-lg);
-  padding: 2.75rem 2.5rem;
+  padding: 1.35rem 2rem;
   box-shadow: var(--surface-shadow);
-  transition: transform var(--transition-calm), box-shadow var(--transition-calm);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease, transform 300ms ease;
+  z-index: 20;
 }
 
-.story-card:hover {
-  box-shadow: var(--surface-shadow-hover);
+.story-checkpoint-panel.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
 }
 
 .story-tag {
@@ -278,23 +288,47 @@ body.debug-mode .fps-counter {
   letter-spacing: 0.12em;
   color: var(--ink-secondary);
   font-weight: 600;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.4rem;
 }
 
 .story-title {
   font-family: var(--font-serif);
-  font-size: 2.1rem;
+  font-size: 1.75rem;
   font-weight: 600;
   line-height: 1.3;
   color: var(--ink-primary);
-  margin-bottom: 1.15rem;
+  margin-bottom: 0.75rem;
 }
 
 .story-desc {
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   color: var(--ink-secondary);
-  line-height: 1.75;
-  margin-bottom: 1.75rem;
+  line-height: 1.65;
+  margin-bottom: 1rem;
+}
+
+/* Status Chips */
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.status-chip.chip-consistent {
+  background: rgba(127, 160, 138, 0.18);
+  border: 1px solid rgba(127, 160, 138, 0.45);
+  color: var(--match-sage-text);
+}
+
+.status-chip.chip-divergence {
+  background: rgba(165, 86, 107, 0.15);
+  border: 1px solid rgba(165, 86, 107, 0.45);
+  color: var(--mismatch-rose-text);
 }
 
 /* Real Data Stat Grid */
@@ -302,11 +336,11 @@ body.debug-mode .fps-counter {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.25rem;
-  background: rgba(255, 255, 255, 0.65);
-  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.75);
+  padding: 1.15rem;
   border-radius: var(--radius-md);
-  border: 1px solid var(--surface-border);
-  margin-bottom: 1.5rem;
+  border: 1px solid var(--surface-border-subtle);
+  margin-top: 1rem;
 }
 
 .stat-item {
@@ -316,27 +350,27 @@ body.debug-mode .fps-counter {
 
 .stat-number {
   font-family: var(--font-mono);
-  font-size: 1.85rem;
+  font-size: 1.75rem;
   font-weight: 600;
-  color: var(--ink-primary);
+  color: var(--book-cover);
 }
 
 .stat-label {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--ink-secondary);
   letter-spacing: 0.03em;
 }
 
 /* Quote Comparison Box */
 .quote-box {
-  background: rgba(255, 255, 255, 0.75);
+  background: var(--page-parchment);
   border-left: 3px solid var(--accent-en-text);
-  padding: 1rem 1.25rem;
+  padding: 0.85rem 1.15rem;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  margin: 0.85rem 0;
-  border-top: 1px solid var(--surface-border);
-  border-right: 1px solid var(--surface-border);
-  border-bottom: 1px solid var(--surface-border);
+  margin: 0.75rem 0;
+  border-top: 1px solid var(--surface-border-subtle);
+  border-right: 1px solid var(--surface-border-subtle);
+  border-bottom: 1px solid var(--surface-border-subtle);
 }
 
 .quote-box.hindi {
@@ -345,7 +379,7 @@ body.debug-mode .fps-counter {
 }
 
 .quote-label {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
   text-transform: uppercase;
   color: var(--accent-en-text);
@@ -357,8 +391,21 @@ body.debug-mode .fps-counter {
 }
 
 .quote-text {
-  font-size: 0.95rem;
-  color: var(--ink-primary);
+  font-size: 0.92rem;
+  color: var(--page-ink);
+}
+
+/* Synthetic Demo Badge */
+.synthetic-banner {
+  display: inline-block;
+  background: var(--mismatch-rose);
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.75rem;
 }
 
 /* ==========================================================================
@@ -367,7 +414,8 @@ body.debug-mode .fps-counter {
 .workspace-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 65px);
+  height: 100vh;
+  padding-top: 65px;
   position: relative;
   overflow: hidden;
 }
@@ -400,13 +448,13 @@ body.debug-mode .fps-counter {
   outline: none;
 }
 .select-custom:focus {
-  border-color: var(--accent-en-text);
+  border-color: var(--book-cover);
 }
 
 /* Stage Progress Bar */
 .progress-panel {
   display: none;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(251, 248, 241, 0.95);
   border-bottom: 1px solid var(--surface-border);
   padding: 0.75rem 2rem;
 }
@@ -421,7 +469,7 @@ body.debug-mode .fps-counter {
 .progress-track {
   width: 100%;
   height: 5px;
-  background: rgba(31, 42, 55, 0.08);
+  background: rgba(35, 74, 82, 0.08);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -429,7 +477,7 @@ body.debug-mode .fps-counter {
 .progress-fill {
   width: 0%;
   height: 100%;
-  background: var(--ink-primary);
+  background: var(--book-cover);
   transition: width 0.3s ease;
 }
 
@@ -487,21 +535,21 @@ body.debug-mode .fps-counter {
 }
 
 .badge-lang.en {
-  background: var(--accent-en);
+  background: rgba(91, 124, 153, 0.15);
   color: var(--accent-en-text);
-  border: 1px solid rgba(58, 110, 165, 0.3);
+  border: 1px solid rgba(63, 95, 126, 0.3);
 }
 
 .badge-lang.hi {
-  background: var(--accent-hi);
+  background: rgba(192, 128, 95, 0.15);
   color: var(--accent-hi-text);
-  border: 1px solid rgba(168, 100, 46, 0.3);
+  border: 1px solid rgba(143, 79, 50, 0.3);
 }
 
 /* Clause Blocks */
 .clause-block {
   background: #FFFFFF;
-  border: 1px solid var(--surface-border);
+  border: 1px solid var(--surface-border-subtle);
   border-radius: var(--radius-sm);
   padding: 1.15rem;
   margin-bottom: 1.25rem;
@@ -510,14 +558,14 @@ body.debug-mode .fps-counter {
 }
 
 .clause-block:hover {
-  border-color: rgba(31, 42, 55, 0.25);
-  box-shadow: 0 2px 10px rgba(31, 42, 55, 0.04);
+  border-color: rgba(35, 74, 82, 0.25);
+  box-shadow: 0 2px 10px rgba(35, 74, 82, 0.04);
 }
 
 .clause-block.active-pair {
-  border-color: var(--accent-en-text);
-  background: #FDFEFE;
-  box-shadow: 0 0 0 1px var(--accent-en-text);
+  border-color: var(--book-cover);
+  background: #FCFBF9;
+  box-shadow: 0 0 0 1px var(--book-cover);
 }
 
 .clause-header {
@@ -525,7 +573,7 @@ body.debug-mode .fps-counter {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(31, 42, 55, 0.06);
+  border-bottom: 1px solid rgba(35, 74, 82, 0.06);
   padding-bottom: 0.35rem;
 }
 
@@ -550,7 +598,7 @@ body.debug-mode .fps-counter {
 
 /* Highlights */
 .highlight-en {
-  background: var(--accent-en);
+  background: rgba(91, 124, 153, 0.25);
   color: var(--ink-primary);
   padding: 0.15rem 0.35rem;
   border-radius: 3px;
@@ -559,7 +607,7 @@ body.debug-mode .fps-counter {
 }
 
 .highlight-hi {
-  background: var(--accent-hi);
+  background: rgba(192, 128, 95, 0.25);
   color: var(--ink-primary);
   padding: 0.15rem 0.35rem;
   border-radius: 3px;
@@ -580,7 +628,7 @@ body.debug-mode .fps-counter {
 
 .connector-path {
   fill: none;
-  stroke: var(--accent-en-text);
+  stroke: var(--book-cover);
   stroke-width: 2;
   stroke-dasharray: 5 4;
 }
@@ -589,7 +637,7 @@ body.debug-mode .fps-counter {
    Findings Drawer & Inspector
    ========================================================================== */
 .drawer-container {
-  background: #FAF8F5;
+  background: #FAF8F1;
   border-left: 1px solid var(--surface-border);
   display: flex;
   flex-direction: column;
@@ -600,7 +648,7 @@ body.debug-mode .fps-counter {
 .drawer-header {
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid var(--surface-border);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(251, 248, 241, 0.85);
 }
 
 .drawer-title-row {
@@ -617,8 +665,8 @@ body.debug-mode .fps-counter {
 }
 
 .findings-count-badge {
-  background: var(--mismatch-coral);
-  color: var(--mismatch-coral-text);
+  background: var(--mismatch-rose);
+  color: #FFFFFF;
   font-size: 0.75rem;
   font-weight: 600;
   padding: 0.2rem 0.6rem;
@@ -636,7 +684,7 @@ body.debug-mode .fps-counter {
 .filter-chip {
   background: #FFFFFF;
   color: var(--ink-secondary);
-  border: 1px solid var(--surface-border);
+  border: 1px solid var(--surface-border-subtle);
   padding: 0.25rem 0.65rem;
   border-radius: var(--radius-sm);
   font-size: 0.75rem;
@@ -646,9 +694,9 @@ body.debug-mode .fps-counter {
 }
 
 .filter-chip.active {
-  background: var(--ink-primary);
+  background: var(--book-cover);
   color: #FFFFFF;
-  border-color: var(--ink-primary);
+  border-color: var(--book-cover);
 }
 
 /* Findings List */
@@ -663,7 +711,7 @@ body.debug-mode .fps-counter {
 
 .finding-card {
   background: #FFFFFF;
-  border: 1px solid var(--surface-border);
+  border: 1px solid var(--surface-border-subtle);
   border-radius: var(--radius-sm);
   padding: 1.15rem;
   cursor: pointer;
@@ -671,14 +719,14 @@ body.debug-mode .fps-counter {
 }
 
 .finding-card:hover {
-  border-color: rgba(31, 42, 55, 0.25);
-  box-shadow: 0 4px 15px rgba(31, 42, 55, 0.05);
+  border-color: rgba(35, 74, 82, 0.25);
+  box-shadow: 0 4px 15px rgba(35, 74, 82, 0.05);
 }
 
 .finding-card.selected {
-  border-color: var(--accent-en-text);
-  box-shadow: 0 0 0 1px var(--accent-en-text);
-  background: #FDFEFE;
+  border-color: var(--book-cover);
+  box-shadow: 0 0 0 1px var(--book-cover);
+  background: #FCFBF9;
 }
 
 .finding-badges {
@@ -694,8 +742,8 @@ body.debug-mode .fps-counter {
   text-transform: uppercase;
   padding: 0.15rem 0.5rem;
   border-radius: var(--radius-sm);
-  background: var(--neutral-lavender);
-  color: var(--neutral-lavender-text);
+  background: rgba(35, 74, 82, 0.08);
+  color: var(--ink-secondary);
 }
 
 .badge-sev {
@@ -707,25 +755,28 @@ body.debug-mode .fps-counter {
 }
 
 .badge-sev.CRITICAL, .badge-sev.HIGH {
-  background: var(--mismatch-coral);
-  color: var(--mismatch-coral-text);
+  background: rgba(165, 86, 107, 0.15);
+  color: var(--mismatch-rose-text);
+  border: 1px solid rgba(125, 58, 77, 0.3);
 }
 
 .badge-sev.MEDIUM {
-  background: var(--accent-hi);
+  background: rgba(192, 128, 95, 0.15);
   color: var(--accent-hi-text);
+  border: 1px solid rgba(143, 79, 50, 0.3);
 }
 
 .badge-sev.LOW {
-  background: var(--match-sage);
+  background: rgba(127, 160, 138, 0.15);
   color: var(--match-sage-text);
+  border: 1px solid rgba(63, 107, 82, 0.3);
 }
 
 .badge-src {
   font-size: 0.7rem;
   padding: 0.15rem 0.5rem;
   border-radius: var(--radius-sm);
-  background: rgba(31, 42, 55, 0.06);
+  background: rgba(35, 74, 82, 0.05);
   color: var(--ink-secondary);
 }
 
@@ -737,11 +788,12 @@ body.debug-mode .fps-counter {
   margin-left: auto;
 }
 .badge-decision.confirmed {
-  background: var(--match-sage);
+  background: rgba(127, 160, 138, 0.2);
   color: var(--match-sage-text);
+  border: 1px solid var(--match-sage-text);
 }
 .badge-decision.dismissed {
-  background: rgba(31, 42, 55, 0.08);
+  background: rgba(35, 74, 82, 0.08);
   color: var(--ink-muted);
   text-decoration: line-through;
 }
@@ -765,18 +817,18 @@ body.debug-mode .fps-counter {
   flex-direction: column;
   gap: 0.35rem;
   font-size: 0.8rem;
-  background: #FAF8F5;
+  background: var(--page-parchment);
   padding: 0.5rem 0.75rem;
   border-radius: var(--radius-sm);
   margin-bottom: 0.75rem;
-  border: 1px solid var(--surface-border);
+  border: 1px solid var(--surface-border-subtle);
 }
 
 .fq-item {
   color: var(--ink-secondary);
 }
 .fq-item strong {
-  color: var(--ink-primary);
+  color: var(--page-ink);
 }
 
 .finding-actions {
@@ -792,7 +844,7 @@ body.debug-mode .fps-counter {
   margin: 1rem 1.25rem;
   padding: 1.15rem;
   background: #FFFFFF;
-  border: 1px solid var(--surface-border);
+  border: 1px solid var(--surface-border-subtle);
   border-radius: var(--radius-sm);
 }
 
@@ -815,10 +867,10 @@ body.debug-mode .fps-counter {
   font-family: var(--font-hindi);
   font-size: 1.15rem;
   color: var(--ink-primary);
-  background: #FAF8F5;
+  background: var(--page-parchment);
   padding: 0.35rem 0.75rem;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--surface-border);
+  border: 1px solid var(--surface-border-subtle);
 }
 
 /* ==========================================================================
@@ -845,7 +897,7 @@ body.debug-mode .fps-counter {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(31, 42, 55, 0.4);
+  background: rgba(35, 74, 82, 0.45);
   backdrop-filter: blur(4px);
   z-index: 200;
   align-items: center;

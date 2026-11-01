@@ -5,19 +5,20 @@ This register documents all 3D models, textures, and vendor libraries utilized i
 | Asset Name | Type / Format | Author / Source | License | Date Added | Modification & Usage Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `three.min.js` (r128) | JavaScript Library (`.js`) | Mr.doob & Three.js Contributors ([threejs.org](https://threejs.org/)) | MIT License | 2026-11-01 | Vendored locally in `frontend/static/vendor/three.min.js` (589 KB) for 100% offline execution. |
-| `Procedural Floating Legal Sheets` | Procedural 3D Mesh (`THREE.PlaneGeometry` + Canvas Texture) | Tulya Architectural Engine | Procedural / Code (MIT) | 2026-11-01 | Lightweight procedural twin sheets representing English and Hindi gazettes. Renders text lines onto 2D canvas texture with native browser Devanagari text shaping. 0 KB external file size. |
-| `Procedural Clause Card Stack` | Procedural 3D Mesh (`THREE.BoxGeometry` / `THREE.PlaneGeometry`) | Tulya Architectural Engine | Procedural / Code (MIT) | 2026-11-01 | Procedural low-poly clause card geometry created dynamically at runtime; colors mapped to pastel sage (`#A8CDB5`) and muted coral (`#E8918F`). |
-| `Procedural Semantic Inspection Lens` | Procedural 3D Mesh (`THREE.TorusGeometry` + `THREE.CylinderGeometry`) | Tulya Architectural Engine | Procedural / Code (MIT) | 2026-11-01 | Glass magnifier frame with subtle transmission material, gliding across clause cards during semantic review milestone. 0 KB external file size. |
-| `Procedural Pastel Connecting Threads` | Procedural 3D Curves (`THREE.Line` / `THREE.BufferGeometry`) | Tulya Architectural Engine | Procedural / Code (MIT) | 2026-11-01 | Soft bezier spline threads connecting aligned provisions between language columns. |
+| `Procedural Constitution Book Board` | Procedural 3D Mesh (`THREE.BoxGeometry`, `THREE.CylinderGeometry`) | Tulya Architectural Engine | Procedural / Code (MIT) | 2026-11-01 | Procedural hardbound book cover in deep ink-teal (`#234A52`) with brass-foil typography and abstract border lines. 0 KB external file size. |
+| `Procedural Brass Foil Title Texture` | Procedural Canvas Texture (`THREE.CanvasTexture`) | Tulya Architectural Engine | Procedural / Code (MIT) | 2026-11-01 | Canvas-rendered brass foil typography: "THE CONSTITUTION OF INDIA / भारत का संविधान" with abstract gold framing. Zero copyrighted illustrations or emblems. |
+| `Procedural Animated Leaves & Preamble Spreads` | Procedural 3D Planes (`THREE.PlaneGeometry`) | Tulya Architectural Engine | Procedural / Code (MIT) | 2026-11-01 | Double-sided parchment leaves (`#F3ECDD`) pivoted at spine ($x=0$) with page curl dynamics. Displays official Preamble text in English and Hindi via 2D Canvas shaping. |
+| `Procedural Synthetic Demo Sheet` | Procedural 3D Plane (`THREE.PlaneGeometry`) | Tulya Architectural Engine | Procedural / Code (MIT) | 2026-11-01 | Loose leaf paper insert labeled "SYNTHETIC DEMO EXAMPLE" demonstrating clause divergence without altering Constitution spreads. |
+| `Procedural Semantic Magnifier Lens` | Procedural 3D Mesh (`THREE.TorusGeometry` + `THREE.CircleGeometry`) | Tulya Architectural Engine | Procedural / Code (MIT) | 2026-11-01 | Glass inspection lens with stone rim (`#4B5A6B`) and standard specular transmission gliding during semantic review. |
 
 ---
 
-### Prohibited Content Compliance Check
-- [x] No search engine scraping.
-- [x] No State Emblem of India or Ashoka Chakra.
-- [x] No Indian National Flag.
-- [x] No real people, government officials, or judge photographs.
-- [x] No court or government building photography.
-- [x] No commercial brand logos.
-- [x] 100% offline support (zero CDN reliance; total external 3D asset size = 0 KB, library size < 600 KB, total well under 2 MB limit).
-
+### Prohibited Content Compliance Verification
+- [x] **No State Emblem of India** or Ashoka lion capital.
+- [x] **No Ashoka Chakra** or national symbols.
+- [x] **No Indian National Flag** or tricolor (saffron/white/green) color arrangements.
+- [x] **No real people**, government officials, or judge photographs.
+- [x] **No court or government building photography**.
+- [x] **No commercial brand logos** or printed Constitution cover illustrations.
+- [x] **100% offline support** (all geometries and textures generated procedurally in code; 0 KB network downloads).
+- [x] **Constitution integrity preserved**: The mismatch demonstration is explicitly isolated on the loose sheet labeled `"SYNTHETIC DEMO EXAMPLE"`.

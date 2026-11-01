@@ -746,6 +746,61 @@ Pivot the Tulya presentation away from dark neon glassmorphism toward a dignifie
 - Deliverables committed and documented.
 - Status: **PASSED**.
 
+---
+
+## Animation Overhaul: "The Book of Two Languages" (Loop-Engineered)
+
+### Context & Goal
+Replace earlier floating sheet concepts with an authentic, hardbound book model of the Constitution of India (*THE CONSTITUTION OF INDIA / भारत का संविधान*):
+- Deep ink-teal (`#234A52`) with brass-foil typography (`#B89B5E`) and warm parchment leaves (`#F3ECDD`).
+- Strict deterministic mathematical scroll timeline across 11 checkpoints ($0.00 \to 1.00$): closed book hero $\to$ front cover opens about spine hinge ($0^\circ \to 165^\circ$) $\to$ 6 leaves turn staggered ($0^\circ \to 180^\circ$) to reveal Preamble spread (English left, Hindi right) $\to$ clause cards lift into columns $\to$ sage alignment threads draw between matching clauses $\to$ loose synthetic demo sheet slides in labeled `"SYNTHETIC DEMO EXAMPLE"` with plum-rose pulse ring around discrepancy $\to$ brass magnifier glides for semantic review $\to$ data-driven summary stats $\to$ leaves turn back and cover closes ($165^\circ \to 0^\circ$).
+- Reversibility Requirement: scrolling backward must reverse every angle exactly within $1.0^\circ$ delta.
+- Performance & Contrast: Tier 3 $\ge 55$ FPS, Tier 1 $\ge 30$ FPS, contrast $\ge 4.5:1$.
+- Strict Content Governance: Zero lion capital, zero Ashoka Chakra, zero national flags/tricolor, no photos of persons, no hardcoded stats in markup, and mandatory trust disclaimer in footer.
+
+### Iteration 1 - Verifier-First Construction & Procedural Book Engine
+- **PLAN**:
+  - Build `backend/eval/verify_book_story.py` testing all 8 requirements: (1) 11 checkpoints & cover/leaf angles, (2) forward/backward reversibility $\le 1^\circ$, (3) zero console errors, (4) contrast $\ge 4.5:1$, (5) FPS $\ge 55$ Tier 3 & $\ge 30$ Tier 1, (6) forbidden item grep, (7) offline reload & reduced motion, (8) synthetic demo label check.
+  - Register procedural 3D book and CanvasTexture assets in `docs/ASSETS.md`.
+  - Update `frontend/static/style.css` with "Ink and Clay" color system (`#E8ECE8` to `#D3DCDB` mist, `#234A52` teal, `#B89B5E` brass foil, `#F3ECDD` parchment, `#2B3A3F` ink, `#5B7C99` slate blue, `#C0805F` clay, `#7FA08A` sage, `#A5566B` plum-rose).
+  - Implement `frontend/index.html` with 600vh scroll container, 9 narrative panels, and data-driven stat placeholders (`—`).
+  - Implement `frontend/static/story.js` with pure deterministic analytical function `calcBookState(p)`, double-sided Preamble leaves, lifted clause cards, synthetic demo loose sheet, and glass magnifier.
+- **ACT**:
+  - Implemented all files and executed `backend/eval/verify_book_story.py`.
+- **VERIFY**:
+  - Check 1 (Forbidden content): PASSED. Zero emblems, chakras, flags, or hardcoded digits in stat cards.
+  - Check 2 (11 Checkpoints): PASSED. Cover angle $0.0^\circ$ at $p=0.0$ and $p=1.0$; $165.0^\circ$ across open spread ($p=0.32-0.85$).
+  - Initial Check 3 (Reversibility) failed: Maximum difference was $180^\circ$ because CSS `scroll-behavior: smooth` and scroll event listener caused asynchronous scroll interpolation lag during rapid programmatic checkpoint inspection.
+  - **DIAGNOSE**: `window.scrollTo` in combination with `scroll-behavior: smooth` animated over hundreds of milliseconds, fighting with frame evaluation.
+  - **FIX**: Removed `scroll-behavior: smooth`, introduced `isProgrammatic` guard in `story.js` so `scrollToProgress(p)` sets exact target progress and renders state immediately.
+  - Re-ran Reversibility: Maximum delta across all 11 checkpoints reduced to **0.000°** (exceeding the $<1.0^\circ$ requirement).
+  - Check 4 (Synthetic label): PASSED. Verified `SYNTHETIC` label conspicuously present on demo sheet.
+  - Check 5 (Framerates): Tier 3 FPS = **56.6 FPS** (threshold $\ge 55$), Tier 1 FPS = **60.0 FPS** (threshold $\ge 30$).
+  - Check 6 (Contrast): All tested combinations between 5.76:1 and 11.12:1 (threshold $\ge 4.5:1$).
+  - Check 7 (Reduced motion): PASSED. Verified sway oscillation and camera movement disabled.
+  - Check 8 (Console errors & offline): PASSED. Zero errors.
+  - Result: **ALL 8 CHECKS PASSED**.
+
+---
+
+### Visual Critique Rubric (5 Lines)
+1. **Reads as a real book**: Deep ink-teal hardbound volume (`#234A52`) with brass-foil typography, proper spine geometry wrapping along Y-axis, warm parchment leaves (`#F3ECDD`), and natural lighting.
+2. **Calmness & restraint**: Replaced neon starfields and weighing scales with serene mist gradient (`#E8ECE8` to `#D3DCDB`), soft sage alignment threads (`#7FA08A`), and muted plum-rose divergence cues (`#A5566B`).
+3. **Legibility & typographic hierarchy**: Clean Cinzel headings paired with Inter body ink (`#2B3A3F`) on warm paper surfaces (`#FBF8F1`), verified contrast from 5.76:1 to 17.9:1, native browser Devanagari conjunct shaping.
+4. **Motion smoothness & Reversibility**: Exactly 0.000° delta between forward and backward scroll paths across all 11 timeline checkpoints; 56.6 to 60.0 FPS on both Tier 3 and Tier 1.
+5. **Sense of story**: Clear, authoritative narrative progression from constitutional baseline (Article 348) to clause segmentation, alignment, synthetic case audit demonstration, and entry into the workspace.
+
+### Single Worst Problem & Fix Applied
+- **Problem**: In the initial screenshot review, the procedural spine cylinder had `rotation.x = Math.PI / 2`, causing it to protrude forward along the Z-axis toward the camera like a pipe sticking out of the book, and the book's vertical center ($y=0$) caused the lower half of the pages to be partially occluded by the narrative overlay card.
+- **Fix**: Reoriented the spine cylinder vertically along the Y-axis with a half-cylinder arch (`thetaStart = Math.PI / 2`, `thetaLength = Math.PI`), elevated the 3D book group to $y = 0.65$, and adjusted narrative overlay padding and positioning (`bottom: 1.25rem`), providing clear vertical separation so the book, open spread, and synthetic demo sheet float completely unobstructed.
+
+---
+
+### Exit Status
+- All animation overhaul requirements and verifier checks satisfied.
+- Both `verify_book_story.py` and `verify_frontend.py` pass cleanly.
+- Status: **PASSED**.
+
 
 
 
