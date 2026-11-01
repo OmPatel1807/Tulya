@@ -43,6 +43,9 @@ def health_check():
 FRONTEND_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "frontend")
 if os.path.exists(FRONTEND_DIR):
     app.mount("/static", StaticFiles(directory=os.path.join(FRONTEND_DIR, "static")), name="static")
+    public_dir = os.path.join(FRONTEND_DIR, "public")
+    if os.path.exists(public_dir):
+        app.mount("/public", StaticFiles(directory=public_dir), name="public")
 
     @app.get("/")
     def serve_index():

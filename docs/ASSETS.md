@@ -10,6 +10,9 @@ This register documents all 3D models, textures, and vendor libraries utilized i
 | `Procedural Animated Leaves & Preamble Spreads` | Procedural 3D Planes (`THREE.PlaneGeometry`) | Tulya Architectural Engine | Procedural / Code (MIT) | 2026-11-01 | Double-sided parchment leaves (`#F3ECDD`) pivoted at spine ($x=0$) with page curl dynamics. Displays official Preamble text in English and Hindi via 2D Canvas shaping. |
 | `Procedural Synthetic Demo Sheet` | Procedural 3D Plane (`THREE.PlaneGeometry`) | Tulya Architectural Engine | Procedural / Code (MIT) | 2026-11-01 | Loose leaf paper insert labeled "SYNTHETIC DEMO EXAMPLE" demonstrating clause divergence without altering Constitution spreads. |
 | `Procedural Semantic Magnifier Lens` | Procedural 3D Mesh (`THREE.TorusGeometry` + `THREE.CircleGeometry`) | Tulya Architectural Engine | Procedural / Code (MIT) | 2026-11-01 | Glass inspection lens with stone rim (`#4B5A6B`) and standard specular transmission gliding during semantic review. |
+| `studio_small_03_1k.hdr` | Studio Environment Map (`.hdr`) | Andreas Mischok & Poly Haven ([polyhaven.com](https://polyhaven.com/a/studio_small_03)) | CC0 1.0 Universal | 2026-11-01 | Bundled in `frontend/public/assets/studio_small_03_1k.hdr` (1.61 MB) for diffuse, low-contrast studio lighting. |
+| `cover_leather_*_1k.webp` | Cover PBR Material (Albedo, NormalGL, Roughness) | Rob Tuytel & Poly Haven ([polyhaven.com](https://polyhaven.com/a/brown_leather)) | CC0 1.0 Universal | 2026-11-01 | Bundled in `frontend/public/assets/` (WebP 1k) providing fine-grained leather surface micro-relief. |
+| `paper_*_1k.webp` | Page Leaves PBR Material (Color, NormalGL, Roughness) | Lennart Demes & ambientCG ([ambientcg.com](https://ambientcg.com/view?id=Paper001)) | CC0 1.0 Universal | 2026-11-01 | Bundled in `frontend/public/assets/` (WebP 1k) providing natural paper grain texture. |
 
 ---
 
