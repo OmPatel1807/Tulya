@@ -1,14 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
+  "outputDirectory": "frontend",
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/",              "destination": "/frontend/index.html" },
-    { "source": "/app",           "destination": "/frontend/app.html" },
-    { "source": "/static/:path*", "destination": "/frontend/static/:path*" },
-    { "source": "/public/:path*", "destination": "/frontend/public/:path*" },
-    { "source": "/api/:path*",    "destination": "https://tulya.onrender.com/api/:path*" },
-    { "source": "/samples/:path*","destination": "https://tulya.onrender.com/samples/:path*" },
-    { "source": "/health",        "destination": "https://tulya.onrender.com/health" }
+    { "source": "/app", "destination": "/app.html" },
+    { "source": "/api/:path*", "destination": "https://tulya.onrender.com/api/:path*" },
+    { "source": "/samples/:path*", "destination": "https://tulya.onrender.com/samples/:path*" },
+    { "source": "/health", "destination": "https://tulya.onrender.com/health" }
   ]
 }
